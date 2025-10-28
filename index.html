@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی چیستان - نسخه پیشرفته</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            overscroll-behavior: none;
+            user-select: none;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD700, #F0C040, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-golden {
+            background: linear-gradient(145deg, #c39d1a, #e6c229, #c39d1a);
+            color: #121212; font-weight: bold; border-radius: 12px;
+            padding: 12px 24px; text-align: center; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); border: 1px solid #FFD700;
+        }
+        .btn-golden:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3); }
+        .btn-golden:active { transform: translateY(1px); box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2); }
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+        .screen {
+            display: none; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; overflow-y: auto;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 0; transform: scale(0.98);
+        }
+        .screen.active { display: flex; opacity: 1; transform: scale(1); }
+        #falling-letters-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
+        .btn-option {
+            background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #E0E0E0; padding: 12px; border-radius: 10px; transition: all 0.2s ease; width: 100%;
+        }
+        .btn-option:hover:not(:disabled) { background-color: rgba(255, 215, 0, 0.2); border-color: #FFD700; }
+        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .timer-flash { animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        /* New Styles for Auth and Profile */
+        .input-field {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #E0E0E0; padding: 12px; border-radius: 10px;
+            width: 100%; transition: all 0.2s ease; text-align: right;
+        }
+        .input-field:focus { outline: none; border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+        .profile-stat {
+            background-color: rgba(0,0,0,0.2);
+            padding: 12px; border-radius: 10px;
+            text-align: center;
+        }
+        /* Online Matchmaking Animation */
+        .loader {
+            width: 80px; height: 80px; border: 5px solid #FFD700;
+            border-bottom-color: transparent; border-radius: 50%;
+            display: inline-block; box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .online-score-bar {
+            background-color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 10px;
+        }
+        .online-score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c39d1a, #e6c229);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+<!-- Auth Screen (Login/Register) -->
+<div id="auth-screen" class="screen p-6 flex-col justify-center h-screen">
+    <div id="login-view" class="w-full max-w-sm mx-auto">
+        <div class="card p-8 space-y-6 text-center">
+            <h2 class="text-3xl font-bold gold-gradient-text">ورود به حساب</h2>
+            <input id="login-username" type="text" placeholder="نام کاربری" class="input-field">
+            <input id="login-password" type="password" placeholder="رمز عبور" class="input-field">
+            <button id="login-btn" class="w-full btn-golden text-xl py-3">ورود</button>
+            <p class="text-sm">حساب کاربری ندارید؟ <button id="show-register-view-btn" class="text-yellow-400 hover:underline">ثبت نام کنید</button></p>
+        </div>
+    </div>
+    <div id="register-view" class="hidden w-full max-w-sm mx-auto">
+        <div class="card p-8 space-y-4 text-center">
+            <h2 class="text-3xl font-bold gold-gradient-text">ساخت حساب جدید</h2>
+            <input id="register-username" type="text" placeholder="نام کاربری" class="input-field">
+            <input id="register-age" type="number" placeholder="سن" class="input-field">
+            <input id="register-password" type="password" placeholder="رمز عبور" class="input-field">
+            <input id="register-confirm-password" type="password" placeholder="تکرار رمز عبور" class="input-field">
+            <button id="register-btn" class="w-full btn-golden text-xl py-3">ثبت نام</button>
+            <p class="text-sm">قبلا ثبت نام کرده‌اید؟ <button id="show-login-view-btn" class="text-yellow-400 hover:underline">وارد شوید</button></p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Menu Screen -->
+<div id="main-menu-screen" class="screen p-6 flex flex-col h-screen">
+    <canvas id="falling-letters-canvas"></canvas>
+    <header class="flex justify-between items-center mb-16">
+        <button id="profile-btn" class="flex items-center space-x-4 space-x-reverse">
+            <div class="split-circle w-16 h-16 rounded-full bg-gradient-to-r from-gray-800 to-yellow-500 border-2 border-yellow-500"></div>
+            <div>
+                <p id="menu-username" class="font-bold text-lg text-white">کاربر مهمان</p>
+                <p id="menu-highscore" class="text-sm gold-gradient-text font-bold">🚀 بالاترین رکورد: 0</p>
+            </div>
+        </button>
+        <button id="logout-btn" class="text-gray-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        </button>
+    </header>
+    <main class="flex-grow flex flex-col justify-center items-center space-y-4">
+        <button id="start-game-btn" class="w-full max-w-[280px] btn-golden text-xl py-3">بازی رکوردی</button>
+        <button id="start-online-game-btn" class="w-full max-w-[280px] btn-golden text-xl py-3">بازی آنلاین</button>
+    </main>
+</div>
+
+<!-- Profile Screen -->
+<div id="profile-screen" class="screen p-6 flex-col justify-center h-screen">
+    <div class="w-full max-w-md mx-auto card p-8 text-center space-y-6">
+        <h2 class="text-3xl font-bold gold-gradient-text">پروفایل کاربر</h2>
+        <div class="space-y-4">
+            <p class="text-xl">نام کاربری: <span id="profile-username" class="font-bold text-white"></span></p>
+            <p class="text-xl">سن: <span id="profile-age" class="font-bold text-white"></span></p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="profile-stat"><p class="text-gray-400">کل بازی‌ها</p><p id="profile-total-games" class="text-2xl font-bold text-yellow-400"></p></div>
+            <div class="profile-stat"><p class="text-gray-400">بالاترین رکورد</p><p id="profile-highscore" class="text-2xl font-bold text-yellow-400"></p></div>
+            <div class="profile-stat"><p class="text-gray-400">پاسخ صحیح</p><p id="profile-correct" class="text-2xl font-bold text-green-400"></p></div>
+            <div class="profile-stat"><p class="text-gray-400">پاسخ غلط</p><p id="profile-incorrect" class="text-2xl font-bold text-red-400"></p></div>
+        </div>
+        <h3 class="text-xl font-bold gold-gradient-text pt-4">آمار بازی آنلاین</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="profile-stat"><p class="text-gray-400">برد</p><p id="profile-online-wins" class="text-2xl font-bold text-green-400"></p></div>
+            <div class="profile-stat"><p class="text-gray-400">باخت</p><p id="profile-online-losses" class="text-2xl font-bold text-red-400"></p></div>
+        </div>
+        <button id="back-from-profile-btn" class="w-full btn-golden mt-6">بازگشت</button>
+    </div>
+</div>
+
+<!-- Matchmaking Screen -->
+<div id="matchmaking-screen" class="screen p-6 flex-col justify-center items-center h-screen text-center space-y-8">
+    <div id="searching-view">
+        <h2 class="text-3xl font-bold text-white mb-8">در حال جستجوی حریف...</h2>
+        <div class="loader"></div>
+    </div>
+    <div id="found-view" class="hidden flex flex-col items-center space-y-6">
+        <h2 class="text-3xl font-bold text-white">حریف پیدا شد!</h2>
+        <div class="flex items-center space-x-8 space-x-reverse">
+            <span id="match-player-name" class="text-2xl font-bold text-yellow-400"></span>
+            <span class="text-4xl font-black gold-gradient-text">VS</span>
+            <span id="match-bot-name" class="text-2xl font-bold text-red-400"></span>
+        </div>
+        <p class="text-lg text-gray-300">بازی تا چند لحظه دیگر شروع می‌شود...</p>
+    </div>
+</div>
+
+<!-- Online Gameplay Screen -->
+<div id="online-game-screen" class="screen p-6 flex-col h-screen">
+    <header class="mb-6">
+        <div class="flex justify-between items-center text-white mb-2">
+            <span id="online-player-name" class="font-bold">شما</span>
+            <span id="online-bot-name" class="font-bold">حریف</span>
+        </div>
+        <div class="flex items-center space-x-2 space-x-reverse">
+            <div class="w-1/2 online-score-bar"><div id="player-score-fill" class="online-score-fill" style="width: 0%;"></div></div>
+            <div class="w-1/2 online-score-bar"><div id="bot-score-fill" class="online-score-fill bg-red-500" style="width: 0%;"></div></div>
+        </div>
+        <div class="flex justify-between items-center text-sm mt-1">
+             <span id="player-score-text" class="text-yellow-400">0</span>
+             <span id="bot-score-text" class="text-red-400">0</span>
+        </div>
+    </header>
+    <div id="online-timer-display" class="text-center card px-4 py-2 rounded-lg bg-gray-800 border-yellow-500/50 mb-4">
+        <p id="online-timer-count" class="text-4xl font-black text-yellow-400">35</p>
+    </div>
+    <main class="flex-grow flex flex-col justify-center items-center text-center">
+        <div class="w-full max-w-lg card p-8">
+            <p id="online-riddle-question" class="text-xl md:text-2xl mb-8 min-h-[100px] flex items-center justify-center"></p>
+            <div id="online-options-container" class="grid grid-cols-2 gap-4"></div>
+            <div id="online-input-container" class="hidden flex flex-col gap-4 w-full">
+                <input type="text" id="online-flash-answer-input" placeholder="پاسخ را اینجا تایپ کنید..." class="input-field text-center">
+                <button id="online-flash-submit-btn" class="w-full btn-golden text-xl py-3">ثبت پاسخ</button>
+            </div>
+        </div>
+         <p id="online-round-info" class="mt-4 text-lg gold-gradient-text font-bold"></p>
+    </main>
+</div>
+
+
+<!-- Other screens (gameplay, game over) would go here, slightly modified to handle single-player state -->
+
+<script>
+// --- Constants ---
+const DB_NAME = 'chistanGameDB';
+const BOT_NAMES = ['makei', 'سهیل شاه', 'آریا', 'سارینا', 'کیان'];
+const ONLINE_TIMER_DURATION = 35;
+const ONLINE_ROUNDS = 4; // 2 old, 2 flash
+
+// --- Game State ---
+let currentUser = null;
+let users = [];
+let onlineGameState = {};
+
+// --- DOM Elements ---
+const screens = {
+    auth: document.getElementById('auth-screen'),
+    mainMenu: document.getElementById('main-menu-screen'),
+    profile: document.getElementById('profile-screen'),
+    matchmaking: document.getElementById('matchmaking-screen'),
+    onlineGame: document.getElementById('online-game-screen'),
+    // Add other game screens here if needed
+};
+const loginView = document.getElementById('login-view');
+const registerView = document.getElementById('register-view');
+
+// --- Riddles ---
+const allRiddles = [ { q: 'آن چیست که پر دارد ولی پرواز نمی‌کند؟', a: 'بالش', options: ['پرنده', 'بالش', 'هواپیما', 'بادبادک'] }, { q: 'آن چیست که هرچه از آن بردارند بزرگتر می‌شود؟', a: 'گودال', options: ['کیسه', 'کوه', 'گودال', 'درخت'] }, { q: 'آن چیست که یک چشم دارد ولی نمی‌بیند؟', a: 'سوزن', options: ['سوزن', 'سیکلوپ', 'دوربین', 'هیولا'] }, { q: 'آن چیست که گردن دارد اما سر ندارد؟', a: 'کوزه', options: ['پیراهن', 'بطری', 'کوزه', 'شیشه'] }, ];
+const hardRiddles = [ { q: 'آن چیست که وقتی ایستاده است می‌خوابد و وقتی راه می‌رود بیدار است؟', a: 'قطار' }, { q: 'من هیچ بدنی ندارم اما می‌توانم راه بروم. من دهانی ندارم اما می‌توانم حرف بزنم. من کیستم؟', a: 'پژواک' }, { q: 'آن چیست که اگر آن را داشته باشی می‌خواهی به اشتراک بگذاری، و اگر به اشتراک بگذاری دیگر آن را نداری؟', a: 'راز' }, { q: 'چه چیزی همیشه جلوتر از شماست اما هرگز نمی‌توانید آن را بگیرید؟', a: 'آینده' }, ];
+
+
+// --- Utility Functions ---
+function showScreen(screenName) {
+    Object.values(screens).forEach(screen => screen.classList.remove('active'));
+    screens[screenName].classList.add('active');
+}
+
+function normalizeAnswer(text) {
+    if (typeof text !== 'string') return '';
+    return text.trim().replace(/ی/g, 'ي').replace(/ک/g, 'ك').toLowerCase().replace(/\s/g, '');
+}
+
+
+// --- Database (localStorage) Functions ---
+function loadDB() {
+    const db = localStorage.getItem(DB_NAME);
+    if (db) {
+        users = JSON.parse(db);
+    }
+}
+
+function saveDB() {
+    localStorage.setItem(DB_NAME, JSON.stringify(users));
+}
+
+function updateUserInDB(user) {
+    const index = users.findIndex(u => u.username === user.username);
+    if (index !== -1) {
+        users[index] = user;
+        saveDB();
+    }
+}
+
+// --- Auth Functions ---
+function registerUser() {
+    const username = document.getElementById('register-username').value.trim();
+    const age = document.getElementById('register-age').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
+
+    if (!username || !age || !password) {
+        alert('لطفا تمام فیلدها را پر کنید.');
+        return;
+    }
+    if (password !== confirmPassword) {
+        alert('رمزهای عبور یکسان نیستند.');
+        return;
+    }
+    if (users.find(u => u.username === username)) {
+        alert('این نام کاربری قبلا استفاده شده است.');
+        return;
+    }
+
+    const newUser = {
+        username,
+        age,
+        password, // In a real app, HASH the password!
+        stats: {
+            highScore: 0,
+            totalGames: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            onlineWins: 0,
+            onlineLosses: 0,
+        }
+    };
+    users.push(newUser);
+    saveDB();
+    alert('ثبت نام موفقیت آمیز بود! اکنون وارد شوید.');
+    showLoginView();
+}
+
+function loginUser() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (user) {
+        currentUser = user;
+        sessionStorage.setItem('currentUser', username); // Keep user logged in during session
+        initMainMenu();
+    } else {
+        alert('نام کاربری یا رمز عبور اشتباه است.');
+    }
+}
+
+function logoutUser() {
+    currentUser = null;
+    sessionStorage.removeItem('currentUser');
+    showScreen('auth');
+}
+
+function checkAutoLogin() {
+    const loggedInUser = sessionStorage.getItem('currentUser');
+    if (loggedInUser) {
+        const user = users.find(u => u.username === loggedInUser);
+        if (user) {
+            currentUser = user;
+            initMainMenu();
+            return;
+        }
+    }
+    showScreen('auth');
+}
+
+
+// --- UI Update Functions ---
+function updateMainMenuUI() {
+    document.getElementById('menu-username').textContent = currentUser.username;
+    document.getElementById('menu-highscore').textContent = `🚀 بالاترین رکورد: ${currentUser.stats.highScore}`;
+}
+
+function updateProfileUI() {
+    document.getElementById('profile-username').textContent = currentUser.username;
+    document.getElementById('profile-age').textContent = currentUser.age;
+    document.getElementById('profile-total-games').textContent = currentUser.stats.totalGames;
+    document.getElementById('profile-highscore').textContent = currentUser.stats.highScore;
+    document.getElementById('profile-correct').textContent = currentUser.stats.correctAnswers;
+    document.getElementById('profile-incorrect').textContent = currentUser.stats.incorrectAnswers;
+    document.getElementById('profile-online-wins').textContent = currentUser.stats.onlineWins;
+    document.getElementById('profile-online-losses').textContent = currentUser.stats.onlineLosses;
+}
+
+function showLoginView() {
+    loginView.style.display = 'block';
+    registerView.style.display = 'none';
+}
+
+function showRegisterView() {
+    loginView.style.display = 'none';
+    registerView.style.display = 'block';
+}
+
+
+// --- Main Menu ---
+function initMainMenu() {
+    updateMainMenuUI();
+    showScreen('mainMenu');
+    // Consider restarting the falling letters animation if needed
+}
+
+// --- Profile ---
+function showProfile() {
+    updateProfileUI();
+    showScreen('profile');
+}
+
+// --- Online Game Logic ---
+function startMatchmaking() {
+    showScreen('matchmaking');
+    document.getElementById('searching-view').style.display = 'block';
+    document.getElementById('found-view').classList.add('hidden');
+
+    setTimeout(() => {
+        const botName = BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
+        document.getElementById('match-player-name').textContent = currentUser.username;
+        document.getElementById('match-bot-name').textContent = botName;
+        document.getElementById('searching-view').style.display = 'none';
+        document.getElementById('found-view').classList.remove('hidden');
+
+        onlineGameState = {
+            botName,
+            currentRound: 0,
+            playerScore: 0,
+            botScore: 0,
+            timer: null,
+            usedRiddles: [],
+            playerAnswered: false,
+        };
+        setTimeout(startOnlineGame, 3000);
+    }, 2500);
+}
+
+function startOnlineGame() {
+    showScreen('onlineGame');
+    document.getElementById('online-player-name').textContent = currentUser.username;
+    document.getElementById('online-bot-name').textContent = onlineGameState.botName;
+    nextOnlineRound();
+}
+
+function nextOnlineRound() {
+    onlineGameState.currentRound++;
+    if (onlineGameState.currentRound > ONLINE_ROUNDS) {
+        endOnlineGame();
+        return;
+    }
+    
+    onlineGameState.playerAnswered = false;
+    const isFlashMode = onlineGameState.currentRound > 2;
+    const riddleSource = isFlashMode ? hardRiddles : allRiddles;
+    let riddle;
+    do {
+        riddle = riddleSource[Math.floor(Math.random() * riddleSource.length)];
+    } while (onlineGameState.usedRiddles.includes(riddle.q));
+    
+    onlineGameState.usedRiddles.push(riddle.q);
+    onlineGameState.currentRiddle = riddle;
+
+    document.getElementById('online-riddle-question').textContent = riddle.q;
+    document.getElementById('online-round-info').textContent = `راند ${onlineGameState.currentRound} از ${ONLINE_ROUNDS} - حالت: ${isFlashMode ? 'فلش' : 'کلاسیک'}`;
+
+    if (isFlashMode) {
+        document.getElementById('online-options-container').classList.add('hidden');
+        document.getElementById('online-input-container').classList.remove('hidden');
+        document.getElementById('online-flash-answer-input').value = '';
+    } else {
+        document.getElementById('online-input-container').classList.add('hidden');
+        document.getElementById('online-options-container').classList.remove('hidden');
+        const optionsContainer = document.getElementById('online-options-container');
+        optionsContainer.innerHTML = '';
+        riddle.options.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option;
+            button.className = 'btn-option';
+            button.onclick = () => handleOnlineAnswer(option);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    startOnlineTimer();
+}
+
+function startOnlineTimer() {
+    let timeLeft = ONLINE_TIMER_DURATION;
+    const timerEl = document.getElementById('online-timer-count');
+    timerEl.textContent = timeLeft;
+    clearInterval(onlineGameState.timer);
+
+    onlineGameState.timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 10) {
+            timerEl.parentElement.classList.add('timer-flash');
+        }
+        if (timeLeft <= 0) {
+            clearInterval(onlineGameState.timer);
+            handleOnlineAnswer(null); // Time's up
+        }
+    }, 1000);
+}
+
+function handleOnlineAnswer(answer) {
+    if (onlineGameState.playerAnswered) return;
+    onlineGameState.playerAnswered = true;
+
+    clearInterval(onlineGameState.timer);
+    document.getElementById('online-timer-count').parentElement.classList.remove('timer-flash');
+    
+    const isCorrect = normalizeAnswer(answer) === normalizeAnswer(onlineGameState.currentRiddle.a);
+    if (isCorrect) {
+        onlineGameState.playerScore++;
+        currentUser.stats.correctAnswers++;
+    } else {
+        currentUser.stats.incorrectAnswers++;
+    }
+
+    // Bot simulation
+    const botCorrectChance = Math.random();
+    if (botCorrectChance < 0.75) { // 75% chance to get it right
+        onlineGameState.botScore++;
+    }
+
+    updateOnlineScores();
+
+    // Disable buttons
+    document.querySelectorAll('#online-options-container button, #online-flash-submit-btn').forEach(el => el.disabled = true);
+    
+    setTimeout(() => {
+        document.querySelectorAll('#online-options-container button, #online-flash-submit-btn').forEach(el => el.disabled = false);
+        nextOnlineRound();
+    }, 2000);
+}
+
+
+function updateOnlineScores() {
+    const maxScore = ONLINE_ROUNDS;
+    document.getElementById('player-score-text').textContent = onlineGameState.playerScore;
+    document.getElementById('bot-score-text').textContent = onlineGameState.botScore;
+    document.getElementById('player-score-fill').style.width = `${(onlineGameState.playerScore / maxScore) * 100}%`;
+    document.getElementById('bot-score-fill').style.width = `${(onlineGameState.botScore / maxScore) * 100}%`;
+}
+
+
+function endOnlineGame() {
+    currentUser.stats.totalGames++;
+    let resultText = '';
+    if (onlineGameState.playerScore > onlineGameState.botScore) {
+        resultText = 'شما برنده شدید!';
+        currentUser.stats.onlineWins++;
+    } else if (onlineGameState.playerScore < onlineGameState.botScore) {
+        resultText = 'شما باختید!';
+        currentUser.stats.onlineLosses++;
+    } else {
+        resultText = 'بازی مساوی شد!';
+    }
+    
+    updateUserInDB(currentUser);
+
+    // Display a result modal/screen
+    alert(`بازی تمام شد! \nنتیجه: ${resultText}\nامتیاز شما: ${onlineGameState.playerScore}\nامتیاز حریف: ${onlineGameState.botScore}`);
+
+    initMainMenu();
+}
+
+
+// --- Event Listeners ---
+function setupEventListeners() {
+    // Auth
+    document.getElementById('show-register-view-btn').addEventListener('click', showRegisterView);
+    document.getElementById('show-login-view-btn').addEventListener('click', showLoginView);
+    document.getElementById('register-btn').addEventListener('click', registerUser);
+    document.getElementById('login-btn').addEventListener('click', loginUser);
+    document.getElementById('logout-btn').addEventListener('click', logoutUser);
+
+    // Main Menu
+    document.getElementById('profile-btn').addEventListener('click', showProfile);
+    document.getElementById('start-online-game-btn').addEventListener('click', startMatchmaking);
+    // document.getElementById('start-game-btn').addEventListener('click', ...); // Add single player start logic
+
+    // Profile
+    document.getElementById('back-from-profile-btn').addEventListener('click', initMainMenu);
+
+    // Online Game
+    document.getElementById('online-flash-submit-btn').addEventListener('click', () => {
+        const answer = document.getElementById('online-flash-answer-input').value;
+        handleOnlineAnswer(answer);
+    });
+}
+
+// --- Initialization ---
+window.onload = function() {
+    loadDB();
+    setupEventListeners();
+    checkAutoLogin();
+};
+
+</script>
+</body>
+</html>
