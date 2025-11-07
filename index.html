@@ -1,12 +1,4 @@
-باشه حتما! طبق درخواست شما، کد را به طور کامل بازطراحی کردم. ارتباط با فایربیس به صورت کامل قطع شده و تمام عملکردها با داده‌های آزمایشی (Mock Data) در خود برنامه شبیه‌سازی شده‌اند تا در آینده بتوانید به راحتی آن را به هر سرور دیگری متصل کنید.
-
-**مهم‌ترین تغییرات اعمال شده:**
-
-1.  **قطع کامل ارتباط با فایربیس:** تمام کدهای مربوط به `import` و مقداردهی اولیه فایربیس کامنت شده‌اند. توابع اکنون به جای پایگاه داده، با آرایه‌ها و اشیاء داخلی کار می‌کنند.
-2.  **بازطراحی ثبت نام با شماره تلفن:** فرم ورود و ثبت نام اکنون به جای ایمیل، شماره تلفن دریافت می‌کند.
-3.  **بازطراحی منوی اصلی:** منو بازطراحی شده و شامل بخش‌های پروفایل، تم‌ها و خروج است. نمایش اطلاعات کاربر نیز با شماره تلفن تطبیق داده شده است.
-4.  **حذف تنظیم زمان ساخت لابی:** بخش مربوط به تنظیم "مدت زمان بازی" از فرم ساخت لابی به طور کامل حذف شده است.
-5.  **ساختار آماده برای اتصال به سرور:** توابع به گونه‌ای نوشته شده‌اند که منطق اصلی برنامه از منطق ارتباط با پایگاه داده جداست. شما می‌توانید در آینده به سادگی بخش‌های شبیه‌سازی شده (Mock) را با توابع API واقعی سرور خود جایگزین کنید.
+باشه حتما! طبق درخواست شما، کد را ویرایش کردم تا صفحه سیاهی که به آن اشاره کردید حذف شود و همچنین سیستم تایید نام لابی توسط ادمین به طور کامل حذف گردید. اکنون کاربران می‌توانند مستقیماً نام لابی مورد نظر خود را وارد کرده و آن را بسازند.
 
 در زیر کد کامل و اصلاح شده را می‌توانید مشاهده کنید:
 
@@ -2197,7 +2189,7 @@
             </div>
         </div>
 
-        <!-- 6. Create Lobby Input Modal (NEW) -->
+        <!-- 6. Create Lobby Input Modal (MODIFIED) -->
         <div id="create-lobby-modal" class="hidden fixed inset-0 flex justify-center items-center z-50 profile-modal-overlay">
             <div class="classic-card profile-modal-content p-6 sm:p-8 w-11/12 max-w-md text-center relative overflow-y-auto custom-scrollbar">
                 <h2 id="create-lobby-modal-title" class="text-2xl sm:text-3xl font-bold mb-6">ساخت لابی جدید</h2>
@@ -2208,47 +2200,17 @@
                 </button>
                 <form id="create-lobby-form" class="space-y-5">
 
-                    <!-- NEW: Lobby Name Selection/Proposal Area -->
-                    <div id="lobby-name-selection-area" class="hidden">
-                        <label for="approved-lobby-names-select" class="block text-right text-sm mb-1">نام لابی تأیید شده خود را انتخاب کنید:</label>
-                        <select id="approved-lobby-names-select" class="w-full focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <!-- Options will be dynamically loaded here -->
-                            <option value="">نام لابی را انتخاب کنید</option>
-                        </select>
-                    </div>
-
-                    <div id="lobby-name-proposal-area" class="hidden">
-                        <label for="proposed-lobby-name-input" class="block text-right text-sm mb-1">نام لابی جدید را برای تأیید ارسال کنید (می‌توانید از کد رنگی [#RRGGBB] در ابتدای نام استفاده کنید):</label>
-                        <input type="text" id="proposed-lobby-name-input" placeholder="مثال: [#FFD700]لابی طلایی من"
-                               class="w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="button" id="submit-lobby-name-for-approval-btn"
-                                class="w-full mt-4 classic-btn btn-blue-classic text-lg sm:text-xl">
-                            ارسال برای تأیید
-                        </button>
-                        <p class="text-sm mt-2" id="lobby-proposal-message">بعد از ارسال، ادمین نام لابی شما را بررسی و تأیید می‌کند. سپس می‌توانید از آن نام استفاده کنید.</p>
-                    </div>
-                    
-                    <!-- NEW: Pending Lobby Names Area -->
-                    <div id="pending-lobby-names-area" class="hidden mt-4">
-                        <h3 class="text-xl font-bold mb-2">نام‌های لابی در انتظار تأیید شما:</h3>
-                        <div id="pending-lobby-names-list" class="space-y-2 text-right max-h-32 overflow-y-auto custom-scrollbar">
-                            <!-- Pending names will be injected here -->
-                            <p class="text-sm text-center">هیچ نام لابی در انتظار تایید ندارید.</p>
-                        </div>
-                    </div>
-
-                    <!-- NEW: Approved Lobby Names Management Area -->
-                    <div id="approved-lobby-names-management-area" class="hidden mt-4">
-                        <h3 class="text-xl font-bold mb-2">نام‌های لابی تأیید شده شما:</h3>
-                        <div id="approved-lobby-names-management-list" class="space-y-2 text-right max-h-32 overflow-y-auto custom-scrollbar">
-                            <!-- Approved names with delete buttons will be injected here -->
-                            <p class="text-sm text-center">هیچ نام لابی تأیید شده‌ای ندارید.</p>
-                        </div>
+                    <!-- MODIFIED: Direct Lobby Name Input -->
+                    <div>
+                        <label for="new-lobby-name-input" class="block text-right text-sm font-medium mb-2">نام لابی:</label>
+                        <input type="text" id="new-lobby-name-input" placeholder="مثال: لابی دوستانه من"
+                               class="w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <p class="text-xs text-gray-400 mt-1 text-right">برای رنگی کردن نام، از کد رنگ در ابتدا استفاده کنید. مثال: [#FFD700]لابی طلایی</p>
                     </div>
 
                     <div class="w-full h-px bg-yellow-600 my-4"></div> <!-- Divider -->
 
-                    <!-- NEW: Lobby Type Toggle (Public/Private) -->
+                    <!-- Lobby Type Toggle (Public/Private) -->
                     <div class="flex justify-center space-x-2 space-x-reverse my-4" id="lobby-type-toggle">
                         <label class="cursor-pointer">
                             <input type="radio" name="lobby-type" value="public" class="sr-only" checked>
@@ -2260,7 +2222,7 @@
                         </label>
                     </div>
         
-                    <!-- NEW: Password field for private lobbies (initially hidden) -->
+                    <!-- Password field for private lobbies (initially hidden) -->
                     <div id="new-lobby-password-field" class="hidden relative">
                         <input type="password" id="new-lobby-password-input" placeholder="رمز عبور لابی (حداقل ۴ کاراکتر)"
                                class="w-full focus:outline-none focus:ring-2 focus:ring-green-500 pr-10">
@@ -2269,8 +2231,6 @@
                             <svg id="eye-icon-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off" style="display: none;"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 4 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                         </button>
                     </div>
-                    
-                    <!-- Game Duration Input is REMOVED as per request -->
 
                     <button type="submit" id="submit-create-lobby-btn"
                             class="w-full mt-4 classic-btn btn-green-classic text-xl sm:text-2xl">
@@ -2537,10 +2497,11 @@
         const backToMainMenuFromThemes = document.getElementById('back-to-main-menu-from-themes');
 
 
-        // Create Lobby Modal Elements
+        // Create Lobby Modal Elements (MODIFIED)
         const createLobbyModal = document.getElementById('create-lobby-modal');
         const closeCreateLobbyModalBtn = document.getElementById('close-create-lobby-modal-btn'); 
         const createLobbyForm = document.getElementById('create-lobby-form');
+        const newLobbyNameInput = document.getElementById('new-lobby-name-input'); // ADDED
         const submitCreateLobbyBtn = document.getElementById('submit-create-lobby-btn');
         const createLobbyMessageBox = document.getElementById('create-lobby-message-box');
         const lobbyTypeToggle = document.getElementById('lobby-type-toggle');
@@ -2549,24 +2510,7 @@
         const togglePasswordVisibilityBtn = document.getElementById('toggle-password-visibility');
         const eyeIconOpen = document.getElementById('eye-icon-open');
         const eyeIconClosed = document.getElementById('eye-icon-closed');
-        // const gameDurationInput = document.getElementById('game-duration-input'); // REMOVED
         const createLobbyModalTitle = document.getElementById('create-lobby-modal-title');
-
-        // Lobby Name Selection/Proposal specific elements
-        const lobbyNameSelectionArea = document.getElementById('lobby-name-selection-area');
-        const approvedLobbyNamesSelect = document.getElementById('approved-lobby-names-select');
-        const lobbyNameProposalArea = document.getElementById('lobby-name-proposal-area');
-        const proposedLobbyNameInput = document.getElementById('proposed-lobby-name-input');
-        const submitLobbyNameForApprovalBtn = document.getElementById('submit-lobby-name-for-approval-btn');
-        const lobbyProposalMessage = document.getElementById('lobby-proposal-message'); 
-
-        // Pending Lobby Names Area 
-        const pendingLobbyNamesArea = document.getElementById('pending-lobby-names-area');
-        const pendingLobbyNamesList = document.getElementById('pending-lobby-names-list');
-
-        // Approved Lobby Names Management Area
-        const approvedLobbyNamesManagementArea = document.getElementById('approved-lobby-names-management-area');
-        const approvedLobbyNamesManagementList = document.getElementById('approved-lobby-names-management-list');
 
 
         // Custom Confirmation Modal Elements
@@ -2650,7 +2594,6 @@
         const mockDb = {
             users: [],
             lobbies: [],
-            proposedLobbyNames: []
         };
 
         // State variables
@@ -2668,15 +2611,13 @@
         let resolveCustomConfirm;
         let gameCountdownInterval = null;
         let gameTimerInterval = null;
-        const MAX_PENDING_PROPOSALS = 5;
 
         // Simple listener registry to simulate onSnapshot
         const activeListeners = {
             lobbies: null,
             lobbyDetail: null,
             kickedPlayers: null,
-            lobbyChat: null,
-            pendingLobbyNames: null
+            lobbyChat: null
         };
 
         // Function to trigger a listener, forcing a UI update
@@ -2948,19 +2889,6 @@
         }
 
         /**
-         * MOCK AI content moderation. In a real app, this would call a server-side API.
-         */
-        async function checkLobbyNameWithAI(lobbyName) {
-            console.warn("شبیه‌سازی بررسی نام لابی توسط هوش مصنوعی. در نسخه واقعی باید به سرور متصل شود.");
-            const inappropriateWords = ["fuck", "shit", "کیر", "کون", "کس"]; // Simple check
-            const isBad = inappropriateWords.some(word => lobbyName.toLowerCase().includes(word));
-            if (isBad) {
-                return { is_appropriate: false, reason: "حاوی کلمات نامناسب است." };
-            }
-            return { is_appropriate: true, reason: "" };
-        }
-
-        /**
          * MOCK AI chat style moderation.
          */
         async function checkMessageForLiteraryAIStyle(message) {
@@ -3170,7 +3098,6 @@
                     password: password, // In a real app, hash this!
                     displayName: displayName,
                     coins: 500,
-                    approvedLobbyNames: [],
                     banStatus: { isBanned: false },
                     createdAt: new Date(),
                     theme: 'classic'
@@ -3203,167 +3130,10 @@
             });
         }
 
-        async function processNewlyApprovedLobbyNames() {
-            if (!currentUserData) return;
-            // In mock, let's simulate an admin approving a request every so often
-            const pendingForUser = mockDb.proposedLobbyNames.filter(p => p.userId === currentUserData.uid && p.status === 'pending');
-            
-            if (pendingForUser.length > 0 && Math.random() > 0.5) { // 50% chance to approve one
-                const proposalToApprove = pendingForUser[0];
-                proposalToApprove.status = 'approved'; // Admin approves it
-
-                console.log(`Simulating admin approval for: ${proposalToApprove.name}`);
-            }
-
-
-            const newlyApproved = mockDb.proposedLobbyNames.filter(
-                p => p.userId === currentUserData.uid && p.status === 'approved'
-            );
-
-            if (newlyApproved.length > 0) {
-                newlyApproved.forEach(p => {
-                    if (!currentUserData.approvedLobbyNames.includes(p.name)) {
-                        currentUserData.approvedLobbyNames.push(p.name);
-                    }
-                    p.status = 'processed'; // Mark as done
-                });
-                console.log(`Processed ${newlyApproved.length} newly approved lobby names for the user.`);
-            }
-        }
-
-        function renderApprovedLobbyNamesManagementList() {
-            if (!currentUserData || !currentUserData.approvedLobbyNames) {
-                approvedLobbyNamesManagementList.innerHTML = '<p class="text-center">هیچ نام لابی تأیید شده‌ای ندارید.</p>';
-                approvedLobbyNamesManagementArea.classList.add('hidden');
-                return;
-            }
-
-            const approvedNames = currentUserData.approvedLobbyNames;
-            approvedLobbyNamesManagementList.innerHTML = ''; 
-
-            if (approvedNames.length === 0) {
-                approvedLobbyNamesManagementList.innerHTML = '<p class="text-center">هیچ نام لابی تأیید شده‌ای ندارید.</p>';
-                approvedLobbyNamesManagementArea.classList.add('hidden');
-            } else {
-                approvedLobbyNamesManagementArea.classList.remove('hidden');
-                approvedNames.forEach(name => {
-                    const nameDiv = document.createElement('div');
-                    nameDiv.className = 'flex items-center justify-between bg-gray-700 p-2 rounded-lg mb-1';
-                    nameDiv.innerHTML = `
-                        <span>${formatLobbyNameWithColor(name)}</span>
-                        <button type="button" class="classic-btn btn-red-classic text-sm py-1 px-3 delete-approved-lobby-name-btn" data-name="${name}">
-                            حذف
-                        </button>
-                    `;
-                    approvedLobbyNamesManagementList.appendChild(nameDiv);
-                });
-
-                approvedLobbyNamesManagementList.querySelectorAll('.delete-approved-lobby-name-btn').forEach(button => {
-                    button.addEventListener('click', async (e) => {
-                        const nameToDelete = e.target.dataset.name;
-                        const confirmed = await showCustomConfirm(`آیا مطمئن هستید که می‌خواهید نام لابی "${nameToDelete}" را حذف کنید؟`, "حذف نام لابی");
-                        if (confirmed) {
-                            await deleteApprovedLobbyName(nameToDelete);
-                        }
-                    });
-                });
-            }
-        }
-
-        async function deleteApprovedLobbyName(nameToDelete) {
-            if (!currentUserData) {
-                showCreateLobbyMessageBox("خطا: اطلاعات کاربری در دسترس نیست.", "error");
-                return;
-            }
-            currentUserData.approvedLobbyNames = currentUserData.approvedLobbyNames.filter(name => name !== nameToDelete);
-            showCreateLobbyMessageBox(`نام لابی "${nameToDelete}" با موفقیت حذف شد.`, "success");
-            
-            // Re-render the UI in the modal
-            updateCreateLobbyModalUI(createLobbyModalTitle.textContent.includes('مدیریت') ? 'myLobbies' : 'create');
-        }
-
-
-        async function updateCreateLobbyModalUI(mode) {
-            if (!currentUserData) {
-                // UI for when data is not loaded
-                return;
-            }
-            
-            const approvedNames = currentUserData.approvedLobbyNames || [];
-            
-            approvedLobbyNamesSelect.innerHTML = '<option value="">نام لابی را انتخاب کنید</option>';
-            
-            if (approvedNames.length > 0) {
-                approvedNames.forEach(name => {
-                    const option = document.createElement('option');
-                    option.value = name;
-                    option.innerHTML = formatLobbyNameWithColor(name);
-                    approvedLobbyNamesSelect.appendChild(option);
-                });
-                lobbyNameSelectionArea.classList.remove('hidden');
-                submitCreateLobbyBtn.disabled = true;
-                submitCreateLobbyBtn.classList.remove('hidden');
-            } else {
-                lobbyNameSelectionArea.classList.add('hidden');
-                submitCreateLobbyBtn.disabled = true;
-                submitCreateLobbyBtn.classList.add('hidden');
-            }
-
-            if (mode === 'create') {
-                createLobbyModalTitle.textContent = 'ساخت لابی جدید';
-                lobbyNameProposalArea.classList.remove('hidden');
-                submitLobbyNameForApprovalBtn.classList.remove('hidden');
-            } else { 
-                createLobbyModalTitle.textContent = 'مدیریت نام‌های لابی و ساخت لابی';
-                lobbyNameProposalArea.classList.add('hidden');
-                submitLobbyNameForApprovalBtn.classList.add('hidden');
-            }
-
-            renderApprovedLobbyNamesManagementList();
-
-            // Mock listener for pending names
-            const renderPendingNames = () => {
-                pendingLobbyNamesList.innerHTML = '';
-                const userPending = mockDb.proposedLobbyNames.filter(p => p.userId === currentUserData.uid && p.status === 'pending');
-                
-                if (userPending.length === 0) {
-                    pendingLobbyNamesList.innerHTML = '<p class="text-center">هیچ نام لابی در انتظار تایید ندارید.</p>';
-                    pendingLobbyNamesArea.classList.add('hidden');
-                } else {
-                    pendingLobbyNamesArea.classList.remove('hidden');
-                    userPending.forEach(proposal => {
-                        const proposalDiv = document.createElement('div');
-                        proposalDiv.className = 'flex items-center justify-between bg-gray-700 p-2 rounded-lg mb-1';
-                        proposalDiv.innerHTML = `<span>${formatLobbyNameWithColor(proposal.name)}</span><span class="text-yellow-400 text-sm">در حال تایید...</span>`;
-                        pendingLobbyNamesList.appendChild(proposalDiv);
-                    });
-                }
-                 if (mode === 'create') {
-                    if (userPending.length >= MAX_PENDING_PROPOSALS) {
-                        lobbyProposalMessage.textContent = `شما به حداکثر تعداد درخواست رسیده‌اید.`;
-                        lobbyProposalMessage.classList.add('text-red-400');
-                        submitLobbyNameForApprovalBtn.disabled = true;
-                        proposedLobbyNameInput.disabled = true;
-                    } else {
-                        lobbyProposalMessage.textContent = "ادمین نام لابی شما را بررسی می‌کند.";
-                        lobbyProposalMessage.classList.remove('text-red-400');
-                        submitLobbyNameForApprovalBtn.disabled = false;
-                        proposedLobbyNameInput.disabled = false;
-                    }
-                }
-            };
-            activeListeners.pendingLobbyNames = renderPendingNames;
-            renderPendingNames(); // Initial render
-
-            proposedLobbyNameInput.value = '';
-        }
-
-        async function openCreateLobbyModal(mode = 'create') {
+        async function openCreateLobbyModal() {
             if (!currentUserData) {
                 showMessageBox("ابتدا وارد حساب کاربری خود شوید.", "error"); return;
             }
-
-            await processNewlyApprovedLobbyNames();
             
             createLobbyModal.classList.remove('hidden');
             createLobbyModal.classList.add('profile-modal-enter-active');
@@ -3374,8 +3144,8 @@
             document.querySelectorAll('.lobby-type-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector('input[value="public"]').nextElementSibling.classList.add('active');
             newLobbyPasswordField.classList.add('hidden');
-
-            await updateCreateLobbyModalUI(mode); 
+            
+            newLobbyNameInput.focus();
         }
 
         function closeCreateLobbyModal() {
@@ -3383,7 +3153,6 @@
             setTimeout(() => {
                 createLobbyModal.classList.add('hidden');
                 createLobbyForm.reset();
-                activeListeners.pendingLobbyNames = null; // Unregister listener
             }, 300);
         }
         
@@ -3566,7 +3335,7 @@
                 }
 
                 detailLobbyName.innerHTML = formatLobbyNameWithColor(lobbyData.name);
-                detailHostName.textContent = `سازنده: ${lobbyData.players[lobbyData.hostId] || 'ناشناс'}`;
+                detailHostName.textContent = `سازنده: ${lobbyData.players[lobbyData.hostId] || 'ناشناس'}`;
                 detailPlayerCount.textContent = `بازیکنان: ${Object.keys(lobbyData.players).length}/${lobbyData.gameSettings.maxPlayers}`;
 
                 playerListContainer.innerHTML = '';
@@ -3576,7 +3345,7 @@
                     playerItem.className = isPlayerHost ? 'player-list-item is-host' : 'player-list-item';
                     const kickBtn = (isHost && !isPlayerHost) 
                         ? `<button class="kick-player-btn" data-player-uid="${uid}" data-player-name="${name}">اخراج</button>` : '';
-                    playerItem.innerHTML = `<div><span>${name}</span> ${isPlayerHost ? '(سازنده)' : ''}</div> ${kickBtn}`;
+                    playerItem.innerHTML = `<div><span class="host-label">${isPlayerHost ? '(سازنده)' : ''}</span><span class="player-name">${name}</span></div> ${kickBtn}`;
                     playerListContainer.appendChild(playerItem);
                 });
                  playerListContainer.querySelectorAll('.kick-player-btn').forEach(button => {
@@ -3619,7 +3388,7 @@
                 lobby.kickedPlayers.push({ uid: playerUid, displayName: playerName });
                 showMessageBox(`بازیکن "${playerName}" اخراج شد.`, "success");
                 closeKickPlayerConfirmModal();
-                triggerListener('lobbyDetail', lobbyId); // Re-render details
+                triggerListener('lobbyDetail'); // Re-render details
             }
         }
         
@@ -3630,7 +3399,8 @@
                  if (lobby && lobby.kickedPlayers.length > 0) {
                      lobby.kickedPlayers.forEach(p => {
                          const div = document.createElement('div');
-                         div.innerHTML = `<span>${p.displayName}</span>`;
+                         div.className = 'flex justify-between items-center p-2 bg-gray-700 rounded';
+                         div.innerHTML = `<span>${p.displayName}</span>`; // Simplified, can add un-ban button later
                          kickedPlayersListContent.appendChild(div);
                      });
                  } else {
@@ -3802,31 +3572,18 @@
         
         ratedGameBtn.addEventListener('click', () => showMessageBox("بازی امتیازی به زودی!", "info"));
         backToMainBtn.addEventListener('click', () => setActiveScreen(mainScreen));
-        addIconBtn.addEventListener('click', () => openCreateLobbyModal('create'));
-        myLobbiesBtn.addEventListener('click', () => openCreateLobbyModal('myLobbies'));
-
-        submitLobbyNameForApprovalBtn.addEventListener('click', async () => {
-             const proposedName = proposedLobbyNameInput.value.trim();
-             if (!proposedName) { showCreateLobbyMessageBox("لطفاً نام لابی را وارد کنید.", "error"); return; }
-             
-             mockDb.proposedLobbyNames.push({
-                 name: proposedName,
-                 userId: currentUserData.uid,
-                 status: 'pending'
-             });
-             showCreateLobbyMessageBox("نام لابی شما برای تایید ارسال شد.", "success");
-             triggerListener('pendingLobbyNames');
+        addIconBtn.addEventListener('click', () => openCreateLobbyModal());
+        myLobbiesBtn.addEventListener('click', () => {
+            // This button can now show user's active lobbies or just open create modal
+            // For now, let's make it open the create modal as well.
+            openCreateLobbyModal();
         });
         
-        approvedLobbyNamesSelect.addEventListener('change', () => {
-            submitCreateLobbyBtn.disabled = !approvedLobbyNamesSelect.value;
-        });
-
         createLobbyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const lobbyName = approvedLobbyNamesSelect.value;
+            const lobbyName = newLobbyNameInput.value.trim();
             if(!lobbyName) {
-                 showCreateLobbyMessageBox("لطفاً یک نام لابی تأیید شده را انتخاب کنید.", "error"); return;
+                 showCreateLobbyMessageBox("لطفاً یک نام برای لابی وارد کنید.", "error"); return;
             }
             const lobbyType = document.querySelector('input[name="lobby-type"]:checked').value;
             const password = newLobbyPasswordInput.value;
@@ -3836,7 +3593,6 @@
             
             submitCreateLobbyBtn.disabled = true;
             try {
-                // REMOVED gameDuration from the call
                 const newLobbyId = await createLobby(lobbyName, currentUserData.uid, currentUserData.displayName, lobbyType, password);
                 showCreateLobbyMessageBox("لابی شما با موفقیت ساخته شد!", "success");
                 
@@ -3876,30 +3632,48 @@
                  kickPlayer(currentLobbyId, kickedPlayerToProcess.uid, kickedPlayerToProcess.displayName);
              }
         });
-
+        
         cancelKickPlayerBtn.addEventListener('click', closeKickPlayerConfirmModal);
         
-        // ... other event listeners remain largely the same, now calling mock functions ...
         kickedMessageOkBtn.addEventListener('click', closeKickedMessageModal);
         viewKickedPlayersBtn.addEventListener('click', openKickedPlayersListModal);
         closeKickedPlayersListModalBtn.addEventListener('click', closeKickedPlayersListModal);
         kickedListOkBtn.addEventListener('click', closeKickedPlayersListModal);
 
-        cancelJoinPasswordBtn.addEventListener('click', closeEnterPasswordModal);
+        cancelJoinPasswordBtn.addEventListener('click', () => enterPasswordModal.classList.add('hidden'));
+        
         enterPasswordForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const lobby = mockDb.lobbies.find(l => l.id === lobbyToJoin.id);
             if(lobby && lobby.password === joinLobbyPasswordInput.value) {
-                closeEnterPasswordModal();
+                enterPasswordModal.classList.add('hidden');
                 await joinLobby(lobby.id, currentUserData.uid, currentUserData.displayName);
             } else {
-                 showPasswordPromptMessage('رمز عبور اشتباه است.');
+                 showCustomMessage(passwordPromptMessageBox, 'رمز عبور اشتباه است.', 'error');
             }
         });
 
         lobbyChatForm.addEventListener('submit', (e) => {
             e.preventDefault();
             sendLobbyMessage(currentLobbyId, lobbyChatInput.value);
+        });
+
+        lobbyTypeToggle.addEventListener('change', (e) => {
+            document.querySelectorAll('.lobby-type-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.nextElementSibling.classList.add('active');
+            if(e.target.value === 'private') {
+                newLobbyPasswordField.classList.remove('hidden');
+                newLobbyPasswordInput.focus();
+            } else {
+                newLobbyPasswordField.classList.add('hidden');
+            }
+        });
+
+        togglePasswordVisibilityBtn.addEventListener('click', () => {
+            const isPassword = newLobbyPasswordInput.type === 'password';
+            newLobbyPasswordInput.type = isPassword ? 'text' : 'password';
+            eyeIconOpen.style.display = isPassword ? 'none' : 'block';
+            eyeIconClosed.style.display = isPassword ? 'block' : 'none';
         });
 
     </script>
