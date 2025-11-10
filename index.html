@@ -48,7 +48,6 @@
         .correct-flash { animation: correct-answer-flash 0.8s ease-in-out; }
         .wrong-flash { animation: wrong-answer-flash 0.8s ease-in-out; }
 
-        /* NEW: Heart animation */
         @keyframes heart-lost {
             0% { transform: scale(1) rotate(0deg); opacity: 1; }
             50% { transform: scale(1.2) rotate(15deg); opacity: 0.8; }
@@ -58,7 +57,6 @@
             animation: heart-lost 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
-        /* NEW: Screen/Modal animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -123,7 +121,6 @@
         }
         .btn-option:disabled { cursor: not-allowed; opacity: 0.6; }
 
-        /* --- NEW: Redesigned Settings Modal Buttons --- */
         .btn-settings {
             display: flex;
             align-items: center;
@@ -168,7 +165,6 @@
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: 16px;
             backdrop-filter: blur(15px);
-            /* NEW: Apply animation to cards inside modals */
             animation: scaleIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) both;
         }
 
@@ -334,7 +330,8 @@
 </div>
 
 <!-- Main Menu Screen -->
-<div id="main-menu-screen" class="screen p-6 flex flex-col h-screen justify-between">
+<!-- CHANGE: Added pb-28 to create space for the fixed footer -->
+<div id="main-menu-screen" class="screen p-6 pb-28 flex flex-col h-screen justify-between">
     <header class="flex justify-between items-center">
         <div class="flex items-center space-x-4 space-x-reverse">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 via-black to-black border-2 border-yellow-600 shadow-lg"></div>
@@ -343,7 +340,13 @@
                 <p id="menu-highscore" class="text-sm gold-gradient-text font-bold">🚀 بالاترین رکورد: 0</p>
             </div>
         </div>
-        <button id="settings-btn" class="text-3xl transition-transform duration-200 hover:rotate-12">⚙️</button>
+        <!-- CHANGE: Redesigned settings button -->
+        <button id="settings-btn" class="p-3 bg-white/10 rounded-full hover:bg-white/20 hover:rotate-45 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
     </header>
 
     <main class="flex flex-col justify-center items-center space-y-4">
@@ -353,14 +356,13 @@
         </button>
     </main>
 
-    <footer class="w-full max-w-sm mx-auto px-2">
-        <!-- MODIFIED: Changed to grid-cols-4 and added Ranking button -->
+    <!-- CHANGE: Footer is now fixed to the bottom of the viewport -->
+    <footer class="fixed bottom-4 left-0 right-0 w-full max-w-sm mx-auto px-4">
         <div class="bg-black/30 backdrop-blur-sm border border-yellow-400/20 rounded-2xl grid grid-cols-4 gap-1 text-center p-2">
             <button id="nav-ways-btn" class="footer-btn flex flex-col items-center justify-center text-gray-400 p-2 rounded-lg hover:bg-yellow-400/10 text-xs sm:text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v10m-6 3h12a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"/></svg>
                 <span>راه ها</span>
             </button>
-            <!-- NEW: Ranking Button -->
             <button id="nav-ranking-btn" class="footer-btn flex flex-col items-center justify-center text-gray-400 p-2 rounded-lg hover:bg-yellow-400/10 text-xs sm:text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 <span>رده‌بندی</span>
@@ -403,7 +405,6 @@
             </svg>
             <h2 class="text-3xl font-bold gold-gradient-text">تنظیمات</h2>
         </div>
-        <!-- MODIFIED: Redesigned buttons -->
         <div class="space-y-3 pt-4">
             <button id="creators-btn" class="w-full btn-settings">
                 <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 14.818l4.486-4.486-4.486-4.486m-4.486 8.972L6.21 10.332l4.486-4.486M6.21 10.332L3 13.546l3.21 3.214" /></svg>
@@ -452,7 +453,6 @@
             امتیاز: <span id="score-count">0</span>
         </div>
         <div id="game-stats" class="flex items-center text-lg font-bold">
-            <!-- MODIFIED: Hearts container added -->
             <div id="hearts-container" class="flex space-x-1 space-x-reverse"></div>
         </div>
     </header>
@@ -508,7 +508,7 @@
         flashSubmit: document.getElementById('flash-submit-btn'),
         scoreCount: document.getElementById('score-count'),
         gameStats: document.getElementById('game-stats'),
-        heartsContainer: document.getElementById('hearts-container'), // NEW
+        heartsContainer: document.getElementById('hearts-container'),
         timerBar: document.getElementById('timer-bar'),
         exitGameBtn: document.getElementById('exit-game-btn'),
     };
@@ -623,7 +623,7 @@
         }, 1500);
     }
 
-    // --- NEW Game Logic ---
+    // --- Game Logic ---
     function selectGameMode(mode) {
         currentMode = mode;
         hideModal(modeSelectionModal);
@@ -643,7 +643,6 @@
         loadNextRiddle();
     }
     
-    // NEW: Function to display hearts
     function updateHeartsDisplay() {
         gameplayElements.heartsContainer.innerHTML = '';
         for (let i = 0; i < lives; i++) {
@@ -664,14 +663,13 @@
         gameplayElements.riddleText.textContent = riddleData.riddle;
         gameplayElements.scoreCount.textContent = score;
 
-        // Hide timer stat by default, show only in flash mode
         gameplayElements.gameStats.querySelector('#timer-count')?.parentElement.classList.add('hidden');
 
         if (currentMode === 'old') {
             gameplayElements.optionsContainer.classList.remove('hidden');
             gameplayElements.flashContainer.classList.add('hidden');
             gameplayElements.heartsContainer.classList.remove('hidden');
-            updateHeartsDisplay(); // Use the new function
+            updateHeartsDisplay();
             
             gameplayElements.optionsContainer.innerHTML = '';
             riddleData.options.forEach(option => {
@@ -684,11 +682,10 @@
         } else { // flash mode
             gameplayElements.flashContainer.classList.remove('hidden');
             gameplayElements.optionsContainer.classList.add('hidden');
-            gameplayElements.heartsContainer.classList.add('hidden'); // Hide hearts in flash mode
+            gameplayElements.heartsContainer.classList.add('hidden');
             gameplayElements.flashInput.value = '';
             gameplayElements.flashInput.focus();
             
-            // Check if timer element exists, if not, create it
             let timerEl = gameplayElements.gameStats.querySelector('#timer-count');
             if(!timerEl) {
                 gameplayElements.gameStats.innerHTML += `<span>⏳ <span id="timer-count" class="mr-1">${FLASH_TIME}</span></span>`;
@@ -710,7 +707,9 @@
             selectedButton.classList.add('correct-flash');
         } else {
             lives--;
-            // NEW: Animate heart loss
+            // CHANGE: Flash letter color to red when a heart is lost
+            flashLetterColor('#ef4444', 5000); // Red for 5 seconds
+
             const hearts = gameplayElements.heartsContainer.querySelectorAll('.heart-icon');
             if (hearts.length > 0) {
                 hearts[hearts.length - 1].classList.add('lost');
@@ -821,7 +820,7 @@
         
         // Footer Navigation
         document.getElementById('nav-ways-btn').addEventListener('click', () => showModal(soonModal));
-        document.getElementById('nav-ranking-btn').addEventListener('click', () => showModal(soonModal)); // NEW
+        document.getElementById('nav-ranking-btn').addEventListener('click', () => showModal(soonModal));
         document.getElementById('nav-challenges-btn').addEventListener('click', () => showModal(soonModal));
         document.getElementById('nav-history-btn').addEventListener('click', () => showModal(soonModal));
         
@@ -850,6 +849,17 @@
     // --- Falling Letters Animation ---
     let isFallingLettersActive = false;
     let fallingLettersInterval;
+    // CHANGE: Added a variable to control the letter color
+    let fallingLetterColor = '#FFD700'; // Default gold color
+
+    // CHANGE: New function to temporarily change the letter color
+    function flashLetterColor(color, duration) {
+        fallingLetterColor = color;
+        setTimeout(() => {
+            fallingLetterColor = '#FFD700'; // Revert to default color
+        }, duration);
+    }
+
     function startFallingLetters() {
         if (isFallingLettersActive) return; 
         isFallingLettersActive = true;
@@ -866,7 +876,8 @@
         function draw() {
             ctx.fillStyle = 'rgba(18, 18, 18, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#FFD700'; 
+            // CHANGE: Use the variable for color
+            ctx.fillStyle = fallingLetterColor; 
             ctx.font = fontSize + 'px Vazirmatn';
 
             for (let i = 0; i < drops.length; i++) {
