@@ -283,16 +283,6 @@
 <body class="overflow-hidden">
 <canvas id="falling-letters-canvas"></canvas>
 
-<!-- Auth Screen -->
-<div id="auth-screen" class="screen p-6 flex flex-col justify-center items-center h-screen text-center">
-    <h1 class="text-5xl font-black mb-4 gold-gradient-text">به چیستان خوش آمدید</h1>
-    <p class="text-lg text-gray-300 mb-12 max-w-sm">برای شروع و ثبت رکوردهایتان، وارد حساب کاربری خود شوید یا یک حساب جدید بسازید.</p>
-    <div class="w-full max-w-xs space-y-4">
-        <button id="go-to-login-btn" class="w-full btn-golden text-xl py-3">ورود به حساب</button>
-        <button id="go-to-register-btn" class="w-full p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">ایجاد حساب کاربری</button>
-    </div>
-</div>
-
 <!-- Login Screen -->
 <div id="login-screen" class="screen p-6 flex flex-col justify-center items-center h-screen">
     <div class="w-full max-w-sm card p-8 space-y-6">
@@ -312,7 +302,6 @@
         <p class="text-center text-sm text-gray-400">
             حساب کاربری ندارید؟ <span id="switch-to-register" class="auth-link">ثبت نام کنید</span>
         </p>
-         <button class="back-to-auth-btn mt-4 w-full p-2 bg-gray-800/50 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors text-sm">بازگشت</button>
     </div>
 </div>
 
@@ -339,14 +328,15 @@
         <p class="text-center text-sm text-gray-400">
             قبلاً ثبت‌نام کرده‌اید؟ <span id="switch-to-login" class="auth-link">وارد شوید</span>
         </p>
-         <button class="back-to-auth-btn mt-4 w-full p-2 bg-gray-800/50 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors text-sm">بازگشت</button>
     </div>
 </div>
 
 <!-- Main Menu Screen -->
-<div id="main-menu-screen" class="screen p-6 flex flex-col h-screen">
-    <header class="flex justify-between items-center mb-16">
+<div id="main-menu-screen" class="screen p-6 flex flex-col h-screen justify-between">
+    <header class="flex justify-between items-center">
         <div class="flex items-center space-x-4 space-x-reverse">
+            <!-- NEW: Black and Gold Circle -->
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 via-black to-black border-2 border-yellow-600 shadow-lg"></div>
             <div>
                 <p id="menu-username" class="font-bold text-lg text-white"></p>
                 <p id="menu-highscore" class="text-sm gold-gradient-text font-bold">🚀 بالاترین رکورد: 0</p>
@@ -355,14 +345,14 @@
         <button id="settings-btn" class="text-3xl transition-transform duration-200 hover:rotate-12">⚙️</button>
     </header>
 
-    <main class="flex-grow flex flex-col justify-center items-center space-y-4">
+    <main class="flex flex-col justify-center items-center space-y-4">
         <button id="start-game-btn" class="w-full max-w-[280px] btn-golden text-xl py-3">شروع بازی</button>
         <button class="w-full max-w-[280px] btn-golden disabled text-xl py-3">
             بازی آنلاین <span class="text-xs">(به زودی)</span>
         </button>
     </main>
 
-    <footer class="w-full max-w-sm mx-auto pb-2 px-2">
+    <footer class="w-full max-w-sm mx-auto px-2">
         <div class="bg-black/30 backdrop-blur-sm border border-yellow-400/20 rounded-2xl grid grid-cols-3 gap-2 text-center p-2">
             <button id="nav-ways-btn" class="footer-btn flex flex-col items-center justify-center text-gray-400 p-2 rounded-lg hover:bg-yellow-400/10 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v10m-6 3h12a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2z"/></svg>
@@ -494,7 +484,7 @@
 <script>
     // --- DOM Elements ---
     const screens = {
-        auth: document.getElementById('auth-screen'),
+        auth: null, // Removed auth screen
         login: document.getElementById('login-screen'),
         register: document.getElementById('register-screen'),
         mainMenu: document.getElementById('main-menu-screen'),
@@ -791,13 +781,8 @@
     // --- Event Listeners ---
     function setupEventListeners() {
         // Auth Navigation
-        document.getElementById('go-to-login-btn').addEventListener('click', () => showScreen('login'));
-        document.getElementById('go-to-register-btn').addEventListener('click', () => showScreen('register'));
         document.getElementById('switch-to-register').addEventListener('click', () => showScreen('register'));
         document.getElementById('switch-to-login').addEventListener('click', () => showScreen('login'));
-        document.querySelectorAll('.back-to-auth-btn').forEach(btn => {
-            btn.addEventListener('click', () => showScreen('auth'));
-        });
 
         // Auth Submission
         document.getElementById('login-submit-btn').addEventListener('click', (e) => handleAuthSubmit(e, false));
@@ -840,13 +825,54 @@
         });
         gameOverElements.playAgainBtn.addEventListener('click', startGame);
         gameOverElements.backToMenuBtn.addEventListener('click', () => showScreen('mainMenu'));
-
     }
 
     // --- Falling Letters Animation ---
     let isFallingLettersActive = false;
+    let fallingLettersInterval; // Keep track of the interval
     function startFallingLetters() {
-        // ... (This logic remains the same)
+        if (isFallingLettersActive) return; 
+        isFallingLettersActive = true;
+
+        const canvas = document.getElementById('falling-letters-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = 'پتذهچجحخدشرسصضطظعغفقکگلمنوهی'.split('');
+        const fontSize = 18;
+        const columns = Math.floor(canvas.width / fontSize);
+
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = Math.floor(Math.random() * (canvas.height / fontSize));
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(18, 18, 18, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#FFD700'; 
+            ctx.font = fontSize + 'px Vazirmatn';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        if (fallingLettersInterval) clearInterval(fallingLettersInterval);
+        fallingLettersInterval = setInterval(draw, 40);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     }
 
     // --- Initialization ---
@@ -854,7 +880,7 @@
         loadGameState();
         updateUI();
         setupEventListeners();
-        showScreen('auth'); // Start with the authentication screen
+        showScreen('register'); // MODIFIED: Start with the register screen
     }
 </script>
 </body>
