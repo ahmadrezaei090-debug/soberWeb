@@ -57,6 +57,26 @@
             animation: heart-lost 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
         }
 
+        /* --- NEW: Screen Shake Animation --- */
+        @keyframes screen-shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .is-shaking {
+            animation: screen-shake 0.5s infinite;
+        }
+        /* --- END NEW --- */
+
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -330,8 +350,8 @@
 </div>
 
 <!-- Main Menu Screen -->
-<!-- CHANGE: Added pb-28 to create space for the fixed footer -->
-<div id="main-menu-screen" class="screen p-6 pb-28 flex flex-col h-screen justify-between">
+<!-- CHANGE 1: Removed 'justify-between' to fix footer bug -->
+<div id="main-menu-screen" class="screen p-6 pb-28 flex flex-col h-screen">
     <header class="flex justify-between items-center">
         <div class="flex items-center space-x-4 space-x-reverse">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 via-black to-black border-2 border-yellow-600 shadow-lg"></div>
@@ -340,7 +360,6 @@
                 <p id="menu-highscore" class="text-sm gold-gradient-text font-bold">🚀 بالاترین رکورد: 0</p>
             </div>
         </div>
-        <!-- CHANGE: Redesigned settings button -->
         <button id="settings-btn" class="p-3 bg-white/10 rounded-full hover:bg-white/20 hover:rotate-45 transition-all duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -349,14 +368,14 @@
         </button>
     </header>
 
-    <main class="flex flex-col justify-center items-center space-y-4">
+    <!-- CHANGE 2: Added 'flex-grow' to center the buttons vertically -->
+    <main class="flex-grow flex flex-col justify-center items-center space-y-4">
         <button id="start-game-btn" class="w-full max-w-[280px] btn-golden text-xl py-3">شروع بازی</button>
         <button class="w-full max-w-[280px] btn-golden disabled text-xl py-3">
             بازی آنلاین <span class="text-xs">(به زودی)</span>
         </button>
     </main>
 
-    <!-- CHANGE: Footer is now fixed to the bottom of the viewport -->
     <footer class="fixed bottom-4 left-0 right-0 w-full max-w-sm mx-auto px-4">
         <div class="bg-black/30 backdrop-blur-sm border border-yellow-400/20 rounded-2xl grid grid-cols-4 gap-1 text-center p-2">
             <button id="nav-ways-btn" class="footer-btn flex flex-col items-center justify-center text-gray-400 p-2 rounded-lg hover:bg-yellow-400/10 text-xs sm:text-sm">
@@ -707,7 +726,15 @@
             selectedButton.classList.add('correct-flash');
         } else {
             lives--;
-            // CHANGE: Flash letter color to red when a heart is lost
+            
+            // --- CHANGE 3: ADD SHAKING EFFECT ---
+            const gameScreen = document.getElementById('gameplay-screen');
+            gameScreen.classList.add('is-shaking');
+            setTimeout(() => {
+                gameScreen.classList.remove('is-shaking');
+            }, 5000); // Remove shake after 5 seconds
+            // --- END CHANGE ---
+
             flashLetterColor('#ef4444', 5000); // Red for 5 seconds
 
             const hearts = gameplayElements.heartsContainer.querySelectorAll('.heart-icon');
@@ -849,10 +876,8 @@
     // --- Falling Letters Animation ---
     let isFallingLettersActive = false;
     let fallingLettersInterval;
-    // CHANGE: Added a variable to control the letter color
     let fallingLetterColor = '#FFD700'; // Default gold color
 
-    // CHANGE: New function to temporarily change the letter color
     function flashLetterColor(color, duration) {
         fallingLetterColor = color;
         setTimeout(() => {
@@ -876,7 +901,6 @@
         function draw() {
             ctx.fillStyle = 'rgba(18, 18, 18, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // CHANGE: Use the variable for color
             ctx.fillStyle = fallingLetterColor; 
             ctx.font = fontSize + 'px Vazirmatn';
 
