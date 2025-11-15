@@ -3,914 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی شهر مافیا - تم مشکی و طلایی</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <title>شهر مافیا - در حال بارگذاری</title>
     <style>
-        /* --- NEW: BLACK & GOLD THEME --- */
         :root {
-            --theme-bg: #121212;
-            --theme-panel-bg: #1f1f1f;
-            --theme-panel-border: #333333;
-            --theme-gold: #ffd700;
-            --theme-gold-light: #ffec80;
-            --theme-gold-dark: #b8860b;
-            --theme-text-light: #f5f5f5;
-            --theme-text-dark: #1a1a1a;
-            --theme-green: #2e8b57;
-            --theme-green-dark: #1e5a38;
-            --theme-red: #b22222;
-            --theme-red-dark: #800000;
-            --theme-accent-dark: #2c2c2c;
-            --theme-accent-dark-shadow: #1a1a1a;
+            --wood-dark: #0c0a09;
+            --text-gold: #ffc947;
+            --text-light: #e0dacc;
+            --logo-glow-main: #ffdd00;
+            --progress-bar-bg: rgba(0, 0, 0, 0.4);
+            --progress-bar-fill-start: #8c4843;
+            --progress-bar-fill-end: #ffc947;
+            --countdown-bg: rgba(0, 0, 0, 0.3);
+            --panel-glow: rgba(255, 201, 71, 0.5);
+            /* Suspension styles */
+            --suspension-red: #e74c3c;
+            --suspension-border: #c0392b;
+            --suspension-glow: rgba(231, 76, 60, 0.5);
+            /* Viewport height variable for mobile browsers */
+            --vh: 1vh;
         }
 
-        /* --- KEYFRAME ANIMATIONS (Unchanged) --- */
-        @keyframes clash-panel-intro {
-            0% { opacity: 0; transform: scale(0.8) translateY(-30px); }
-            70% { opacity: 1; transform: scale(1.05) translateY(0); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+        @font-face {
+            font-family: 'Vazirmatn';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
         }
 
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); box-shadow: 0 6px 0 var(--theme-gold-dark); }
-            50% { transform: scale(1.04); box-shadow: 0 8px 12px rgba(0,0,0,0.4), 0 8px 0 var(--theme-gold-dark); }
+        @font-face {
+            font-family: 'Vazirmatn';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
         }
 
-        @keyframes subtle-pan {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 200%; }
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes fadeInScaleUp {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5)); }
-            50% { filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.9)); }
-        }
-        
-        @keyframes tipFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        @keyframes fallAndFade {
-            0% { transform: translateY(-100%); opacity: 0; }
-            20% { transform: translateY(0); opacity: 1; }
-            80% { transform: translateY(100px); opacity: 1; }
-            100% { transform: translateY(150px); opacity: 0; }
-        }
-
-        /* --- GENERAL STYLES --- */
         body {
             font-family: 'Vazirmatn', sans-serif;
-            color: var(--theme-text-light);
-            background-color: var(--theme-bg);
-            background-image: url('https://www.transparenttextures.com/patterns/dark-denim-3.png');
-            overflow: hidden; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-            position: relative;
-            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 200%; height: 200%;
-            background-image: url('https://www.transparenttextures.com/patterns/dust.png');
-            opacity: 0.1;
-            z-index: 0;
-            animation: subtle-pan 120s linear infinite;
-        }
-
-        .clash-font {
-            font-family: 'Lilita One', cursive;
-            letter-spacing: 1px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        .panel-clash {
-            background-color: var(--theme-panel-bg);
-            border: 3px solid var(--theme-panel-border);
-            border-top: 3px solid var(--theme-gold-dark);
-            border-left: 3px solid var(--theme-gold-dark);
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
-            transition: opacity 0.3s ease-in-out;
-            position: relative;
-        }
-        
-        .panel-clash::before, .panel-clash::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--theme-gold);
-            border-radius: 50%;
-            border: 2px solid var(--theme-text-dark);
-            box-shadow: 0 0 5px var(--theme-gold);
-        }
-        .panel-clash::before { top: 10px; left: 10px; }
-        .panel-clash::after { top: 10px; right: 10px; }
-        #developers-panel::before, #developers-panel::after, #game-mode-panel::before, #game-mode-panel::after { top: 15px; }
-
-
-        .panel-hidden {
-            opacity: 0;
-            transform: scale(0.9) translateY(-20px);
-            pointer-events: none;
-            visibility: hidden;
-        }
-
-        .panel-visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            visibility: visible;
-            animation: clash-panel-intro 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .btn-clash {
-            border-radius: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: all 0.1s ease-out;
-            cursor: pointer;
-            position: relative;
-            white-space: nowrap;
-            display: inline-flex;
+            background-image: url('https://wallpapercave.com/wp/wp7158917.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
             align-items: center;
-            justify-content: center;
-            color: var(--theme-text-dark);
-            text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
-        }
-        .btn-clash:disabled {
-            filter: grayscale(80%) brightness(0.8);
-            cursor: not-allowed;
-            box-shadow: 0 4px 0 #333 !important;
-            transform: translateY(0) !important;
+            min-height: calc(var(--vh, 1vh) * 100);
+            overflow: hidden;
+            position: relative;
         }
 
-        .btn-clash-primary {
-            background: linear-gradient(to bottom, var(--theme-gold-light), var(--theme-gold));
-            border: 2px solid var(--theme-gold-dark);
-            box-shadow: 0 6px 0 var(--theme-gold-dark);
-            padding: 10px 24px;
-            font-size: 1.1rem;
+        #preloader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--wood-dark);
+            z-index: 100;
+            animation: fadeOut 1s ease 1s forwards;
         }
-        @media (min-width: 640px) { .btn-clash-primary { padding: 12px 30px; font-size: 1.25rem; } }
 
-        .btn-clash-primary:hover:not(:disabled) {
-            background: linear-gradient(to bottom, #fff5b3, var(--theme-gold-light));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 var(--theme-gold-dark);
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
         }
-        .btn-clash-primary:active:not(:disabled) {
-            transform: translateY(4px) !important;
-            box-shadow: 0 2px 0 var(--theme-gold-dark) !important;
-            transition-duration: 0.05s;
+
+        #bottom-loader {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            margin-bottom: 5vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
         }
-        
-        #start-game-btn.breathing {
-            animation: breathe 2.5s ease-in-out infinite;
+
+        #progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--progress-bar-bg);
+            border: 1px solid var(--text-gold);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 10px var(--logo-glow-main);
         }
-        
-        .btn-clash-secondary {
-            background: linear-gradient(to bottom, #444, var(--theme-accent-dark));
-            border: 2px solid var(--theme-accent-dark-shadow);
-            box-shadow: 0 5px 0 var(--theme-accent-dark-shadow);
-            padding: 8px 18px;
+
+        #progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--progress-bar-fill-start), var(--progress-bar-fill-end));
+            border-radius: 5px;
+            transition: width 0.2s ease-in-out;
+        }
+
+        #status-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
             font-size: 0.9rem;
-            color: var(--theme-text-light);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-        }
-        @media (min-width: 640px) { .btn-clash-secondary { padding: 10px 22px; font-size: 1rem; } }
-
-        .btn-clash-secondary:hover:not(:disabled) {
-            background: linear-gradient(to bottom, #555, #3a3a3a);
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 var(--theme-accent-dark-shadow);
-        }
-        .btn-clash-secondary:active:not(:disabled) {
-            transform: translateY(3px) !important;
-            box-shadow: 0 2px 0 var(--theme-accent-dark-shadow) !important;
-            transition-duration: 0.05s;
+            color: var(--text-gold);
+            text-shadow: 1px 1px 2px black;
         }
 
-        .input-clash {
-            background-color: var(--theme-accent-dark);
-            border: 2px solid var(--theme-panel-border);
-            color: var(--theme-text-light);
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 1rem;
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4);
-            -webkit-user-select: auto; -moz-user-select: text; -ms-user-select: text; user-select: auto;
-            touch-action: manipulation;
+        .panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background-color: rgba(12, 10, 9, 0.85);
+            border: 2px solid var(--text-gold);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px var(--panel-glow);
+            z-index: 20;
+            animation: fadeInPanel 0.5s ease forwards;
+            opacity: 0;
         }
-        .input-clash:focus {
-            outline: none;
-            border-color: var(--theme-gold);
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 0 10px var(--theme-gold);
-        }
-        .input-clash.invalid { border-color: var(--theme-red); }
-        .input-clash:read-only { background-color: #314a70; cursor: default; }
         
-        .option-btn {
-            background: linear-gradient(to bottom, #555, #3a3a3a);
-            border: 2px solid var(--theme-accent-dark-shadow);
-            box-shadow: 0 4px 0 var(--theme-accent-dark-shadow);
-            color: white;
-            transition: all 0.15s ease;
-            font-size: 1rem;
-            padding: 12px;
-            border-radius: 12px;
+        @keyframes fadeInPanel {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .panel h1 {
+            color: var(--text-gold);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .panel p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .time-block {
+            background-color: var(--countdown-bg);
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 60px;
+        }
+
+        .time-value {
+            font-size: 1.8rem;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: var(--text-gold);
         }
-        .option-btn:hover:not(:disabled) {
-            background: linear-gradient(to bottom, #666, #4a4a4a);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 var(--theme-accent-dark-shadow);
-        }
-        .option-btn.correct {
-            background: linear-gradient(to bottom, #50c878, var(--theme-green)) !important;
-            border-color: var(--theme-green-dark) !important;
-            box-shadow: 0 4px 0 var(--theme-green-dark) !important;
-            transform: translateY(0) !important;
-            color: var(--theme-text-light) !important;
-        }
-        .option-btn.incorrect {
-            background: linear-gradient(to bottom, #dc143c, var(--theme-red)) !important;
-            border-color: var(--theme-red-dark) !important;
-            box-shadow: 0 4px 0 var(--theme-red-dark) !important;
-            transform: translateY(0) !important;
-            color: var(--theme-text-light) !important;
-        }
-        .option-btn:disabled { opacity: 0.8; cursor: not-allowed; }
 
-        .loader {
-            border: 8px solid var(--theme-panel-border);
-            border-top: 8px solid var(--theme-gold);
+        .time-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        #maintenance-banner {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Suspension Panel Styles */
+        #suspension-panel {
+            border-color: var(--suspension-border);
+            box-shadow: 0 0 20px var(--suspension-glow);
+        }
+
+        #suspension-panel h1 {
+            color: var(--suspension-red);
+        }
+
+        #suspension-user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #suspension-avatar {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-        
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--theme-bg); }
-        ::-webkit-scrollbar-thumb { background: var(--theme-gold); border-radius: 5px; border: 2px solid var(--theme-bg); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--theme-gold-dark); }
-
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
-            padding: 10px; box-sizing: border-box; opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
-            display: flex; flex-direction: column; align-items: center;
-            overflow-y: auto; z-index: 1;
-        }
-        @media (min-width: 640px) { .screen { padding: 20px; } }
-        #main-screen { justify-content: flex-start; }
-        #loading-screen { 
-            justify-content: center; 
-            background: radial-gradient(circle, rgba(20,20,20,0.8) 0%, rgba(0,0,0,1) 80%);
-            position: fixed; z-index: 999;
-        }
-        .screen.active { opacity: 1; visibility: visible; position: relative; z-index: 10; }
-        #loading-screen.active { position: fixed; z-index: 999; }
-        #main-screen.active, #game-screen.active, #mind-game-screen.active { position: absolute; z-index: 10; }
-
-        #loading-content-box {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; width: 100%; max-width: 450px;
-        }
-        #loading-logo {
-            max-width: 280px; width: 70%; margin-bottom: 1.5rem;
-            animation: fadeInScaleUp 1s ease-out, pulseGlow 3s infinite 1s;
-        }
-        #loading-progress-bar-container {
-            width: 100%; background-color: var(--theme-accent-dark-shadow);
-            border: 3px solid var(--theme-panel-border); border-radius: 12px; padding: 4px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); margin-top: 1.5rem; margin-bottom: 0.75rem;
-        }
-        #loading-progress-bar-fill {
-            height: 18px; width: 0%;
-            background: linear-gradient(to right, var(--theme-gold-dark), var(--theme-gold));
-            border-radius: 8px; transition: width 0.5s ease-out;
-            box-shadow: 0 0 10px var(--theme-gold);
-        }
-        #loading-message {
-            font-size: 1.1rem; font-weight: bold; color: var(--theme-text-light);
-            text-shadow: 1px 1px 2px #000; min-height: 28px;
-        }
-        #loading-tip {
-            margin-top: 2rem; font-size: 0.9rem; color: #ccc; font-style: italic;
-            background-color: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 8px; min-height: 50px;
-            display: flex; align-items: center; justify-content: center; animation: tipFadeIn 0.8s ease-out;
+            border: 3px solid var(--suspension-border);
         }
 
-        .screen-content-wrapper {
-            width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;
-            padding-bottom: 10px; position: relative; z-index: 2;
-            display: flex; flex-direction: column; flex-grow: 1;
+        #suspension-username {
+            font-size: 1.2rem;
+            font-weight: bold;
         }
-        @media (min-width: 640px) { .screen-content-wrapper { padding-bottom: 20px; } }
-        #main-screen .screen-content-wrapper {
-            justify-content: space-between; min-height: calc(100vh - 20px); padding-top: 20px; 
-        }
-        @media (min-width: 640px) { #main-screen .screen-content-wrapper { min-height: calc(100vh - 40px); padding-top: 20px; } }
 
-        #main-screen-header { 
-            display: flex; justify-content: center; align-items: center; width: 100%; 
-            padding: 0.5rem; margin-bottom: 1.5rem;
-            background-color: var(--theme-panel-bg);
-            border-radius: 12px;
-            border: 3px solid var(--theme-gold-dark);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
-            position: relative; z-index: 10;
+        #logout-btn {
+            background-color: var(--text-gold);
+            color: var(--wood-dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
         }
-        
-        #main-title {
-            text-align: center; flex-grow: 1; font-size: 3rem; color: var(--theme-gold);
-            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000,
-                         -2px 0 0 #000, 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000,
-                         4px 4px 8px rgba(0,0,0,0.8);
-        }
-        @media (min-width: 640px) { #main-title { font-size: 4.5rem; } }
-        @media (min-width: 768px) { #main-title { font-size: 5.5rem; } }
 
-        #main-screen-buttons-layout { display: flex; flex-direction: column; align-items: center; width: 100%; margin: auto 0; padding-top: 1rem; }
-        #top-action-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem; width: 100%; padding-bottom: 5px; margin-top: 2rem; }
-        
-        .hidden { display: none !important; }
+        #logout-btn:hover {
+            background-color: #ffd76a;
+            transform: translateY(-2px);
+        }
 
-        /* Styles for Pop-up Panels */
-        #developers-panel-container, #game-mode-panel-container { background-color: rgba(0,0,0,0.9); }
-        #close-developers-panel-btn, #close-game-mode-panel-btn {
-            position: absolute; top: 12px; right: 12px; width: 40px; height: 40px;
-            background: linear-gradient(to bottom, #444, #222);
-            border: 2px solid #000;
-            box-shadow: 0 4px 0 #000;
-            color: var(--theme-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
-            font-weight: bold; line-height: 1; cursor: pointer; transition: all 0.2s ease;
+        @media (max-width: 480px) {
+            .panel h1 {
+                font-size: 1.3rem;
+            }
+            .time-value {
+                font-size: 1.5rem;
+            }
+            .time-block {
+                min-width: 50px;
+                padding: 8px;
+            }
         }
-        #close-developers-panel-btn:hover, #close-game-mode-panel-btn:hover { transform: scale(1.1) rotate(90deg); }
-        #close-developers-panel-btn:active, #close-game-mode-panel-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
-
-        .developer-item {
-            background-color: rgba(10, 10, 10, 0.7);
-            padding: 1rem 1.2rem; border-radius: 12px;
-            border: 2px solid var(--theme-panel-border);
-        }
-        .dev-header { border-bottom: 2px solid var(--theme-panel-border); }
-        .dev-role-icon { font-size: 1.7em; color: var(--theme-gold); margin-left: 10px; }
-        .dev-role { font-size: 1.15rem; font-weight: 700; color: var(--theme-text-light); font-family: 'Vazirmatn'; }
-        .dev-username { color: var(--theme-gold-light); font-weight: bold; font-size: 1.25rem; }
-        .dev-description { font-size: 0.9rem; color: #ccc; line-height: 1.65; font-family: 'Vazirmatn'; }
-
-        #game-mode-panel .btn-clash-primary {
-            padding: 16px 32px; font-size: 1.5rem; width: 100%; max-width: 300px;
-        }
-        #game-mode-panel .btn-clash-primary .icon { font-size: 2rem; margin-left: 12px; }
-        
-        #timer-container { position: relative; width: 60px; height: 60px; }
-        #timer-svg { transform: rotate(-90deg); }
-        .timer-circle { fill: none; stroke-width: 8; }
-        .timer-bg { stroke: var(--theme-panel-border); }
-        .timer-progress {
-            stroke: var(--theme-gold); stroke-linecap: round;
-            transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
-        }
-        #timer-text {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-family: 'Lilita One', cursive; font-size: 1.8rem; color: var(--theme-gold);
-            text-shadow: 2px 2px 3px #000;
-        }
-        
-        /* Mind Game Styles */
-        #mind-game-screen .screen-content-wrapper { justify-content: center; }
-        #falling-sentence-container {
-            height: 200px; width: 100%; display: flex; align-items: flex-start;
-            justify-content: center; overflow: hidden; margin-bottom: 2rem;
-        }
-        .falling-sentence {
-            font-size: 2rem; font-weight: bold; color: var(--theme-gold);
-            text-shadow: 2px 2px 4px #000;
-            animation: fallAndFade 4s ease-in-out forwards;
-        }
-        #mind-game-input-area { width: 100%; max-width: 500px; }
     </style>
 </head>
 <body>
-    <!-- HTML Structure is unchanged -->
-    <div id="loading-screen" class="screen active">
-        <div id="loading-content-box">
-            <img id="loading-logo" src="https://up.20script.ir/file/7e7a-Copilot-20250812-110015-removebg-preview.png" alt="لوگوی بازی شهر مافیا">
-            <h1 class="text-4xl sm:text-5xl font-bold clash-font text-[var(--theme-gold)]" style="text-shadow: 3px 3px 4px #000;">شهر مافیا</h1>
-            <div id="loading-progress-bar-container">
-                <div id="loading-progress-bar-fill"></div>
-            </div>
-            <p id="loading-message" class="text-lg">در حال آماده سازی...</p>
-            <p id="loading-tip">✨ به دنیای رمزآلود مافیا خوش آمدید... ✨</p>
+
+    <div id="preloader-overlay"></div>
+
+    <div id="bottom-loader" style="display: flex;">
+        <div id="progress-bar-container">
+            <div id="progress-bar-fill"></div>
+        </div>
+        <div id="status-container">
+            <span id="status-message">در حال آماده سازی...</span>
+            <span id="status-percentage"></span>
         </div>
     </div>
 
-    <div id="main-screen" class="screen">
-        <div class="screen-content-wrapper">
-            <div>
-                <div id="main-screen-header">
-                    <h1 id="main-title" class="clash-font">شهر مافیا</h1>
-                </div>
-            </div>
-
-            <div id="main-screen-buttons-layout" class="pb-2 sm:pb-4">
-                <button id="start-game-btn" class="btn-clash btn-clash-primary clash-font py-4 px-8 text-2xl">شروع بازی</button>
-                <button id="online-game-btn" class="btn-clash btn-clash-secondary clash-font mt-4">بازی آنلاین</button>
-                <div id="top-action-buttons">
-                    <button id="challenge-btn" class="btn-clash btn-clash-secondary clash-font">چالش</button>
-                    <button id="developers-btn" class="btn-clash btn-clash-secondary clash-font">👥 سازندگان</button>
-                    <button id="coordination-btn" class="btn-clash btn-clash-secondary clash-font">هماهنگی</button>
-                </div>
-            </div>
+    <div id="maintenance-panel" class="panel" style="display: none;">
+        <div id="maintenance-banner-container"><img id="maintenance-banner" src="" alt="بنر بروزرسانی"></div>
+        <h1 id="maintenance-title"></h1>
+        <p id="maintenance-message"></p>
+        <div class="countdown-timer">
+            <div class="time-block"><div id="days" class="time-value">00</div><div class="time-label">روز</div></div>
+            <div class="time-block"><div id="hours" class="time-value">00</div><div class="time-label">ساعت</div></div>
+            <div class="time-block"><div id="minutes" class="time-value">00</div><div class="time-label">دقیقه</div></div>
+            <div class="time-block"><div id="seconds" class="time-value">00</div><div class="time-label">ثانیه</div></div>
         </div>
     </div>
 
-    <div id="game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start">
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.4)] rounded-lg text-lg w-full">
-                <button id="back-to-main-btn-mafia" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
-                <div class="font-bold">مرحله: <span id="stage-display" class="clash-font text-[var(--theme-gold)] text-2xl">1</span></div>
-                <div id="timer-container">
-                    <svg id="timer-svg" width="60" height="60" viewBox="0 0 60 60">
-                        <circle class="timer-circle timer-bg" cx="30" cy="30" r="26"></circle>
-                        <circle id="timer-progress-circle" class="timer-circle timer-progress" cx="30" cy="30" r="26"></circle>
-                    </svg>
-                    <span id="timer-text">20</span>
-                </div>
-            </div>
-            <div id="question-container" class="panel-clash panel-visible p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 min-h-[200px] flex flex-col justify-center w-full">
-                <p id="question-text" class="text-xl md:text-2xl mb-6 text-center leading-relaxed font-bold">سوال بارگذاری می‌شود...</p>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"></div>
-                <p id="question-explanation" class="text-sm mt-4 text-gray-300 bg-black/40 p-2 rounded-md text-center hidden"></p>
-            </div>
-            <div id="game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
+    <div id="suspension-panel" class="panel" style="display: none;">
+        <div id="suspension-user-info">
+            <img id="suspension-avatar" src="" alt="آواتار کاربر">
+            <h3 id="suspension-username"></h3>
         </div>
+        <h1 id="suspension-title">حساب کاربری مسدود است</h1>
+        <p id="suspension-reason"></p>
+        <p id="suspension-message">زمان باقی‌مانده تا رفع مسدودیت:</p>
+        <div id="suspension-countdown-timer" class="countdown-timer">
+             <div class="time-block"><div id="s-days" class="time-value">00</div><div class="time-label">روز</div></div>
+             <div class="time-block"><div id="s-hours" class="time-value">00</div><div class="time-label">ساعت</div></div>
+             <div class="time-block"><div id="s-minutes" class="time-value">00</div><div class="time-label">دقیقه</div></div>
+             <div class="time-block"><div id="s-seconds" class="time-value">00</div><div class="time-label">ثانیه</div></div>
+        </div>
+        <button id="logout-btn">تلاش مجدد</button>
     </div>
     
-    <div id="mind-game-screen" class="screen">
-        <div class="screen-content-wrapper justify-start">
-            <div class="flex justify-between items-center mb-4 sm:mb-6 p-3 bg-[rgba(0,0,0,0.4)] rounded-lg text-lg w-full">
-                <button id="back-to-main-btn-mind" class="btn-clash btn-clash-secondary clash-font text-sm">بازگشت</button>
-                <div class="font-bold">مرحله: <span id="mind-game-stage-display" class="clash-font text-[var(--theme-gold)] text-2xl">1</span></div>
-                <div class="font-bold">امتیاز: <span id="mind-game-score-display" class="clash-font text-[var(--theme-gold)] text-2xl">0</span></div>
-            </div>
-            
-            <div class="panel-clash p-6 w-full text-center">
-                <h2 id="mind-game-instruction" class="text-2xl font-bold mb-4">جمله را به خاطر بسپار!</h2>
-                <div id="falling-sentence-container"></div>
-                
-                <div id="mind-game-input-area" class="hidden mx-auto">
-                    <p class="mb-4">حالا جمله را تایپ کن:</p>
-                    <input type="text" id="mind-game-input" class="input-clash w-full text-center text-lg mb-4" dir="rtl">
-                    <button id="mind-game-submit-btn" class="btn-clash btn-clash-primary">ثبت پاسخ</button>
-                </div>
-                
-                <div id="mind-game-feedback" class="text-center text-lg font-semibold my-4 h-8 clash-font"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 panel-hidden z-50">
-        <div class="panel-clash p-6 sm:p-8 rounded-lg max-w-md md:max-lg w-full text-center">
-            <h3 id="modal-title" class="text-2xl sm:text-3xl font-bold mb-4 clash-font text-[var(--theme-gold)]" style="text-shadow: 2px 2px 3px #000;">توجه</h3>
-            <div id="modal-content-dynamic">
-                <p id="modal-message" class="mb-3 text-base"></p>
-                <div class="flex justify-center gap-4 mt-4">
-                    <button id="modal-confirm-btn" class="btn-clash btn-clash-primary clash-font">تأیید</button>
-                    <button id="modal-cancel-btn" class="btn-clash btn-clash-secondary clash-font hidden">لغو</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="developers-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-40">
-        <div id="developers-panel" class="panel-clash p-6 sm:p-10 rounded-lg max-w-md w-full relative">
-            <button id="close-developers-panel-btn">✕</button>
-            <h3 class="text-center text-3xl font-bold mb-6 clash-font text-[var(--theme-gold)]" style="text-shadow: 2px 2px 3px #000;">👥 سازندگان</h3>
-            <div class="space-y-4">
-                <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">💻</span>
-                        <span class="dev-role">برنامه‌نویسان</span>
-                    </div>
-                    <p class="dev-username">سید عباس سجادی و علی بابایی</p>
-                    <p class="dev-description">پیاده‌سازی منطق و توسعه سمت کاربر (HTML, CSS, JavaScript).</p>
-                </div>
-                <div class="developer-item">
-                    <div class="dev-header flex items-center mb-2 pb-2">
-                        <span class="dev-role-icon">🎨</span>
-                        <span class="dev-role">طراح رابط کاربری</span>
-                    </div>
-                    <p class="dev-username">وحید فریدونی</p>
-                    <p class="dev-description">طراحی بصری، استایل‌های Clash و تجربه کاربری (UI/UX).</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="game-mode-panel-container" class="fixed inset-0 flex items-center justify-center p-4 panel-hidden z-40">
-        <div id="game-mode-panel" class="panel-clash p-6 sm:p-10 rounded-lg max-w-md w-full relative text-center">
-            <button id="close-game-mode-panel-btn">✕</button>
-            <h3 class="text-center text-3xl font-bold mb-8 clash-font text-[var(--theme-gold)]" style="text-shadow: 2px 2px 3px #000;">انتخاب بازی</h3>
-            <div class="space-y-6 flex flex-col items-center">
-                <button id="mafia-mode-btn" class="btn-clash btn-clash-primary clash-font">بازجویی مافیا</button>
-                <button id="mind-game-mode-btn" class="btn-clash btn-clash-primary clash-font">بازی ذهن</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // --- JavaScript Logic is unchanged ---
-        const mafiaGameData = [
-            {
-                question: "کدام نقش در بازی مافیا توانایی بیدار کردن و معرفی یک شهروند به عنوان نگهبان را دارد؟",
-                options: ["مافیا", "شهروند ساده", "کارآگاه", "دکتر"],
-                answer: "دکتر",
-                explanation: "نقش دکتر یا پزشک می‌تواند هر شب یک نفر (از جمله خودش) را از حملات مافیا نجات دهد. اما این سؤال درباره **نگهبان** اشتباه است. در سناریوهای رایج، نقش **پزشک/دکتر** یا **نجات‌دهنده** وجود دارد که افراد را از مرگ نجات می‌دهد. چون هیچ نقشی به نام 'نگهبان' معرفی نمی‌کند و گزینه 'دکتر' نزدیک‌ترین نقش حمایت‌کننده است، برای این دمو، 'دکتر' را به عنوان نقش حمایت‌کننده در نظر می‌گیریم."
-            },
-            {
-                question: "هدف اصلی تیم مافیا در شب چیست؟",
-                options: ["شلیک به یک شهروند", "بحث و گفتگو", "شناسایی نقش‌های شهروند", "انتخاب شهردار"],
-                answer: "شلیک به یک شهروند",
-                explanation: "وظیفه اصلی تیم مافیا هر شب، حذف یک نفر از شهروندان است تا نسبت تعدادشان برابر شود و پیروز شوند."
-            },
-            {
-                question: "نقش «کارآگاه» در فاز روز چه مزیتی نسبت به شهروندان عادی دارد؟",
-                options: ["دارای حق شلیک است.", "از شب قبل به نقش یک نفر پی برده است.", "می‌تواند حکم را صادر کند.", "می‌تواند سکوت کند."],
-                answer: "از شب قبل به نقش یک نفر پی برده است.",
-                explanation: "کارآگاه (یا بازپرس) هر شب می‌تواند از نقش یک نفر استعلام بگیرد و در روز از این اطلاعات برای هدایت بحث استفاده کند."
-            },
-            {
-                question: "چه زمانی بازی مافیا به پایان می‌رسد؟",
-                options: ["پس از ۵ دور بازی", "وقتی تعداد شهروندان و مافیا برابر شود.", "وقتی فقط دو نفر باقی بمانند.", "وقتی شهردار انتخاب شود."],
-                answer: "وقتی تعداد شهروندان و مافیا برابر شود.",
-                explanation: "مافیا زمانی پیروز می‌شود که تعداد اعضای مافیا برابر یا بیشتر از تعداد شهروندان شود (سناریوهای استاندارد)."
-            }
-        ];
-        
-        const mindGameSentences = [
-            "سکوت همیشه به معنای رضایت نیست",
-            "موفقیت نتیجه تلاش های کوچک روزانه است",
-            "زندگی مثل دوچرخه سواری است برای حفظ تعادل باید حرکت کنی",
-            "تنها راه انجام کارهای بزرگ دوست داشتن کاری است که انجام میدهی",
-            "آینده متعلق به کسانی است که به زیبایی رویاهایشان ایمان دارند"
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
 
-        const loadingScreen = document.getElementById('loading-screen');
-        const mainScreen = document.getElementById('main-screen');
-        const gameScreen = document.getElementById('game-screen');
-        const mindGameScreen = document.getElementById('mind-game-screen');
-        const startGameBtn = document.getElementById('start-game-btn');
-        const developersBtn = document.getElementById('developers-btn');
-        const onlineGameBtn = document.getElementById('online-game-btn');
-        const challengeBtn = document.getElementById('challenge-btn');
-        const coordinationBtn = document.getElementById('coordination-btn');
-        const backToMainBtnMafia = document.getElementById('back-to-main-btn-mafia');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const stageDisplay = document.getElementById('stage-display');
-        const gameFeedback = document.getElementById('game-feedback');
-        const questionExplanation = document.getElementById('question-explanation');
-        const timerText = document.getElementById('timer-text');
-        const timerProgressCircle = document.getElementById('timer-progress-circle');
-        const circleRadius = 26;
-        const circleCircumference = 2 * Math.PI * circleRadius;
-        timerProgressCircle.style.strokeDasharray = `${circleCircumference} ${circleCircumference}`;
-        timerProgressCircle.style.strokeDashoffset = circleCircumference;
-        const backToMainBtnMind = document.getElementById('back-to-main-btn-mind');
-        const mindGameInstruction = document.getElementById('mind-game-instruction');
-        const fallingSentenceContainer = document.getElementById('falling-sentence-container');
-        const mindGameInputArea = document.getElementById('mind-game-input-area');
-        const mindGameInput = document.getElementById('mind-game-input');
-        const mindGameSubmitBtn = document.getElementById('mind-game-submit-btn');
-        const mindGameFeedback = document.getElementById('mind-game-feedback');
-        const mindGameStageDisplay = document.getElementById('mind-game-stage-display');
-        const mindGameScoreDisplay = document.getElementById('mind-game-score-display');
-        const modalContainer = document.getElementById('modal-container');
-        const modalTitle = document.getElementById('modal-title');
-        const modalMessage = document.getElementById('modal-message');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
-        const modalCancelBtn = document.getElementById('modal-cancel-btn');
-        const developersPanelContainer = document.getElementById('developers-panel-container');
-        const closeDevelopersPanelBtn = document.getElementById('close-developers-panel-btn');
-        const gameModePanelContainer = document.getElementById('game-mode-panel-container');
-        const closeGameModePanelBtn = document.getElementById('close-game-mode-panel-btn');
-        const mafiaModeBtn = document.getElementById('mafia-mode-btn');
-        const mindGameModeBtn = document.getElementById('mind-game-mode-btn');
-
-        let currentMafiaStage = 0;
-        let mafiaTimerInterval;
-        let mafiaGameTime = 20;
-        let currentMindGameStage = 0;
-        let mindGameScore = 0;
-        let currentMindGameSentence = '';
-
-        function navigateTo(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function showModal({ title, message, onConfirm, onCancel }) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            modalCancelBtn.classList.add('hidden');
-            modalConfirmBtn.onclick = null;
-            modalCancelBtn.onclick = null;
-            modalConfirmBtn.onclick = () => {
-                hideModal();
-                if (onConfirm) onConfirm();
+            // --- MOCK DATA ---
+            // داده‌های شبیه‌سازی شده برای تست حالت‌های مختلف
+            // برای تست هر حالت، مقدار آن را true و بقیه را false قرار دهید.
+            const appState = {
+                maintenanceMode: false, // حالت تعمیرات
+                userSuspended: false,   // حالت مسدود بودن کاربر
+                
+                // داده‌های مربوط به حالت تعمیرات
+                maintenanceData: {
+                    title: "در حال بروزرسانی هستیم!",
+                    message: "برای ارائه خدمات بهتر، سرورهای شهر مافیا به طور موقت از دسترس خارج شده‌اند. به زودی با امکانات جدید باز خواهیم گشت.",
+                    bannerUrl: "https://media.wired.com/photos/5a55401d49197363595995c5/16:9/w_2400,h_1350,c_limit/Dog-Photos-Running-2.jpg",
+                    // زمان پایان بروزرسانی (2 ساعت از الان)
+                    endTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()
+                },
+                
+                // داده‌های مربوط به مسدودیت کاربر
+                suspensionData: {
+                    username: "کاربر خاطی",
+                    avatarUrl: "https://i.pravatar.cc/150?u=suspendeduser",
+                    reason: "دلیل: استفاده از الفاظ نامناسب در چت عمومی.",
+                    // زمان پایان مسدودیت (1 روز و 3 ساعت از الان)
+                    endTime: new Date(Date.now() + 27 * 60 * 60 * 1000).toISOString()
+                }
             };
-            if (onCancel) {
-                modalCancelBtn.classList.remove('hidden');
-                modalCancelBtn.onclick = () => {
-                     hideModal();
-                     if(onCancel) onCancel();
-                }
-            }
-            modalContainer.classList.remove('panel-hidden');
-            modalContainer.classList.add('panel-visible');
-        }
 
-        function hideModal() {
-            modalContainer.classList.remove('panel-visible');
-            modalContainer.classList.add('panel-hidden');
-        }
-        
-        function createBackToMainConfirmation(onConfirm) {
-             showModal({
-                title: 'ترک بازی؟',
-                message: 'آیا مطمئن هستید که می‌خواهید بازی را ترک کنید؟ پیشرفت شما ذخیره نخواهد شد.',
-                onConfirm: onConfirm,
-                onCancel: () => {}
-            });
-        }
-
-        function cleanupMafiaScreen() {
-            optionsContainer.innerHTML = '';
-            gameFeedback.textContent = '';
-            questionExplanation.textContent = '';
-            questionExplanation.classList.add('hidden');
-        }
-
-        function updateMafiaTimerUI(timeRemaining) {
-            timerText.textContent = timeRemaining;
-            const percentage = timeRemaining / mafiaGameTime;
-            const offset = circleCircumference * (1 - percentage);
-            timerProgressCircle.style.strokeDashoffset = offset;
-            timerProgressCircle.style.stroke = timeRemaining <= 5 ? 'var(--theme-red)' : 'var(--theme-gold)';
-            timerText.style.color = timeRemaining <= 5 ? 'var(--theme-red)' : 'var(--theme-gold)';
-        }
-
-        function startMafiaTimer() {
-            clearInterval(mafiaTimerInterval);
-            let timeRemaining = mafiaGameTime;
-            updateMafiaTimerUI(timeRemaining);
-            mafiaTimerInterval = setInterval(() => {
-                timeRemaining--;
-                updateMafiaTimerUI(timeRemaining);
-                if (timeRemaining <= 0) {
-                    clearInterval(mafiaTimerInterval);
-                    handleMafiaAnswer(null);
-                }
-            }, 1000);
-        }
-
-        function loadMafiaStage() {
-            cleanupMafiaScreen();
-            const stageData = mafiaGameData[currentMafiaStage];
-            stageDisplay.textContent = currentMafiaStage + 1;
-            questionText.textContent = stageData.question;
-            mafiaGameTime = 20;
-
-            stageData.options.forEach(option => {
-                const button = document.createElement('button');
-                button.textContent = option;
-                button.className = 'option-btn clash-font text-xl';
-                button.onclick = () => handleMafiaAnswer(option, button);
-                optionsContainer.appendChild(button);
-            });
-            startMafiaTimer();
-        }
-
-        function handleMafiaAnswer(selectedAnswer, selectedButton = null) {
-            clearInterval(mafiaTimerInterval);
-            const stageData = mafiaGameData[currentMafiaStage];
-            const isCorrect = selectedAnswer === stageData.answer;
-
-            Array.from(optionsContainer.children).forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent === stageData.answer) btn.classList.add('correct');
-                else if (btn === selectedButton) btn.classList.add('incorrect');
-            });
-
-            if (selectedAnswer === null) gameFeedback.textContent = '❌ زمان به پایان رسید! ❌';
-            else if (isCorrect) gameFeedback.textContent = '✅ پاسخ صحیح است!';
-            else gameFeedback.textContent = '❌ پاسخ اشتباه است.';
+            // انتخاب عناصر DOM
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const statusMessage = document.getElementById('status-message');
+            const statusPercentage = document.getElementById('status-percentage');
+            const bottomLoader = document.getElementById('bottom-loader');
             
-            questionExplanation.textContent = 'توضیح: ' + stageData.explanation;
-            questionExplanation.classList.remove('hidden');
+            const maintenancePanel = document.getElementById('maintenance-panel');
+            const suspensionPanel = document.getElementById('suspension-panel');
 
-            setTimeout(() => {
-                currentMafiaStage++;
-                if (currentMafiaStage < mafiaGameData.length) {
-                    loadMafiaStage();
-                } else {
-                    showMafiaGameOver();
-                }
-            }, 4000);
-        }
+            let countdownInterval;
 
-        function showMafiaGameOver() {
-            showModal({
-                title: 'پایان بازی! 🏁',
-                message: 'شما به تمام سوالات بازجویی پاسخ دادید. برای شروع دوباره به منوی اصلی بازگردید.',
-                onConfirm: () => navigateTo('main-screen')
-            });
-        }
-        
-        function startMafiaGame() {
-            currentMafiaStage = 0;
-            navigateTo('game-screen');
-            loadMafiaStage();
-        }
-        
-        function startMindGame() {
-            currentMindGameStage = 0;
-            mindGameScore = 0;
-            mindGameScoreDisplay.textContent = mindGameScore;
-            navigateTo('mind-game-screen');
-            loadMindGameRound();
-        }
-        
-        function loadMindGameRound() {
-            mindGameFeedback.textContent = '';
-            mindGameInput.value = '';
-            mindGameInput.classList.remove('correct', 'incorrect');
-            fallingSentenceContainer.innerHTML = '';
-            
-            if (currentMindGameStage >= mindGameSentences.length) {
-                showMindGameOver();
-                return;
-            }
-            
-            mindGameStageDisplay.textContent = currentMindGameStage + 1;
-            currentMindGameSentence = mindGameSentences[currentMindGameStage];
-            
-            mindGameInstruction.textContent = 'جمله را به خاطر بسپار!';
-            mindGameInputArea.classList.add('hidden');
-            const sentenceEl = document.createElement('div');
-            sentenceEl.textContent = currentMindGameSentence;
-            sentenceEl.className = 'falling-sentence';
-            fallingSentenceContainer.appendChild(sentenceEl);
-            
-            setTimeout(() => {
-                mindGameInstruction.textContent = 'حالا جمله را تایپ کن!';
-                fallingSentenceContainer.innerHTML = '';
-                mindGameInputArea.classList.remove('hidden');
-                mindGameInput.focus();
-            }, 4000);
-        }
-        
-        function handleMindGameAnswer() {
-            const userAnswer = mindGameInput.value.trim();
-            const isCorrect = userAnswer === currentMindGameSentence;
-            
-            if(isCorrect) {
-                mindGameScore++;
-                mindGameScoreDisplay.textContent = mindGameScore;
-                mindGameFeedback.textContent = '✅ عالی بود!';
-                mindGameFeedback.style.color = 'var(--theme-green)';
-            } else {
-                mindGameFeedback.textContent = '❌ اشتباه بود! جمله صحیح: ' + currentMindGameSentence;
-                mindGameFeedback.style.color = 'var(--theme-red)';
-            }
-            
-            currentMindGameStage++;
-            setTimeout(loadMindGameRound, 3000);
-        }
-        
-        function showMindGameOver() {
-             showModal({
-                title: 'پایان بازی ذهن! 🏁',
-                message: `امتیاز شما: ${mindGameScore} از ${mindGameSentences.length}. برای شروع دوباره به منوی اصلی بازگردید.`,
-                onConfirm: () => navigateTo('main-screen')
-            });
-        }
-        
-        startGameBtn.addEventListener('click', () => {
-            gameModePanelContainer.classList.remove('panel-hidden');
-            gameModePanelContainer.classList.add('panel-visible');
-        });
-        
-        developersBtn.addEventListener('click', () => {
-            developersPanelContainer.classList.remove('panel-hidden');
-            developersPanelContainer.classList.add('panel-visible');
-        });
-        
-        closeGameModePanelBtn.addEventListener('click', () => {
-            gameModePanelContainer.classList.remove('panel-visible');
-            gameModePanelContainer.classList.add('panel-hidden');
-        });
+            // تابع برای فرمت کردن اعداد تایمر (مثلا: 7 -> 07)
+            const formatTime = (time) => time < 10 ? `0${time}` : time;
 
-        mafiaModeBtn.addEventListener('click', () => {
-            gameModePanelContainer.classList.remove('panel-visible');
-            gameModePanelContainer.classList.add('panel-hidden');
-            startMafiaGame();
-        });
-        
-        mindGameModeBtn.addEventListener('click', () => {
-            gameModePanelContainer.classList.remove('panel-visible');
-            gameModePanelContainer.classList.add('panel-hidden');
-            startMindGame();
-        });
-        
-        backToMainBtnMafia.addEventListener('click', () => {
-            createBackToMainConfirmation(() => {
-                clearInterval(mafiaTimerInterval);
-                navigateTo('main-screen');
-            });
-        });
-        
-        backToMainBtnMind.addEventListener('click', () => {
-             createBackToMainConfirmation(() => {
-                navigateTo('main-screen');
-            });
-        });
-        
-        mindGameSubmitBtn.addEventListener('click', handleMindGameAnswer);
-        mindGameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleMindGameAnswer();
-        });
+            // تابع برای شروع شمارش معکوس
+            function startCountdown(endTime, elements) {
+                if (countdownInterval) clearInterval(countdownInterval);
 
-        closeDevelopersPanelBtn.addEventListener('click', () => {
-            developersPanelContainer.classList.remove('panel-visible');
-            developersPanelContainer.classList.add('panel-hidden');
-        });
+                const updateTimer = () => {
+                    const now = new Date().getTime();
+                    const distance = new Date(endTime).getTime() - now;
 
-        function showComingSoonModal() {
-            showModal({
-                title: 'به زودی...',
-                message: 'این بخش در حال توسعه است و به زودی در دسترس شما قرار خواهد گرفت!',
-                onConfirm: () => {}
-            });
-        }
-        onlineGameBtn.addEventListener('click', showComingSoonModal);
-        challengeBtn.addEventListener('click', showComingSoonModal);
-        coordinationBtn.addEventListener('click', showComingSoonModal);
+                    if (distance < 0) {
+                        clearInterval(countdownInterval);
+                        elements.days.textContent = '00';
+                        elements.hours.textContent = '00';
+                        elements.minutes.textContent = '00';
+                        elements.seconds.textContent = '00';
+                        // می‌توانید در اینجا منطقی برای رفرش صفحه یا تلاش مجدد اضافه کنید
+                        return;
+                    }
 
-        const progressBarFill = document.getElementById('loading-progress-bar-fill');
-        const loadingMessage = document.getElementById('loading-message');
-        const loadingTips = [
-            "شهروندان باید با استدلال مافیا را شناسایی کنند.",
-            "سکوت مافیا می‌تواند خطرناک‌تر از حرف زدن باشد.",
-            "دکتر فقط یک بار می‌تواند خودش را نجات دهد.",
-            "بیش از حد مطمئن بودن می‌تواند نشانه مافیا باشد!"
-        ];
-        let loadProgress = 0;
-        const loadingInterval = setInterval(() => {
-            loadProgress += 10;
-            progressBarFill.style.width = `${loadProgress}%`;
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            if (loadProgress >= 100) {
-                clearInterval(loadingInterval);
-                loadingMessage.textContent = 'آماده ورود به شهر!';
-                setTimeout(() => {
-                    loadingScreen.classList.remove('active');
-                    mainScreen.classList.add('active');
-                    startGameBtn.classList.add('breathing');
-                }, 500);
-            } else if (loadProgress > 50 && loadProgress < 70) {
-                loadingMessage.textContent = 'بارگذاری منابع بازی...';
-            } else if (loadProgress > 80) {
-                loadingMessage.textContent = 'اعمال تنظیمات نهایی...';
+                    elements.days.textContent = formatTime(days);
+                    elements.hours.textContent = formatTime(hours);
+                    elements.minutes.textContent = formatTime(minutes);
+                    elements.seconds.textContent = formatTime(seconds);
+                };
+
+                updateTimer();
+                countdownInterval = setInterval(updateTimer, 1000);
             }
 
-            document.getElementById('loading-tip').textContent = `💡 نکته: ${loadingTips[Math.floor(Math.random() * loadingTips.length)]}`;
-        }, 200);
+            // نمایش پنل تعمیرات
+            function showMaintenanceMode(data) {
+                bottomLoader.style.display = 'none';
+                maintenancePanel.style.display = 'block';
+                
+                document.getElementById('maintenance-banner').src = data.bannerUrl;
+                document.getElementById('maintenance-title').textContent = data.title;
+                document.getElementById('maintenance-message').textContent = data.message;
+
+                const timerElements = {
+                    days: document.getElementById('days'),
+                    hours: document.getElementById('hours'),
+                    minutes: document.getElementById('minutes'),
+                    seconds: document.getElementById('seconds')
+                };
+                startCountdown(data.endTime, timerElements);
+            }
+
+            // نمایش پنل مسدودیت
+            function showSuspensionMode(data) {
+                bottomLoader.style.display = 'none';
+                suspensionPanel.style.display = 'block';
+
+                document.getElementById('suspension-avatar').src = data.avatarUrl;
+                document.getElementById('suspension-username').textContent = data.username;
+                document.getElementById('suspension-reason').textContent = data.reason;
+
+                const timerElements = {
+                    days: document.getElementById('s-days'),
+                    hours: document.getElementById('s-hours'),
+                    minutes: document.getElementById('s-minutes'),
+                    seconds: document.getElementById('s-seconds')
+                };
+                startCountdown(data.endTime, timerElements);
+            }
+            
+            // شبیه‌سازی بارگذاری موفق
+            function handleNormalLoad() {
+                // در نسخه آفلاین، پس از لود موفق، می‌توانیم لودر را مخفی کرده
+                // و یک پیام موفقیت نمایش دهیم یا به صفحه دیگری برویم.
+                statusMessage.textContent = 'بارگذاری با موفقیت انجام شد!';
+                // به صورت تستی بعد از 1 ثانیه لودر را مخفی می‌کنیم
+                 setTimeout(() => {
+                    bottomLoader.style.display = 'none';
+                     // در یک پروژه واقعی، اینجا به صفحه اصلی هدایت می‌شوید
+                     // window.location.href = '/home.html';
+                 }, 1000);
+            }
+
+            // تابع اصلی برای شروع برنامه
+            function initializeApp() {
+                let progress = 0;
+                const messages = [
+                    "بررسی اتصال...",
+                    "دریافت اطلاعات کاربر...",
+                    "بارگذاری منابع بازی...",
+                    "آماده سازی محیط...",
+                    "ورود به شهر..."
+                ];
+                let messageIndex = 0;
+
+                const loadingInterval = setInterval(() => {
+                    progress += Math.random() * 5 + 1;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(loadingInterval);
+                        
+                        // بررسی وضعیت برنامه پس از اتمام لود
+                        if (appState.maintenanceMode) {
+                            showMaintenanceMode(appState.maintenanceData);
+                        } else if (appState.userSuspended) {
+                            showSuspensionMode(appState.suspensionData);
+                        } else {
+                            handleNormalLoad();
+                        }
+                    }
+
+                    if (progress > (messageIndex + 1) * 20 && messageIndex < messages.length -1) {
+                        messageIndex++;
+                        statusMessage.textContent = messages[messageIndex];
+                    }
+                    
+                    progressBarFill.style.width = `${progress}%`;
+                    statusPercentage.textContent = `${Math.round(progress)}%`;
+
+                }, 150);
+            }
+            
+            // دکمه تلاش مجدد (در اینجا صفحه را رفرش می‌کند)
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                location.reload();
+            });
+
+            // برای حل مشکل 100vh در موبایل
+            const setVh = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+            window.addEventListener('resize', setVh);
+            setVh();
+            
+            // شروع برنامه
+            initializeApp();
+        });
     </script>
 </body>
 </html>
