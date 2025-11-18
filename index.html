@@ -2,24 +2,45 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شروع فصل ۱</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>شروع فصل ۱ - نسخه افقی</title>
     <!-- اتصال به Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* استفاده از فونت استاندارد برای خوانایی بهتر */
         body {
             font-family: 'Inter', sans-serif, 'Vazirmatn';
-            background-color: #000;
+            background-color: #0a0a0a; /* پس‌زمینه کمی روشن‌تر */
             color: #ccc;
             overflow: hidden; /* جلوگیری از اسکرول */
         }
 
-        /* انیمیشن محو شدن برای صفحه اول - حذف شد */
-        /* @keyframes fade-in-out { ... } */
-        /* .animate-fade-in-out { ... } */
+        /* صفحه راهنما برای چرخاندن گوشی */
+        #orientation-warning {
+            display: none; /* به طور پیش‌فرض مخفی است */
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: white;
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
 
-        /* انیمیشن جدید محو شدن به بیرون */
+        /* نمایش پیام فقط در حالت عمودی */
+        @media (orientation: portrait) {
+            #orientation-warning {
+                display: flex;
+            }
+            #game-content {
+                display: none; /* مخفی کردن محتوای بازی در حالت عمودی */
+            }
+        }
+        
+        /* انیمیشن محو شدن */
         @keyframes fade-out {
             from { opacity: 1; }
             to { opacity: 0; }
@@ -28,7 +49,6 @@
             animation: fade-out 1s ease-in-out forwards;
         }
 
-        /* انیمیشن محو شدن ساده برای ورود */
         @keyframes fade-in {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -40,163 +60,191 @@
         /* انیمیشن چشمک زدن نشانگر تایپ */
         @keyframes blink-caret {
             from, to { border-color: transparent; }
-            50% { border-color: #555; }
+            50% { border-color: #777; }
         }
         .caret::after {
             content: '_';
             animation: blink-caret 1s step-end infinite;
             margin-right: 4px;
             font-weight: bold;
-            color: #777;
+            color: #999;
         }
         .typing-done::after {
-            display: none; /* حذف نشانگر بعد از اتمام تایپ */
+            display: none;
         }
         
-        /* افکت سایه تاریک در گوشه‌های صفحه */
+        /* افکت سایه تاریک در گوشه‌ها */
         .vignette-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            box-shadow: inset 0 0 10vw 5vw rgba(0,0,0,0.9);
-            pointer-events: none; /* اجازه کلیک از میان آن */
+            box-shadow: inset 0 0 10vw 5vw rgba(0,0,0,0.8);
+            pointer-events: none;
             z-index: 100;
         }
 
-        /* استایل ساختمان‌های تاریک */
+        /* استایل ساختمان‌های بهبود یافته */
         .building-container {
             position: absolute;
-            bottom: 6rem; /* همان ارتفاع زمین */
+            bottom: 6rem;
             left: 0;
             width: 100%;
             height: 60vh;
             z-index: 20;
-            opacity: 0.7;
+            opacity: 0.8;
         }
         .building {
             position: absolute;
             bottom: 0;
-            background-color: #0a0a0a; /* کمی روشن‌تر از پس‌زمینه */
-            border-top: 1px solid #1a1a1a;
+            background-color: #1a1a1a; /* رنگ پایه روشن‌تر */
+            border-top: 2px solid #333; /* لبه روشن در بالا */
         }
 
-        /* انیمیشن جدید حرکت کاراکتر به چپ */
-        @keyframes move-left {
+        /* --- تغییرات جدید --- */
+        /* انیمیشن جدید حرکت کاراکتر به بالا */
+        @keyframes move-up {
             from {
-                transform: translateX(0);
+                transform: translate(-50%, -50%) translateY(0);
+                opacity: 1;
             }
             to {
-                transform: translateX(-80vw); /* حرکت به اندازه ۸۰ درصد عرض صفحه به چپ */
+                transform: translate(-50%, -50%) translateY(-30vh); /* حرکت به بالا */
+                opacity: 0; /* محو شدن در انتها */
             }
         }
-        .move-container-left {
-            animation: move-left 25s linear 1s forwards; /* ۲۵ ثانیه طول می‌کشد، ۱ ثانیه تاخیر دارد */
+        .character-move-up {
+            /* انیمیشن حرکت به بالا با تاخیر ۱ ثانیه و مدت ۱۵ ثانیه */
+            animation: move-up 15s linear 1s forwards;
         }
 
         /* انیمیشن "نفس کشیدن" یا ایستادن کاراکتر */
         @keyframes subtle-idle {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
+            50% { transform: translateY(-4px); }
         }
         .character-idle {
             animation: subtle-idle 4s ease-in-out infinite;
-            /* افکت سایه قرمز تیره برای حس رمزآلود */
-            filter: brightness(0.9) drop-shadow(0 0 15px rgba(100, 0, 0, 0.4));
+            filter: brightness(0.95) drop-shadow(0 0 15px rgba(120, 0, 0, 0.5));
+        }
+
+        /* استایل برای دکمه ادامه */
+        #continue-prompt {
+            cursor: pointer;
+            text-decoration: underline;
+            animation: blink-caret 1.5s step-end infinite;
         }
     </style>
 </head>
 <body class="bg-black text-gray-300 h-screen w-screen overflow-hidden">
 
-    <!-- پرده اول: پیام فارسی -->
-    <div id="screen1" class="absolute inset-0 flex items-center justify-center p-8">
-        <h1 class="text-3xl md:text-5xl font-medium text-center leading-relaxed">
-            <span id="s1_line1" class="caret"></span>
-            <br>
-            <span id="s1_line2"></span>
-        </h1>
+    <!-- پیام برای چرخاندن گوشی -->
+    <div id="orientation-warning">
+        <svg class="w-16 h-16 mb-4 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
+        <h2 class="text-2xl font-bold mb-2">لطفاً گوشی خود را بچرخانید</h2>
+        <p class="text-lg">این بازی برای نمایش افقی طراحی شده است.</p>
     </div>
 
-    <!-- پرده دوم: افکت کدنویسی -->
-    <div id="screen2" class="absolute inset-0 flex items-center justify-center p-8 hidden" dir="ltr">
-        <div class="w-full max-w-3xl font-mono text-lg md:text-2xl text-gray-400">
-            <div class="mb-4">
-                <span class="text-green-600">&gt; </span>
-                <span id="line1" class="caret"></span>
-            </div>
-            <div id="line2-container" class="hidden">
-                <span class="text-green-600">&gt; </span>
-                <span id="line2" class="caret"></span>
+    <!-- محتوای اصلی بازی -->
+    <div id="game-content">
+        <!-- پرده اول: پیام فارسی -->
+        <div id="screen1" class="absolute inset-0 flex items-center justify-center p-8">
+            <h1 class="text-3xl md:text-5xl font-medium text-center leading-relaxed">
+                <span id="s1_line1" class="caret"></span>
+                <br>
+                <span id="s1_line2"></span>
+            </h1>
+        </div>
+
+        <!-- پرده دوم: افکت کدنویسی -->
+        <div id="screen2" class="absolute inset-0 flex items-center justify-center p-8 hidden" dir="ltr">
+            <div class="w-full max-w-3xl font-mono text-lg md:text-2xl text-gray-400">
+                <div class="mb-4">
+                    <span class="text-green-500">&gt; </span>
+                    <span id="line1" class="caret"></span>
+                </div>
+                <div id="line2-container" class="hidden">
+                    <span class="text-green-500">&gt; </span>
+                    <span id="line2" class="caret"></span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- پرده سوم: صحنه بازی -->
-    <div id="screen3" class="absolute inset-0 hidden opacity-0 animate-fade-in">
-        <!-- صحنه -->
-        <div class="relative w-full h-full">
-            
-            <!-- زمین -->
-            <div class="absolute bottom-0 left-0 w-full h-24 bg-gray-900 z-30" style="background-color: #050505;"></div>
+        <!-- پرده سوم: صحنه بازی -->
+        <div id="screen3" class="absolute inset-0 hidden opacity-0">
+            <!-- صحنه -->
+            <div class="relative w-full h-full">
+                
+                <!-- زمین -->
+                <div class="absolute bottom-0 left-0 w-full h-24" style="background-color: #080808;"></div>
 
-            <!-- ساختمان‌های پس‌زمینه -->
-            <div class="building-container">
-                <!-- ساختمان ۱ (دورتر) -->
-                <div class="building" style="left: 5%; width: 15%; height: 50vh; background-color: #080808;"></div>
-                <!-- ساختمان ۲ -->
-                <div class="building" style="left: 22%; width: 10%; height: 40vh; background-color: #050505;"></div>
-                <!-- ساختمان ۳ (نزدیک‌تر) -->
-                <div class="building" style="left: 35%; width: 20%; height: 60vh; background-color: #0a0a0a;"></div>
-                <!-- ساختمان ۴ -->
-                <div class="building" style="left: 58%; width: 12%; height: 45vh; background-color: #070707;"></div>
-                 <!-- ساختمان ۵ (دور) -->
-                <div class="building" style="left: 75%; width: 10%; height: 35vh; background-color: #050505;"></div>
+                <!-- ساختمان‌های پس‌زمینه بهبود یافته -->
+                <div class="building-container">
+                    <div class="building" style="left: 5%; width: 15%; height: 50vh; background-color: #121212;"></div>
+                    <div class="building" style="left: 22%; width: 10%; height: 40vh; background-color: #151515;"></div>
+                    <div class="building" style="left: 35%; width: 20%; height: 60vh; background-color: #181818;"></div>
+                    <div class="building" style="left: 58%; width: 12%; height: 45vh; background-color: #131313;"></div>
+                    <div class="building" style="left: 75%; width: 10%; height: 35vh; background-color: #161616;"></div>
+                </div>
+
+                <!-- کاراکتر -->
+                <div id="character-container" class="absolute top-1/2 left-1/2 w-32 md:w-40 h-auto z-40" style="transform: translate(-50%, -50%);">
+                    <img src="https://s6.uupload.ir/files/copilot_image_1763379586224_c8rr.jpeg" 
+                         alt="کاراکتر"
+                         onerror="this.src='https://placehold.co/160x320/111/555?text=Character'"
+                         class="w-full h-auto character-idle">
+                </div>
+
             </div>
-
-            <!-- کاراکتر -->
-            <!-- محفظه کاراکتر برای مدیریت حرکت افقی -->
-            <div id="character-container" class="absolute bottom-24 right-[10%] w-32 md:w-40 h-auto z-40">
-                <img src="https://s6.uupload.ir/files/copilot_image_1763379586224_c8rr.jpeg" 
-                     alt="کاراکتر"
-                     onerror="this.src='https://placehold.co/160x320/000/333?text=Character\nNot+Found'"
-                     class="w-full h-auto character-idle"> <!-- کلاس 'character-idle' به 'img' منتقل شد -->
-            </div>
-
+            <!-- افکت ویگنت (تاریکی دور صفحه) -->
+            <div class="vignette-overlay"></div>
         </div>
-        <!-- افکت ویگنت (تاریکی دور صفحه) -->
-        <div class="vignette-overlay"></div>
+        
+        <!-- پرده چهارم: شروع فصل دوم (جدید) -->
+        <div id="screen4" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0">
+            <div class="text-center">
+                <h2 id="chapter-title" class="text-4xl md:text-6xl font-mono mb-6 caret"></h2>
+                <p id="chapter-quote" class="text-xl md:text-2xl text-gray-400 mb-8 leading-loose"></p>
+                <p id="chapter-warning" class="text-lg md:text-xl text-amber-500 mb-12"></p>
+                <div id="final-message-container" class="hidden">
+                     <p id="final-message" class="text-2xl md:text-3xl text-gray-300"></p>
+                </div>
+                <p id="continue-prompt" class="text-lg text-gray-500 mt-12 hidden">برای ادامه کلیک کنید</p>
+            </div>
+        </div>
+
     </div>
 
+    <!-- صدا -->
+    <audio id="event-sound" src="https://raw.githubusercontent.com/ahmadrezaei090-debug/soberWeb/main/%D8%A8%D8%A7%D8%B1%DA%AF%DB%8C%D8%B1%DB%8C%20(19).wav" preload="auto"></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const gameContent = document.getElementById('game-content');
+            if (!gameContent) return;
+
             const screen1 = document.getElementById('screen1');
             const screen2 = document.getElementById('screen2');
             const screen3 = document.getElementById('screen3');
-            
-            const s1_line1 = document.getElementById('s1_line1');
-            const s1_line2 = document.getElementById('s1_line2');
-            const line1El = document.getElementById('line1');
-            const line2Container = document.getElementById('line2-container');
-            const line2El = document.getElementById('line2');
+            const screen4 = document.getElementById('screen4'); // پرده جدید
+            const character = document.getElementById('character-container');
 
-            const text_s1_l1 = "ـ چرا اصلا داری بازی میکنی؟";
-            const text_s1_l2 = "اینجا هیچ چیزی در انتظار تو نیست.";
-            const text1 = "Initializing Chapter 1...";
-            const text2 = "Everything in this world is deceptive. Believe nothing.";
-            const typeSpeed = 90; // سرعت تایپ (میلی‌ثانیه)
+            const typeSpeed = 90;
 
-            // تابع برای افکت تایپ
             function typeWriter(element, text, speed, onComplete) {
                 let i = 0;
+                element.innerHTML = '';
+                element.classList.add('caret');
+
                 function type() {
                     if (i < text.length) {
                         element.innerHTML = text.substring(0, i + 1);
                         i++;
                         setTimeout(type, speed);
                     } else {
-                        element.classList.add('typing-done'); // حذف نشانگر
+                        element.classList.remove('caret');
+                        element.classList.add('typing-done');
                         if (onComplete) {
                             onComplete();
                         }
@@ -204,50 +252,122 @@
                 }
                 type();
             }
+            
+            // شروع سکانس اولیه
+            function startSequence1() {
+                const s1_line1 = document.getElementById('s1_line1');
+                const s1_line2 = document.getElementById('s1_line2');
+                const text_s1_l1 = "ـ چرا اصلا داری بازی میکنی؟";
+                const text_s1_l2 = "اینجا هیچ چیزی در انتظار تو نیست.";
 
-            // --- شروع سکانس ---
-
-            // ۱. تایپ پرده اول
-            typeWriter(s1_line1, text_s1_l1, typeSpeed, () => {
-                s1_line1.classList.add('typing-done');
-                s1_line2.classList.add('caret');
-                
-                typeWriter(s1_line2, text_s1_l2, typeSpeed, () => {
-                    s1_line2.classList.add('typing-done');
-
-                    // ۲. بعد از اتمام تایپ، ۷ ثانیه صبر می‌کند
-                    setTimeout(() => {
-                        // ۳. پرده اول محو می‌شود
-                        screen1.classList.add('animate-fade-out');
-
-                        // ۴. بعد از ۱ ثانیه (زمان محو شدن)، پرده دوم را شروع کن
+                typeWriter(s1_line1, text_s1_l1, typeSpeed, () => {
+                    typeWriter(s1_line2, text_s1_l2, typeSpeed, () => {
                         setTimeout(() => {
-                            screen1.classList.add('hidden');
-                            screen2.classList.remove('hidden');
-
-                            // ۵. شروع تایپ خط اول پرده دوم
-                            typeWriter(line1El, text1, typeSpeed, () => {
-                                // ۶. بعد از اتمام خط اول، خط دوم ظاهر و تایپ می‌شود
-                                setTimeout(() => {
-                                    line2Container.classList.remove('hidden');
-                                    typeWriter(line2El, text2, typeSpeed, () => {
-                                        // ۷. بعد از اتمام خط دوم، با ۲ ثانیه تاخیر، پرده سوم ظاهر می‌شود
-                                        setTimeout(() => {
-                                            screen2.classList.add('hidden');
-                                            screen3.classList.remove('hidden');
-                                            // ۸. همزمان با ظاهر شدن پرده ۳، حرکت کاراکتر را فعال کن
-                                            document.getElementById('character-container').classList.add('move-container-left');
-                                        }, 2000); 
-                                    });
-                                }, 500); // تاخیر کوتاه قبل از شروع خط دوم
+                            screen1.classList.add('animate-fade-out');
+                            screen1.addEventListener('animationend', () => {
+                                screen1.classList.add('hidden');
+                                screen2.classList.remove('hidden');
+                                startSequence2();
                             });
-                        }, 1000); // زمان انیمیشن محو شدن
-
-                    }, 7000); // زمان نمایش پرده اول بعد از اتمام تایپ
+                        }, 5000);
+                    });
                 });
+            }
+
+            function startSequence2() {
+                const line1El = document.getElementById('line1');
+                const line2Container = document.getElementById('line2-container');
+                const line2El = document.getElementById('line2');
+                const text1 = "Initializing Chapter 1...";
+                const text2 = "Everything in this world is deceptive. Believe nothing.";
+
+                typeWriter(line1El, text1, typeSpeed, () => {
+                    setTimeout(() => {
+                        line2Container.classList.remove('hidden');
+                        typeWriter(line2El, text2, typeSpeed, () => {
+                            setTimeout(() => {
+                                screen2.classList.add('animate-fade-out');
+                                screen2.addEventListener('animationend', () => {
+                                    screen2.classList.add('hidden');
+                                    screen3.classList.remove('hidden');
+                                    screen3.classList.add('animate-fade-in');
+                                    character.classList.add('character-move-up');
+                                });
+                            }, 2000);
+                        });
+                    }, 500);
+                });
+            }
+
+            // --- تابع جدید برای سکانس فصل دوم ---
+            function startChapter2Sequence() {
+                // محو کردن صحنه بازی و نمایش پرده سیاه
+                screen3.classList.add('animate-fade-out');
+                screen3.addEventListener('animationend', () => {
+                    screen3.classList.add('hidden');
+                    screen4.classList.remove('hidden');
+                    screen4.classList.add('animate-fade-in');
+                });
+                
+                // المان‌های فصل دوم
+                const chapterTitle = document.getElementById('chapter-title');
+                const chapterQuote = document.getElementById('chapter-quote');
+                const chapterWarning = document.getElementById('chapter-warning');
+                const continuePrompt = document.getElementById('continue-prompt');
+                const finalMessageContainer = document.getElementById('final-message-container');
+                const finalMessage = document.getElementById('final-message');
+                const sound = document.getElementById('event-sound');
+
+                const text_title = "شروع فصل ۲";
+                const text_quote = "گاهی اوقات هیچ راهی برگشتی نیست و فقط این عمر ما است که تلف میشود";
+                const text_warning = "گفته بودم اگه از بازی خارج شی، بازی سیو نمیشه. اینو کاملاً جدی میگم، هیچ چیز در انتظار تو نیست.";
+                const text_final = "گاهی اوقات هیچ راهی برای برگشت نیست";
+
+                setTimeout(() => {
+                    typeWriter(chapterTitle, text_title, typeSpeed, () => {
+                        setTimeout(() => {
+                            typeWriter(chapterQuote, text_quote, 100, () => {
+                                setTimeout(() => {
+                                    typeWriter(chapterWarning, text_warning, 80, () => {
+                                        continuePrompt.classList.remove('hidden');
+                                    });
+                                }, 1000);
+                            });
+                        }, 1500);
+                    });
+                }, 2000); // تاخیر برای نمایش متن بعد از سیاه شدن صفحه
+
+                // افزودن رویداد کلیک
+                screen4.addEventListener('click', () => {
+                    if (!continuePrompt.classList.contains('hidden')) {
+                         // مخفی کردن همه پیام های قبلی
+                        chapterTitle.style.display = 'none';
+                        chapterQuote.style.display = 'none';
+                        chapterWarning.style.display = 'none';
+                        continuePrompt.style.display = 'none';
+
+                        sound.play(); // پخش صدا
+                        finalMessageContainer.classList.remove('hidden');
+                        typeWriter(finalMessage, text_final, 120);
+
+                        // جلوگیری از اجرای دوباره این بخش با کلیک های بعدی
+                        continuePrompt.classList.add('hidden'); 
+                    }
+                }, { once: true }); // رویداد فقط یک بار اجرا شود
+            }
+
+
+            // --- شروع بازی ---
+            startSequence1();
+
+            // --- شنونده پایان انیمیشن کاراکتر ---
+            character.addEventListener('animationend', (event) => {
+                // اطمینان از اینکه این رویداد برای انیمیشن move-up است
+                if (event.animationName === 'move-up') {
+                    startChapter2Sequence();
+                }
             });
         });
     </script>
-
 </body>
 </html>
