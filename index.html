@@ -4,239 +4,259 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>شروع فصل ۱ - نسخه افقی</title>
-    <!-- اتصال به Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* استفاده از فونت استاندارد برای خوانایی بهتر */
+        /* --- فونت و تنظیمات کلی --- */
         body {
             font-family: 'Inter', sans-serif, 'Vazirmatn';
-            background-color: #0a0a0a; /* پس‌زمینه کمی روشن‌تر */
+            background-color: #050505;
             color: #ccc;
-            overflow: hidden; /* جلوگیری از اسکرول */
+            overflow: hidden;
+            user-select: none;
         }
 
-        /* صفحه راهنما برای چرخاندن گوشی */
+        /* --- هشدار چرخش گوشی --- */
         #orientation-warning {
-            display: none; /* به طور پیش‌فرض مخفی است */
-            position: fixed;
-            inset: 0;
+            display: none;
+            position: fixed; inset: 0;
             background-color: rgba(0, 0, 0, 0.95);
-            color: white;
-            z-index: 200;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 2rem;
+            color: white; z-index: 200;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
         }
-
-        /* نمایش پیام فقط در حالت عمودی */
         @media (orientation: portrait) {
-            #orientation-warning {
-                display: flex;
-            }
-            #game-content {
-                display: none; /* مخفی کردن محتوای بازی در حالت عمودی */
-            }
+            #orientation-warning { display: flex; }
+            #game-content { display: none; }
         }
         
-        /* انیمیشن محو شدن */
-        @keyframes fade-out {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        .animate-fade-out {
-            animation: fade-out 1s ease-in-out forwards;
-        }
+        /* --- انیمیشن‌های عمومی --- */
+        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+        .animate-fade-out { animation: fade-out 1s ease-in-out forwards; }
 
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .animate-fade-in {
-            animation: fade-in 2s ease-in forwards;
-        }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fade-in 2s ease-in forwards; }
 
-        /* انیمیشن چشمک زدن نشانگر تایپ */
         @keyframes blink-caret {
             from, to { border-color: transparent; }
             50% { border-color: #777; }
         }
         .caret::after {
-            content: '_';
-            animation: blink-caret 1s step-end infinite;
-            margin-right: 4px;
-            font-weight: bold;
-            color: #999;
+            content: '_'; animation: blink-caret 1s step-end infinite;
+            margin-right: 4px; font-weight: bold; color: #999;
         }
-        .typing-done::after {
-            display: none;
-        }
+        .typing-done::after { display: none; }
         
-        /* افکت سایه تاریک در گوشه‌ها */
+        /* افکت هاله دور صفحه */
         .vignette-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            box-shadow: inset 0 0 10vw 5vw rgba(0,0,0,0.8);
-            pointer-events: none;
-            z-index: 100;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.9) 100%);
+            pointer-events: none; z-index: 100;
         }
 
-        /* استایل ساختمان‌های بهبود یافته */
-        .building-container {
-            position: absolute;
-            bottom: 6rem;
-            left: 0;
-            width: 100%;
-            height: 60vh;
-            z-index: 20;
-            opacity: 0.8;
-        }
-        .building {
-            position: absolute;
-            bottom: 0;
-            background-color: #1a1a1a; /* رنگ پایه روشن‌تر */
-            border-top: 2px solid #333; /* لبه روشن در بالا */
+        /* --- استایل‌های صحنه جدید (درخت و خانه) --- */
+        
+        /* آسمان شب */
+        .night-bg {
+            background: linear-gradient(to bottom, #0f172a 0%, #000000 80%);
         }
 
-        /* --- تغییرات جدید --- */
-        /* انیمیشن جدید حرکت کاراکتر به بالا */
+        /* زمین جدید با انحنا */
+        .ground-hill {
+            position: absolute;
+            bottom: -5vh;
+            left: -10%;
+            width: 120%;
+            height: 25vh;
+            background-color: #080808;
+            border-top: 2px solid #111;
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* حالت تپه */
+            z-index: 10;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+        }
+
+        /* کانتینر آبجکت‌های پس‌زمینه */
+        .silhouette-layer {
+            position: absolute; bottom: 12vh; left: 0; width: 100%; height: 50vh;
+            z-index: 5; pointer-events: none;
+        }
+
+        /* خانه‌های سیاه */
+        .dark-house {
+            position: absolute; bottom: 0;
+            background-color: #000;
+            /* شکل خانه با سقف شیروانی با استفاده از کلیپ‌پث */
+            clip-path: polygon(0% 40%, 50% 0%, 100% 40%, 100% 100%, 0% 100%);
+        }
+        /* پنجره‌های خاموش */
+        .dark-house::after {
+            content: ''; position: absolute;
+            top: 50%; left: 20%; width: 20%; height: 20%;
+            background-color: #1a1a1a; box-shadow: 40px 0 0 #1a1a1a;
+        }
+
+        /* درخت‌های خشک */
+        .dead-tree {
+            position: absolute; bottom: -5px;
+            fill: #000; z-index: 6;
+        }
+
+        /* --- انیمیشن کاراکتر --- */
         @keyframes move-up {
-            from {
-                transform: translate(-50%, -50%) translateY(0);
-                opacity: 1;
-            }
-            to {
-                transform: translate(-50%, -50%) translateY(-30vh); /* حرکت به بالا */
-                opacity: 0; /* محو شدن در انتها */
-            }
+            from { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
+            to { transform: translate(-50%, -50%) translateY(-35vh); opacity: 0; }
         }
-        .character-move-up {
-            /* انیمیشن حرکت به بالا با تاخیر ۱ ثانیه و مدت ۱۵ ثانیه */
-            animation: move-up 15s linear 1s forwards;
-        }
+        .character-move-up { animation: move-up 15s linear 1s forwards; }
 
-        /* انیمیشن "نفس کشیدن" یا ایستادن کاراکتر */
         @keyframes subtle-idle {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-4px); }
         }
         .character-idle {
             animation: subtle-idle 4s ease-in-out infinite;
-            filter: brightness(0.95) drop-shadow(0 0 15px rgba(120, 0, 0, 0.5));
+            filter: brightness(0.8) drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
         }
 
-        /* استایل برای دکمه ادامه */
-        #continue-prompt {
-            cursor: pointer;
-            text-decoration: underline;
+        #continue-prompt, #challenge-continue {
+            cursor: pointer; text-decoration: underline;
             animation: blink-caret 1.5s step-end infinite;
+        }
+
+        /* --- استایل‌های چالش توپ قرمز --- */
+        .red-ball {
+            position: absolute; width: 50px; height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
+            border-radius: 50%; cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); z-index: 150;
+        }
+        @keyframes fall-down {
+            from { top: -60px; } to { top: 110vh; }
+        }
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
         }
     </style>
 </head>
 <body class="bg-black text-gray-300 h-screen w-screen overflow-hidden">
 
-    <!-- پیام برای چرخاندن گوشی -->
+    <!-- هشدار چرخش -->
     <div id="orientation-warning">
-        <svg class="w-16 h-16 mb-4 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
+        <svg class="w-16 h-16 mb-4 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
         <h2 class="text-2xl font-bold mb-2">لطفاً گوشی خود را بچرخانید</h2>
-        <p class="text-lg">این بازی برای نمایش افقی طراحی شده است.</p>
     </div>
 
-    <!-- محتوای اصلی بازی -->
     <div id="game-content">
-        <!-- پرده اول: پیام فارسی -->
-        <div id="screen1" class="absolute inset-0 flex items-center justify-center p-8">
+        <!-- 1. شروع -->
+        <div id="screen1" class="absolute inset-0 flex items-center justify-center p-8 z-50">
             <h1 class="text-3xl md:text-5xl font-medium text-center leading-relaxed">
-                <span id="s1_line1" class="caret"></span>
-                <br>
-                <span id="s1_line2"></span>
+                <span id="s1_line1" class="caret"></span><br><span id="s1_line2"></span>
             </h1>
         </div>
 
-        <!-- پرده دوم: افکت کدنویسی -->
-        <div id="screen2" class="absolute inset-0 flex items-center justify-center p-8 hidden" dir="ltr">
+        <!-- 2. کدنویسی -->
+        <div id="screen2" class="absolute inset-0 flex items-center justify-center p-8 hidden z-50" dir="ltr">
             <div class="w-full max-w-3xl font-mono text-lg md:text-2xl text-gray-400">
-                <div class="mb-4">
-                    <span class="text-green-500">&gt; </span>
-                    <span id="line1" class="caret"></span>
-                </div>
-                <div id="line2-container" class="hidden">
-                    <span class="text-green-500">&gt; </span>
-                    <span id="line2" class="caret"></span>
-                </div>
+                <div class="mb-4"><span class="text-green-500">&gt; </span><span id="line1" class="caret"></span></div>
+                <div id="line2-container" class="hidden"><span class="text-green-500">&gt; </span><span id="line2" class="caret"></span></div>
             </div>
         </div>
 
-        <!-- پرده سوم: صحنه بازی -->
-        <div id="screen3" class="absolute inset-0 hidden opacity-0">
-            <!-- صحنه -->
-            <div class="relative w-full h-full">
+        <!-- 3. صحنه اصلی بازی (تغییر یافته) -->
+        <div id="screen3" class="absolute inset-0 hidden opacity-0 night-bg">
+            <div class="relative w-full h-full overflow-hidden">
                 
-                <!-- زمین -->
-                <div class="absolute bottom-0 left-0 w-full h-24" style="background-color: #080808;"></div>
+                <!-- ماه کم‌نور در پس‌زمینه -->
+                <div class="absolute top-10 right-20 w-24 h-24 rounded-full bg-gray-800 opacity-20 blur-xl"></div>
 
-                <!-- ساختمان‌های پس‌زمینه بهبود یافته -->
-                <div class="building-container">
-                    <div class="building" style="left: 5%; width: 15%; height: 50vh; background-color: #121212;"></div>
-                    <div class="building" style="left: 22%; width: 10%; height: 40vh; background-color: #151515;"></div>
-                    <div class="building" style="left: 35%; width: 20%; height: 60vh; background-color: #181818;"></div>
-                    <div class="building" style="left: 58%; width: 12%; height: 45vh; background-color: #131313;"></div>
-                    <div class="building" style="left: 75%; width: 10%; height: 35vh; background-color: #161616;"></div>
+                <!-- لایه خانه‌ها و درختان سیاه -->
+                <div class="silhouette-layer">
+                    <!-- خانه ۱ -->
+                    <div class="dark-house" style="left: 5%; width: 120px; height: 150px;"></div>
+                    <!-- درخت ۱ -->
+                    <svg class="dead-tree" style="left: 18%; height: 200px; width: 100px;" viewBox="0 0 100 200">
+                        <path d="M50,200 Q40,100 50,50 Q20,80 10,40 M50,50 Q80,80 90,30" stroke="black" stroke-width="8" fill="none"/>
+                    </svg>
+                    
+                    <!-- خانه ۲ (بزرگتر) -->
+                    <div class="dark-house" style="left: 25%; width: 180px; height: 220px; z-index: 4;"></div>
+                    
+                    <!-- درخت ۲ -->
+                    <svg class="dead-tree" style="left: 40%; height: 250px; width: 120px;" viewBox="0 0 100 200">
+                        <path d="M50,200 C40,150 60,100 50,20 M50,100 L20,60 M50,140 L80,90" stroke="black" stroke-width="10" fill="none"/>
+                    </svg>
+
+                    <!-- خانه ۳ -->
+                    <div class="dark-house" style="left: 65%; width: 140px; height: 160px;"></div>
+                    
+                    <!-- درخت ۳ -->
+                    <svg class="dead-tree" style="left: 80%; height: 180px; width: 90px;" viewBox="0 0 100 200">
+                        <path d="M50,200 Q60,100 40,40 M50,120 L80,80" stroke="black" stroke-width="6" fill="none"/>
+                    </svg>
                 </div>
+
+                <!-- زمین منحنی -->
+                <div class="ground-hill"></div>
 
                 <!-- کاراکتر -->
                 <div id="character-container" class="absolute top-1/2 left-1/2 w-32 md:w-40 h-auto z-40" style="transform: translate(-50%, -50%);">
                     <img src="https://s6.uupload.ir/files/copilot_image_1763379586224_c8rr.jpeg" 
-                         alt="کاراکتر"
-                         onerror="this.src='https://placehold.co/160x320/111/555?text=Character'"
-                         class="w-full h-auto character-idle">
+                         class="w-full h-auto character-idle"
+                         style="filter: brightness(0.7);"> <!-- کاراکتر کمی تیره‌تر برای هماهنگی با شب -->
                 </div>
 
+                <!-- افکت مه روی زمین -->
+                <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent opacity-60 z-20"></div>
             </div>
-            <!-- افکت ویگنت (تاریکی دور صفحه) -->
+            <!-- ویگنت -->
             <div class="vignette-overlay"></div>
         </div>
         
-        <!-- پرده چهارم: شروع فصل دوم (جدید) -->
-        <div id="screen4" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0">
-            <div class="text-center">
+        <!-- 4. متن فصل دوم -->
+        <div id="screen4" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0 z-50">
+            <div class="text-center max-w-4xl">
                 <h2 id="chapter-title" class="text-4xl md:text-6xl font-mono mb-6 caret"></h2>
                 <p id="chapter-quote" class="text-xl md:text-2xl text-gray-400 mb-8 leading-loose"></p>
                 <p id="chapter-warning" class="text-lg md:text-xl text-amber-500 mb-12"></p>
-                <div id="final-message-container" class="hidden">
-                     <p id="final-message" class="text-2xl md:text-3xl text-gray-300"></p>
-                </div>
                 <p id="continue-prompt" class="text-lg text-gray-500 mt-12 hidden">برای ادامه کلیک کنید</p>
             </div>
         </div>
 
+        <!-- 5. مقدمه چالش -->
+        <div id="screen5" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0 z-50">
+            <div class="text-center">
+                <h2 id="challenge-text" class="text-2xl md:text-4xl text-red-600 font-bold mb-8 caret"></h2>
+                <p id="challenge-continue" class="absolute bottom-10 left-0 right-0 text-center text-gray-500 hidden">برای شروع چالش کلیک کنید</p>
+            </div>
+        </div>
+
+        <!-- 6. بازی توپ‌ها -->
+        <div id="screen6" class="absolute inset-0 bg-black hidden z-50 overflow-hidden cursor-crosshair"></div>
+
     </div>
 
-    <!-- صدا -->
+    <!-- صداها -->
     <audio id="event-sound" src="https://raw.githubusercontent.com/ahmadrezaei090-debug/soberWeb/main/%D8%A8%D8%A7%D8%B1%DA%AF%DB%8C%D8%B1%DB%8C%20(19).wav" preload="auto"></audio>
+    <audio id="bg-music" src="https://raw.githubusercontent.com/ahmadrezaei090-debug/soberWeb/main/%D8%A2%D8%B4%D9%88%D8%A8%20.mp3" preload="auto"></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const gameContent = document.getElementById('game-content');
-            if (!gameContent) return;
-
+            const typeSpeed = 120; // سرعت تایپ آهسته
+            
             const screen1 = document.getElementById('screen1');
             const screen2 = document.getElementById('screen2');
             const screen3 = document.getElementById('screen3');
-            const screen4 = document.getElementById('screen4'); // پرده جدید
+            const screen4 = document.getElementById('screen4');
+            const screen5 = document.getElementById('screen5');
+            const screen6 = document.getElementById('screen6');
             const character = document.getElementById('character-container');
 
-            const typeSpeed = 90;
+            const eventSound = document.getElementById('event-sound');
+            const bgMusic = document.getElementById('bg-music');
 
             function typeWriter(element, text, speed, onComplete) {
                 let i = 0;
                 element.innerHTML = '';
                 element.classList.add('caret');
-
                 function type() {
                     if (i < text.length) {
                         element.innerHTML = text.substring(0, i + 1);
@@ -245,23 +265,15 @@
                     } else {
                         element.classList.remove('caret');
                         element.classList.add('typing-done');
-                        if (onComplete) {
-                            onComplete();
-                        }
+                        if (onComplete) onComplete();
                     }
                 }
                 type();
             }
             
-            // شروع سکانس اولیه
             function startSequence1() {
-                const s1_line1 = document.getElementById('s1_line1');
-                const s1_line2 = document.getElementById('s1_line2');
-                const text_s1_l1 = "ـ چرا اصلا داری بازی میکنی؟";
-                const text_s1_l2 = "اینجا هیچ چیزی در انتظار تو نیست.";
-
-                typeWriter(s1_line1, text_s1_l1, typeSpeed, () => {
-                    typeWriter(s1_line2, text_s1_l2, typeSpeed, () => {
+                typeWriter(document.getElementById('s1_line1'), "ـ چرا اصلا داری بازی میکنی؟", typeSpeed, () => {
+                    typeWriter(document.getElementById('s1_line2'), "اینجا هیچ چیزی در انتظار تو نیست.", typeSpeed, () => {
                         setTimeout(() => {
                             screen1.classList.add('animate-fade-out');
                             screen1.addEventListener('animationend', () => {
@@ -269,22 +281,16 @@
                                 screen2.classList.remove('hidden');
                                 startSequence2();
                             });
-                        }, 5000);
+                        }, 3000);
                     });
                 });
             }
 
             function startSequence2() {
-                const line1El = document.getElementById('line1');
-                const line2Container = document.getElementById('line2-container');
-                const line2El = document.getElementById('line2');
-                const text1 = "Initializing Chapter 1...";
-                const text2 = "Everything in this world is deceptive. Believe nothing.";
-
-                typeWriter(line1El, text1, typeSpeed, () => {
+                typeWriter(document.getElementById('line1'), "Initializing Chapter 1...", typeSpeed, () => {
                     setTimeout(() => {
-                        line2Container.classList.remove('hidden');
-                        typeWriter(line2El, text2, typeSpeed, () => {
+                        document.getElementById('line2-container').classList.remove('hidden');
+                        typeWriter(document.getElementById('line2'), "Everything is deceptive.", typeSpeed, () => {
                             setTimeout(() => {
                                 screen2.classList.add('animate-fade-out');
                                 screen2.addEventListener('animationend', () => {
@@ -293,80 +299,122 @@
                                     screen3.classList.add('animate-fade-in');
                                     character.classList.add('character-move-up');
                                 });
-                            }, 2000);
+                            }, 1500);
                         });
                     }, 500);
                 });
             }
 
-            // --- تابع جدید برای سکانس فصل دوم ---
+            character.addEventListener('animationend', (e) => {
+                if (e.animationName === 'move-up') startChapter2Sequence();
+            });
+
             function startChapter2Sequence() {
-                // محو کردن صحنه بازی و نمایش پرده سیاه
                 screen3.classList.add('animate-fade-out');
                 screen3.addEventListener('animationend', () => {
                     screen3.classList.add('hidden');
                     screen4.classList.remove('hidden');
                     screen4.classList.add('animate-fade-in');
-                });
-                
-                // المان‌های فصل دوم
-                const chapterTitle = document.getElementById('chapter-title');
-                const chapterQuote = document.getElementById('chapter-quote');
-                const chapterWarning = document.getElementById('chapter-warning');
-                const continuePrompt = document.getElementById('continue-prompt');
-                const finalMessageContainer = document.getElementById('final-message-container');
-                const finalMessage = document.getElementById('final-message');
-                const sound = document.getElementById('event-sound');
-
-                const text_title = "شروع فصل ۲";
-                const text_quote = "گاهی اوقات هیچ راهی برگشتی نیست و فقط این عمر ما است که تلف میشود";
-                const text_warning = "گفته بودم اگه از بازی خارج شی، بازی سیو نمیشه. اینو کاملاً جدی میگم، هیچ چیز در انتظار تو نیست.";
-                const text_final = "گاهی اوقات هیچ راهی برای برگشت نیست";
-
-                setTimeout(() => {
-                    typeWriter(chapterTitle, text_title, typeSpeed, () => {
-                        setTimeout(() => {
-                            typeWriter(chapterQuote, text_quote, 100, () => {
-                                setTimeout(() => {
-                                    typeWriter(chapterWarning, text_warning, 80, () => {
-                                        continuePrompt.classList.remove('hidden');
-                                    });
-                                }, 1000);
+                    
+                    const prompt = document.getElementById('continue-prompt');
+                    
+                    setTimeout(() => {
+                        typeWriter(document.getElementById('chapter-title'), "شروع فصل ۲", typeSpeed, () => {
+                            typeWriter(document.getElementById('chapter-quote'), "گاهی اوقات هیچ راهی برگشتی نیست...", 100, () => {
+                                typeWriter(document.getElementById('chapter-warning'), "گفته بودم اگه خارج شی، بازی سیو نمیشه.", 100, () => {
+                                    prompt.classList.remove('hidden');
+                                });
                             });
-                        }, 1500);
-                    });
-                }, 2000); // تاخیر برای نمایش متن بعد از سیاه شدن صفحه
+                        });
+                    }, 1000);
 
-                // افزودن رویداد کلیک
-                screen4.addEventListener('click', () => {
-                    if (!continuePrompt.classList.contains('hidden')) {
-                         // مخفی کردن همه پیام های قبلی
-                        chapterTitle.style.display = 'none';
-                        chapterQuote.style.display = 'none';
-                        chapterWarning.style.display = 'none';
-                        continuePrompt.style.display = 'none';
-
-                        sound.play(); // پخش صدا
-                        finalMessageContainer.classList.remove('hidden');
-                        typeWriter(finalMessage, text_final, 120);
-
-                        // جلوگیری از اجرای دوباره این بخش با کلیک های بعدی
-                        continuePrompt.classList.add('hidden'); 
-                    }
-                }, { once: true }); // رویداد فقط یک بار اجرا شود
+                    screen4.addEventListener('click', () => {
+                        if (!prompt.classList.contains('hidden')) {
+                            eventSound.play();
+                            screen4.classList.add('hidden');
+                            startChallengeIntro();
+                        }
+                    }, { once: true });
+                });
             }
 
+            function startChallengeIntro() {
+                screen5.classList.remove('hidden');
+                screen5.classList.add('animate-fade-in');
 
-            // --- شروع بازی ---
+                const challengeText = document.getElementById('challenge-text');
+                const challengePrompt = document.getElementById('challenge-continue');
+                const message = "چالش ساده‌س، فقط نزار توپ‌های قرمز به زمین برسن.";
+
+                setTimeout(() => {
+                    typeWriter(challengeText, message, 120, () => {
+                        challengePrompt.classList.remove('hidden');
+                        screen5.addEventListener('click', () => {
+                             if (!challengePrompt.classList.contains('hidden')) {
+                                screen5.classList.add('hidden');
+                                startRedBallGame();
+                             }
+                        }, { once: true });
+                    });
+                }, 1000);
+            }
+
+            function startRedBallGame() {
+                screen6.classList.remove('hidden');
+                bgMusic.volume = 0.5; 
+                bgMusic.play().catch(e => console.log("Audio play failed", e));
+
+                const gameDuration = 30000; 
+                const spawnRate = 600; 
+                let gameActive = true;
+
+                setTimeout(() => {
+                    gameActive = false;
+                    endGame();
+                }, gameDuration);
+
+                const spawner = setInterval(() => {
+                    if (!gameActive) {
+                        clearInterval(spawner);
+                        return;
+                    }
+                    spawnBall();
+                }, spawnRate);
+            }
+
+            function spawnBall() {
+                const ball = document.createElement('div');
+                ball.classList.add('red-ball');
+                const randomLeft = Math.floor(Math.random() * 90) + 5; 
+                ball.style.left = `${randomLeft}%`;
+                const duration = Math.random() * 2 + 2; 
+                ball.style.animation = `fall-down ${duration}s linear forwards`;
+
+                ball.addEventListener('click', () => {
+                    ball.style.animation = 'pop 0.2s ease-out forwards';
+                    setTimeout(() => {
+                        if(ball.parentNode) ball.parentNode.removeChild(ball);
+                    }, 200);
+                });
+                
+                ball.addEventListener('animationend', (e) => {
+                     if (e.animationName === 'fall-down') {
+                        if(ball.parentNode) ball.parentNode.removeChild(ball);
+                     }
+                });
+                screen6.appendChild(ball);
+            }
+
+            function endGame() {
+                bgMusic.pause();
+                screen6.innerHTML = '';
+                const endMsg = document.createElement('h1');
+                endMsg.className = "text-white text-4xl text-center mt-40 animate-fade-in";
+                endMsg.innerText = "پایان چالش";
+                screen6.appendChild(endMsg);
+            }
+
             startSequence1();
-
-            // --- شنونده پایان انیمیشن کاراکتر ---
-            character.addEventListener('animationend', (event) => {
-                // اطمینان از اینکه این رویداد برای انیمیشن move-up است
-                if (event.animationName === 'move-up') {
-                    startChapter2Sequence();
-                }
-            });
         });
     </script>
 </body>
