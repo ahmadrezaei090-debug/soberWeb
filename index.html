@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بازی هوشیار</title>
+    <title>بازی هوشیار - نسخه کامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,7 +92,7 @@
             font-weight: bold;
         }
 
-        /* --- Animations --- */
+        /* --- Animations & Modals --- */
         .screen {
             display: none;
             position: absolute;
@@ -103,6 +103,11 @@
         .screen.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        .modal-overlay {
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+        }
+
         /* Game Options */
         .btn-option {
             background-color: #1a1a1a;
@@ -112,10 +117,43 @@
             border-radius: 12px;
             font-size: 1.1rem;
             transition: all 0.2s;
+            width: 100%;
         }
         .btn-option:active { background-color: #333; }
+        
         .correct-flash { background-color: #04d182 !important; border-color: #04d182 !important; color: #000; }
         .wrong-flash { background-color: #ef4444 !important; border-color: #ef4444 !important; }
+
+        /* Timer Bar */
+        #timer-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        #timer-bar {
+            height: 100%;
+            background: #FFD700;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* Flash Input */
+        .flash-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.25rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #555;
+            border-radius: 12px;
+            color: #fff;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .flash-input:focus { border-color: #FFD700; }
 
     </style>
 </head>
@@ -139,16 +177,10 @@
         
         <!-- Profile Card -->
         <div class="profile-card w-[300px] h-[360px] flex flex-col items-center justify-center relative">
-            
-            <!-- Avatar -->
             <div class="avatar-circle mb-4"></div>
-            
-            <!-- User Info -->
             <div class="flex flex-col items-center space-y-2">
                 <div class="tag-pill">بازیکن</div>
-                <!-- نام کاربر ثابت: هوشیار -->
                 <h1 class="text-3xl font-black gold-text tracking-wide">هوشیار</h1>
-                
                 <div class="flex items-center space-x-4 space-x-reverse mt-4 text-gray-300">
                     <span>امتیاز: <span id="menu-score">0</span></span>
                     <span>سکه: <span id="menu-coins">0</span></span>
@@ -158,26 +190,34 @@
 
         <!-- Main Buttons -->
         <div class="w-full max-w-xs space-y-4">
-            <button id="start-game-btn" class="btn-main w-full py-4 text-xl shadow-lg">شروع بازی</button>
-            <button id="online-game-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2);">بازی آنلاین</button>
+            <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-xl shadow-lg">شروع بازی</button>
+            <button id="challenges-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2);">چالش‌ها</button>
         </div>
-
     </div>
 
     <!-- Footer Icons -->
     <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-4">
-        <!-- Friends Icon -->
-        <button class="footer-circle-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-        </button>
-        <!-- Shop Icon (Center) -->
-        <button class="footer-circle-btn" style="width: 65px; height: 65px; border-color: #F0C040;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-        </button>
-        <!-- Energy/Lightning Icon -->
-        <button class="footer-circle-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        </button>
+        <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+        <button class="footer-circle-btn" style="width: 65px; height: 65px; border-color: #F0C040;"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></button>
+        <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></button>
+    </div>
+</div>
+
+<!-- MODE SELECTION MODAL -->
+<div id="mode-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
+    <div class="profile-card w-11/12 max-w-sm p-6 text-center animate-bounce-in">
+        <h2 class="text-2xl font-black gold-text mb-6">انتخاب سبک بازی</h2>
+        <div class="space-y-4">
+            <button onclick="selectMode('old')" class="btn-option flex flex-col items-center py-4 hover:bg-yellow-900/30">
+                <span class="text-xl font-bold text-yellow-400">2 Old (کلاسیک)</span>
+                <span class="text-xs text-gray-400 mt-1">۴ گزینه‌ای | ۳ جان</span>
+            </button>
+            <button onclick="selectMode('flash')" class="btn-option flex flex-col items-center py-4 hover:bg-yellow-900/30">
+                <span class="text-xl font-bold text-yellow-400">2.5 Flash (تایپی)</span>
+                <span class="text-xs text-gray-400 mt-1">تایپ پاسخ | ۳۰ ثانیه زمان</span>
+            </button>
+        </div>
+        <button id="close-mode-btn" class="mt-6 text-gray-500 text-sm border-b border-gray-600">انصراف</button>
     </div>
 </div>
 
@@ -189,19 +229,29 @@
             امتیاز: <span id="game-score" class="gold-text">0</span>
         </div>
         <div class="text-lg font-bold">
-            ❤️ <span id="game-lives">3</span>
+            <span id="game-stats">❤️ 3</span>
         </div>
     </header>
 
     <main class="flex-grow flex flex-col justify-center items-center w-full max-w-md mx-auto">
         <!-- Riddle Box -->
-        <div class="profile-card w-full p-8 mb-8 text-center bg-gray-900/90">
-            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200">متن سوال اینجا قرار می‌گیرد</p>
+        <div class="profile-card w-full p-8 mb-8 text-center bg-gray-900/90 relative">
+             <div id="timer-bar-container" class="absolute top-0 left-0 right-0 hidden rounded-t-xl">
+                <div id="timer-bar"></div>
+            </div>
+            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200 mt-2">متن سوال اینجا قرار می‌گیرد</p>
         </div>
 
-        <!-- Options Grid -->
+        <!-- Mode: 2 Old (Buttons) -->
         <div id="options-container" class="grid grid-cols-2 gap-4 w-full">
             <!-- JS populates buttons here -->
+        </div>
+
+        <!-- Mode: 2.5 Flash (Input) -->
+        <div id="flash-container" class="w-full flex flex-col items-center hidden">
+            <input type="text" id="flash-input" class="flash-input" placeholder="پاسخ را بنویسید...">
+            <button id="flash-submit-btn" class="btn-main w-full py-3 mt-4 text-lg">ثبت پاسخ</button>
+            <p class="text-gray-500 text-xs mt-2">توجه: کیبورد فارسی استفاده کنید</p>
         </div>
     </main>
 </div>
@@ -218,7 +268,7 @@
     </div>
 </div>
 
-<!-- Modal: Coming Soon -->
+<!-- Toast -->
 <div id="toast-modal" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gold px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none">
     <p class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
 </div>
@@ -304,8 +354,14 @@
     let lives = 3;
     let currentRiddleIndex = 0;
     let shuffledRiddles = [];
+    let currentMode = 'old'; // 'old' or 'flash'
+    let timerInterval;
+    let timeLeft = 30;
 
-    // --- Navigation Functions ---
+    // --- Helper ---
+    const normalize = (str) => str.trim().replace(/ی/g, 'ي').replace(/ک/g, 'ك');
+
+    // --- Navigation ---
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -322,24 +378,59 @@
         }, 2000);
     }
 
+    // --- Modal Logic ---
+    const modeModal = document.getElementById('mode-modal');
+    document.getElementById('open-mode-modal-btn').onclick = () => {
+        modeModal.classList.remove('hidden');
+    };
+    document.getElementById('close-mode-btn').onclick = () => {
+        modeModal.classList.add('hidden');
+    };
+
+    function selectMode(mode) {
+        currentMode = mode;
+        modeModal.classList.add('hidden');
+        startGame();
+    }
+
     // --- Game Logic ---
     function updateMenuUI() {
-        // نام کاربری ثابت است و در HTML نوشته شده
         document.getElementById('menu-score').textContent = gameState.highScore;
         document.getElementById('menu-coins').textContent = gameState.coins;
     }
 
     function startGame() {
         score = 0;
-        lives = 3;
-        shuffledRiddles = [...riddles].sort(() => Math.random() - 0.5);
         currentRiddleIndex = 0;
+        shuffledRiddles = [...riddles].sort(() => Math.random() - 0.5);
+        
+        // Mode specific setup
+        if(currentMode === 'old') {
+            lives = 3;
+            document.getElementById('options-container').classList.remove('hidden');
+            document.getElementById('flash-container').classList.add('hidden');
+            document.getElementById('timer-bar-container').classList.add('hidden');
+            document.getElementById('game-stats').textContent = '❤️ ' + lives;
+        } else {
+            // Flash Mode
+            document.getElementById('options-container').classList.add('hidden');
+            document.getElementById('flash-container').classList.remove('hidden');
+            document.getElementById('timer-bar-container').classList.remove('hidden');
+            document.getElementById('game-stats').textContent = '⏳ 30';
+        }
+
         showScreen('gameplay-screen');
         loadRiddle();
     }
 
     function loadRiddle() {
-        if(currentRiddleIndex >= shuffledRiddles.length || lives <= 0) {
+        if(currentRiddleIndex >= shuffledRiddles.length) {
+            endGame();
+            return;
+        }
+
+        // Check for game over in old mode
+        if(currentMode === 'old' && lives <= 0) {
             endGame();
             return;
         }
@@ -347,72 +438,115 @@
         const data = shuffledRiddles[currentRiddleIndex];
         document.getElementById('riddle-text').textContent = data.riddle;
         document.getElementById('game-score').textContent = score;
-        document.getElementById('game-lives').textContent = lives;
 
+        if(currentMode === 'old') {
+            setupOldMode(data);
+        } else {
+            setupFlashMode(data);
+        }
+    }
+
+    function setupOldMode(data) {
         const container = document.getElementById('options-container');
         container.innerHTML = '';
-
-        // Shuffle options for display
         let opts = [...data.options].sort(() => Math.random() - 0.5);
         
         opts.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'btn-option';
             btn.textContent = opt;
-            btn.onclick = () => checkAnswer(btn, opt, data.answer); 
+            btn.onclick = () => checkOldAnswer(btn, opt, data.answer);
             container.appendChild(btn);
         });
     }
 
-    function checkAnswer(btn, selected, correctText) {
-        // برای پیدا کردن جواب درست در آرایه گزینه‌ها
-        const correctAnswer = correctText; 
-        
-        // مقایسه مستقیم
-        // نکته: در این بازی فرض شده که جواب دقیقا یکی از گزینه‌هاست.
-        // اگر لازم شد، می‌توانید منطق پیچیده‌تری اضافه کنید.
+    function checkOldAnswer(btn, selected, correctText) {
         const buttons = document.querySelectorAll('.btn-option');
-        let isCorrect = false;
-
-        // چون در دیتا بیس گاهی answer با یکی از option ها یکی است، ما آن را پیدا میکنیم
-        // اما گاهی answer برای حالت تایپی بوده. 
-        // برای اطمینان در حالت ۴ گزینه ای، باید چک کنیم کدام گزینه "درست" است.
-        // در دیتایی که من دادم، answer دقیقا برابر یکی از گزینه ها نیست همیشه (چون برای تایپ بود).
-        // پس بیایید فرض کنیم گزینه اول در آرایه دیتابیس همیشه درست بوده قبل از شافل شدن؟
-        // خیر، آرایه riddles را نگاه کنید:
-        // { riddle: "...", options: ["هوا", ...], answer: "هوا" } -> اینجا گزینه و جواب یکی هستند.
-        // پس مقایسه متنی درست کار میکند.
-        
-        if (selected === correctText) {
-            isCorrect = true;
-        }
-
         buttons.forEach(b => b.disabled = true);
 
-        if(isCorrect) {
+        if(selected === correctText) {
             btn.classList.add('correct-flash');
             score += 10;
             gameState.coins += 5;
+            setTimeout(nextQuestion, 1200);
         } else {
             btn.classList.add('wrong-flash');
             lives--;
-            // نمایش گزینه صحیح
+            document.getElementById('game-stats').textContent = '❤️ ' + lives;
+            // Show correct answer
             buttons.forEach(b => {
                 if(b.textContent === correctText) b.classList.add('correct-flash');
             });
+            setTimeout(nextQuestion, 1200);
         }
+    }
 
-        setTimeout(() => {
-            if(lives > 0) {
-                currentRiddleIndex++;
-                loadRiddle();
-            } else {
-                endGame();
+    function setupFlashMode(data) {
+        const input = document.getElementById('flash-input');
+        input.value = '';
+        input.focus();
+        input.classList.remove('correct-flash', 'wrong-flash');
+        
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        updateTimerUI();
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerUI();
+            if(timeLeft <= 0) {
+                handleFlashTimeOut();
             }
-        }, 1200);
+        }, 1000);
+    }
+
+    function updateTimerUI() {
+        document.getElementById('game-stats').textContent = '⏳ ' + timeLeft;
+        const pct = (timeLeft / 30) * 100;
+        document.getElementById('timer-bar').style.width = pct + '%';
+        if(timeLeft < 5) document.getElementById('timer-bar').style.backgroundColor = '#ef4444';
+        else document.getElementById('timer-bar').style.backgroundColor = '#FFD700';
+    }
+
+    function handleFlashTimeOut() {
+        clearInterval(timerInterval);
+        const input = document.getElementById('flash-input');
+        input.classList.add('wrong-flash');
+        // Time out is instant game over in some flash versions, or just next question.
+        // Let's make it Game Over to be challenging.
+        setTimeout(endGame, 1000);
+    }
+
+    function checkFlashAnswer() {
+        const input = document.getElementById('flash-input');
+        const userVal = normalize(input.value);
+        const correctVal = normalize(shuffledRiddles[currentRiddleIndex].answer);
+
+        if(userVal === correctVal) {
+            clearInterval(timerInterval);
+            input.classList.add('correct-flash');
+            score += 20; // More points for typing
+            gameState.coins += 10;
+            setTimeout(nextQuestion, 1000);
+        } else {
+            input.classList.add('wrong-flash');
+            setTimeout(() => {
+                input.classList.remove('wrong-flash');
+            }, 500);
+        }
+    }
+
+    function nextQuestion() {
+        currentRiddleIndex++;
+        loadRiddle();
     }
 
     function endGame() {
+        clearInterval(timerInterval);
         if(score > gameState.highScore) gameState.highScore = score;
         localStorage.setItem('houshyar_game_data', JSON.stringify(gameState));
         
@@ -421,14 +555,25 @@
         showScreen('game-over-screen');
     }
 
-    // --- Events ---
-    document.getElementById('start-game-btn').addEventListener('click', startGame);
-    document.getElementById('play-again-btn').addEventListener('click', startGame);
+    // --- Event Listeners ---
+    document.getElementById('flash-submit-btn').addEventListener('click', checkFlashAnswer);
+    document.getElementById('flash-input').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') checkFlashAnswer();
+    });
+
+    document.getElementById('play-again-btn').addEventListener('click', () => {
+         // Re-open modal or restart same mode? Let's restart same mode for UX
+         startGame();
+    });
+    
     document.getElementById('back-to-menu-btn').addEventListener('click', () => showScreen('main-menu-screen'));
-    document.getElementById('exit-game-btn').addEventListener('click', () => showScreen('main-menu-screen'));
+    document.getElementById('exit-game-btn').addEventListener('click', () => {
+        clearInterval(timerInterval);
+        showScreen('main-menu-screen');
+    });
     
     // Placeholder buttons
-    document.getElementById('online-game-btn').addEventListener('click', showToast);
+    document.getElementById('challenges-btn').addEventListener('click', showToast);
     document.getElementById('settings-btn').addEventListener('click', showToast);
     document.querySelectorAll('.footer-circle-btn').forEach(b => b.addEventListener('click', showToast));
 
