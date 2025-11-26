@@ -2,420 +2,447 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-    <title>شروع فصل ۱ - نسخه افقی</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>بازی هوشیار</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- فونت و تنظیمات کلی --- */
+        /* --- Base & Fonts --- */
         body {
-            font-family: 'Inter', sans-serif, 'Vazirmatn';
-            background-color: #050505;
-            color: #ccc;
-            overflow: hidden;
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #000000;
+            color: #E0E0E0;
+            overscroll-behavior: none;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- هشدار چرخش گوشی --- */
-        #orientation-warning {
+        /* --- Gradients & Effects --- */
+        .gold-text {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-main {
+            background: linear-gradient(180deg, #F0C040 0%, #c39d1a 100%);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            color: #000;
+            font-weight: 800;
+            border-radius: 50px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-main:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+        }
+
+        .profile-card {
+            background: #111;
+            border: 1px solid #FFD700;
+            border-radius: 24px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+        }
+
+        .settings-btn-circle {
+            background: #1a1a1a;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            color: #FFD700;
+        }
+
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700 30%, #000 70%);
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .footer-circle-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            color: #FFD700;
+            transition: all 0.2s;
+        }
+        .footer-circle-btn:active {
+            background: #333;
+            transform: scale(0.9);
+        }
+
+        .tag-pill {
+            background-color: #F0C040;
+            color: #000;
+            border-radius: 12px;
+            padding: 2px 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* --- Animations --- */
+        .screen {
             display: none;
-            position: fixed; inset: 0;
-            background-color: rgba(0, 0, 0, 0.95);
-            color: white; z-index: 200;
-            flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 2rem;
-        }
-        @media (orientation: portrait) {
-            #orientation-warning { display: flex; }
-            #game-content { display: none; }
-        }
-        
-        /* --- انیمیشن‌های عمومی --- */
-        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
-        .animate-fade-out { animation: fade-out 1s ease-in-out forwards; }
-
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fade-in { animation: fade-in 2s ease-in forwards; }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: #777; }
-        }
-        .caret::after {
-            content: '_'; animation: blink-caret 1s step-end infinite;
-            margin-right: 4px; font-weight: bold; color: #999;
-        }
-        .typing-done::after { display: none; }
-        
-        /* افکت هاله دور صفحه */
-        .vignette-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.9) 100%);
-            pointer-events: none; z-index: 100;
-        }
-
-        /* --- استایل‌های صحنه جدید (درخت و خانه) --- */
-        
-        /* آسمان شب */
-        .night-bg {
-            background: linear-gradient(to bottom, #0f172a 0%, #000000 80%);
-        }
-
-        /* زمین جدید با انحنا */
-        .ground-hill {
             position: absolute;
-            bottom: -5vh;
-            left: -10%;
-            width: 120%;
-            height: 25vh;
-            background-color: #080808;
-            border-top: 2px solid #111;
-            border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* حالت تپه */
-            z-index: 10;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+            top: 0; left: 0; width: 100%; height: 100%;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease;
         }
+        .screen.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* کانتینر آبجکت‌های پس‌زمینه */
-        .silhouette-layer {
-            position: absolute; bottom: 12vh; left: 0; width: 100%; height: 50vh;
-            z-index: 5; pointer-events: none;
+        /* Game Options */
+        .btn-option {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.2s;
         }
+        .btn-option:active { background-color: #333; }
+        .correct-flash { background-color: #04d182 !important; border-color: #04d182 !important; color: #000; }
+        .wrong-flash { background-color: #ef4444 !important; border-color: #ef4444 !important; }
 
-        /* خانه‌های سیاه */
-        .dark-house {
-            position: absolute; bottom: 0;
-            background-color: #000;
-            /* شکل خانه با سقف شیروانی با استفاده از کلیپ‌پث */
-            clip-path: polygon(0% 40%, 50% 0%, 100% 40%, 100% 100%, 0% 100%);
-        }
-        /* پنجره‌های خاموش */
-        .dark-house::after {
-            content: ''; position: absolute;
-            top: 50%; left: 20%; width: 20%; height: 20%;
-            background-color: #1a1a1a; box-shadow: 40px 0 0 #1a1a1a;
-        }
-
-        /* درخت‌های خشک */
-        .dead-tree {
-            position: absolute; bottom: -5px;
-            fill: #000; z-index: 6;
-        }
-
-        /* --- انیمیشن کاراکتر --- */
-        @keyframes move-up {
-            from { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
-            to { transform: translate(-50%, -50%) translateY(-35vh); opacity: 0; }
-        }
-        .character-move-up { animation: move-up 15s linear 1s forwards; }
-
-        @keyframes subtle-idle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        .character-idle {
-            animation: subtle-idle 4s ease-in-out infinite;
-            filter: brightness(0.8) drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
-        }
-
-        #continue-prompt, #challenge-continue {
-            cursor: pointer; text-decoration: underline;
-            animation: blink-caret 1.5s step-end infinite;
-        }
-
-        /* --- استایل‌های چالش توپ قرمز --- */
-        .red-ball {
-            position: absolute; width: 50px; height: 50px;
-            background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
-            border-radius: 50%; cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); z-index: 150;
-        }
-        @keyframes fall-down {
-            from { top: -60px; } to { top: 110vh; }
-        }
-        @keyframes pop {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
     </style>
 </head>
-<body class="bg-black text-gray-300 h-screen w-screen overflow-hidden">
+<body class="h-screen w-screen overflow-hidden bg-black">
 
-    <!-- هشدار چرخش -->
-    <div id="orientation-warning">
-        <svg class="w-16 h-16 mb-4 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
-        <h2 class="text-2xl font-bold mb-2">لطفاً گوشی خود را بچرخانید</h2>
+<!-- 1. MAIN MENU SCREEN -->
+<div id="main-menu-screen" class="screen h-full justify-between p-6 relative active">
+    
+    <!-- Settings Gear -->
+    <div class="absolute top-6 left-6 z-10">
+        <button id="settings-btn" class="settings-btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
     </div>
 
-    <div id="game-content">
-        <!-- 1. شروع -->
-        <div id="screen1" class="absolute inset-0 flex items-center justify-center p-8 z-50">
-            <h1 class="text-3xl md:text-5xl font-medium text-center leading-relaxed">
-                <span id="s1_line1" class="caret"></span><br><span id="s1_line2"></span>
-            </h1>
-        </div>
-
-        <!-- 2. کدنویسی -->
-        <div id="screen2" class="absolute inset-0 flex items-center justify-center p-8 hidden z-50" dir="ltr">
-            <div class="w-full max-w-3xl font-mono text-lg md:text-2xl text-gray-400">
-                <div class="mb-4"><span class="text-green-500">&gt; </span><span id="line1" class="caret"></span></div>
-                <div id="line2-container" class="hidden"><span class="text-green-500">&gt; </span><span id="line2" class="caret"></span></div>
-            </div>
-        </div>
-
-        <!-- 3. صحنه اصلی بازی (تغییر یافته) -->
-        <div id="screen3" class="absolute inset-0 hidden opacity-0 night-bg">
-            <div class="relative w-full h-full overflow-hidden">
-                
-                <!-- ماه کم‌نور در پس‌زمینه -->
-                <div class="absolute top-10 right-20 w-24 h-24 rounded-full bg-gray-800 opacity-20 blur-xl"></div>
-
-                <!-- لایه خانه‌ها و درختان سیاه -->
-                <div class="silhouette-layer">
-                    <!-- خانه ۱ -->
-                    <div class="dark-house" style="left: 5%; width: 120px; height: 150px;"></div>
-                    <!-- درخت ۱ -->
-                    <svg class="dead-tree" style="left: 18%; height: 200px; width: 100px;" viewBox="0 0 100 200">
-                        <path d="M50,200 Q40,100 50,50 Q20,80 10,40 M50,50 Q80,80 90,30" stroke="black" stroke-width="8" fill="none"/>
-                    </svg>
-                    
-                    <!-- خانه ۲ (بزرگتر) -->
-                    <div class="dark-house" style="left: 25%; width: 180px; height: 220px; z-index: 4;"></div>
-                    
-                    <!-- درخت ۲ -->
-                    <svg class="dead-tree" style="left: 40%; height: 250px; width: 120px;" viewBox="0 0 100 200">
-                        <path d="M50,200 C40,150 60,100 50,20 M50,100 L20,60 M50,140 L80,90" stroke="black" stroke-width="10" fill="none"/>
-                    </svg>
-
-                    <!-- خانه ۳ -->
-                    <div class="dark-house" style="left: 65%; width: 140px; height: 160px;"></div>
-                    
-                    <!-- درخت ۳ -->
-                    <svg class="dead-tree" style="left: 80%; height: 180px; width: 90px;" viewBox="0 0 100 200">
-                        <path d="M50,200 Q60,100 40,40 M50,120 L80,80" stroke="black" stroke-width="6" fill="none"/>
-                    </svg>
-                </div>
-
-                <!-- زمین منحنی -->
-                <div class="ground-hill"></div>
-
-                <!-- کاراکتر -->
-                <div id="character-container" class="absolute top-1/2 left-1/2 w-32 md:w-40 h-auto z-40" style="transform: translate(-50%, -50%);">
-                    <img src="https://s6.uupload.ir/files/copilot_image_1763379586224_c8rr.jpeg" 
-                         class="w-full h-auto character-idle"
-                         style="filter: brightness(0.7);"> <!-- کاراکتر کمی تیره‌تر برای هماهنگی با شب -->
-                </div>
-
-                <!-- افکت مه روی زمین -->
-                <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent opacity-60 z-20"></div>
-            </div>
-            <!-- ویگنت -->
-            <div class="vignette-overlay"></div>
-        </div>
+    <!-- Center Content -->
+    <div class="flex flex-col items-center justify-center w-full mt-16 space-y-8">
         
-        <!-- 4. متن فصل دوم -->
-        <div id="screen4" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0 z-50">
-            <div class="text-center max-w-4xl">
-                <h2 id="chapter-title" class="text-4xl md:text-6xl font-mono mb-6 caret"></h2>
-                <p id="chapter-quote" class="text-xl md:text-2xl text-gray-400 mb-8 leading-loose"></p>
-                <p id="chapter-warning" class="text-lg md:text-xl text-amber-500 mb-12"></p>
-                <p id="continue-prompt" class="text-lg text-gray-500 mt-12 hidden">برای ادامه کلیک کنید</p>
+        <!-- Profile Card -->
+        <div class="profile-card w-[300px] h-[360px] flex flex-col items-center justify-center relative">
+            
+            <!-- Avatar -->
+            <div class="avatar-circle mb-4"></div>
+            
+            <!-- User Info -->
+            <div class="flex flex-col items-center space-y-2">
+                <div class="tag-pill">بازیکن</div>
+                <!-- نام کاربر ثابت: هوشیار -->
+                <h1 class="text-3xl font-black gold-text tracking-wide">هوشیار</h1>
+                
+                <div class="flex items-center space-x-4 space-x-reverse mt-4 text-gray-300">
+                    <span>امتیاز: <span id="menu-score">0</span></span>
+                    <span>سکه: <span id="menu-coins">0</span></span>
+                </div>
             </div>
         </div>
 
-        <!-- 5. مقدمه چالش -->
-        <div id="screen5" class="absolute inset-0 bg-black flex flex-col items-center justify-center p-8 hidden opacity-0 z-50">
-            <div class="text-center">
-                <h2 id="challenge-text" class="text-2xl md:text-4xl text-red-600 font-bold mb-8 caret"></h2>
-                <p id="challenge-continue" class="absolute bottom-10 left-0 right-0 text-center text-gray-500 hidden">برای شروع چالش کلیک کنید</p>
-            </div>
+        <!-- Main Buttons -->
+        <div class="w-full max-w-xs space-y-4">
+            <button id="start-game-btn" class="btn-main w-full py-4 text-xl shadow-lg">شروع بازی</button>
+            <button id="online-game-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2);">بازی آنلاین</button>
         </div>
-
-        <!-- 6. بازی توپ‌ها -->
-        <div id="screen6" class="absolute inset-0 bg-black hidden z-50 overflow-hidden cursor-crosshair"></div>
 
     </div>
 
-    <!-- صداها -->
-    <audio id="event-sound" src="https://raw.githubusercontent.com/ahmadrezaei090-debug/soberWeb/main/%D8%A8%D8%A7%D8%B1%DA%AF%DB%8C%D8%B1%DB%8C%20(19).wav" preload="auto"></audio>
-    <audio id="bg-music" src="https://raw.githubusercontent.com/ahmadrezaei090-debug/soberWeb/main/%D8%A2%D8%B4%D9%88%D8%A8%20.mp3" preload="auto"></audio>
+    <!-- Footer Icons -->
+    <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-4">
+        <!-- Friends Icon -->
+        <button class="footer-circle-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        </button>
+        <!-- Shop Icon (Center) -->
+        <button class="footer-circle-btn" style="width: 65px; height: 65px; border-color: #F0C040;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+        </button>
+        <!-- Energy/Lightning Icon -->
+        <button class="footer-circle-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        </button>
+    </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const typeSpeed = 120; // سرعت تایپ آهسته
-            
-            const screen1 = document.getElementById('screen1');
-            const screen2 = document.getElementById('screen2');
-            const screen3 = document.getElementById('screen3');
-            const screen4 = document.getElementById('screen4');
-            const screen5 = document.getElementById('screen5');
-            const screen6 = document.getElementById('screen6');
-            const character = document.getElementById('character-container');
+<!-- 2. GAMEPLAY SCREEN -->
+<div id="gameplay-screen" class="screen p-6 justify-between">
+    <header class="flex justify-between items-center w-full pt-4">
+        <button id="exit-game-btn" class="text-red-500 font-bold px-3 py-1 border border-red-900 rounded bg-red-900/20">خروج</button>
+        <div class="text-lg font-bold">
+            امتیاز: <span id="game-score" class="gold-text">0</span>
+        </div>
+        <div class="text-lg font-bold">
+            ❤️ <span id="game-lives">3</span>
+        </div>
+    </header>
 
-            const eventSound = document.getElementById('event-sound');
-            const bgMusic = document.getElementById('bg-music');
+    <main class="flex-grow flex flex-col justify-center items-center w-full max-w-md mx-auto">
+        <!-- Riddle Box -->
+        <div class="profile-card w-full p-8 mb-8 text-center bg-gray-900/90">
+            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200">متن سوال اینجا قرار می‌گیرد</p>
+        </div>
 
-            function typeWriter(element, text, speed, onComplete) {
-                let i = 0;
-                element.innerHTML = '';
-                element.classList.add('caret');
-                function type() {
-                    if (i < text.length) {
-                        element.innerHTML = text.substring(0, i + 1);
-                        i++;
-                        setTimeout(type, speed);
-                    } else {
-                        element.classList.remove('caret');
-                        element.classList.add('typing-done');
-                        if (onComplete) onComplete();
-                    }
-                }
-                type();
-            }
-            
-            function startSequence1() {
-                typeWriter(document.getElementById('s1_line1'), "ـ چرا اصلا داری بازی میکنی؟", typeSpeed, () => {
-                    typeWriter(document.getElementById('s1_line2'), "اینجا هیچ چیزی در انتظار تو نیست.", typeSpeed, () => {
-                        setTimeout(() => {
-                            screen1.classList.add('animate-fade-out');
-                            screen1.addEventListener('animationend', () => {
-                                screen1.classList.add('hidden');
-                                screen2.classList.remove('hidden');
-                                startSequence2();
-                            });
-                        }, 3000);
-                    });
-                });
-            }
+        <!-- Options Grid -->
+        <div id="options-container" class="grid grid-cols-2 gap-4 w-full">
+            <!-- JS populates buttons here -->
+        </div>
+    </main>
+</div>
 
-            function startSequence2() {
-                typeWriter(document.getElementById('line1'), "Initializing Chapter 1...", typeSpeed, () => {
-                    setTimeout(() => {
-                        document.getElementById('line2-container').classList.remove('hidden');
-                        typeWriter(document.getElementById('line2'), "Everything is deceptive.", typeSpeed, () => {
-                            setTimeout(() => {
-                                screen2.classList.add('animate-fade-out');
-                                screen2.addEventListener('animationend', () => {
-                                    screen2.classList.add('hidden');
-                                    screen3.classList.remove('hidden');
-                                    screen3.classList.add('animate-fade-in');
-                                    character.classList.add('character-move-up');
-                                });
-                            }, 1500);
-                        });
-                    }, 500);
-                });
-            }
+<!-- 3. GAME OVER SCREEN -->
+<div id="game-over-screen" class="screen justify-center items-center p-8 text-center">
+    <h1 class="text-5xl font-black mb-6 gold-text">پایان بازی</h1>
+    <p class="text-2xl text-gray-300 mb-2">امتیاز شما: <span id="final-score" class="text-white">0</span></p>
+    <p class="text-sm text-gray-500 mb-8">رکورد قبلی: <span id="final-highscore">0</span></p>
+    
+    <div class="w-full max-w-xs space-y-4">
+        <button id="play-again-btn" class="btn-main w-full py-3">بازی مجدد</button>
+        <button id="back-to-menu-btn" class="w-full py-3 border border-gray-600 rounded-xl text-gray-400">بازگشت به منو</button>
+    </div>
+</div>
 
-            character.addEventListener('animationend', (e) => {
-                if (e.animationName === 'move-up') startChapter2Sequence();
-            });
+<!-- Modal: Coming Soon -->
+<div id="toast-modal" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gold px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none">
+    <p class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
+</div>
 
-            function startChapter2Sequence() {
-                screen3.classList.add('animate-fade-out');
-                screen3.addEventListener('animationend', () => {
-                    screen3.classList.add('hidden');
-                    screen4.classList.remove('hidden');
-                    screen4.classList.add('animate-fade-in');
-                    
-                    const prompt = document.getElementById('continue-prompt');
-                    
-                    setTimeout(() => {
-                        typeWriter(document.getElementById('chapter-title'), "شروع فصل ۲", typeSpeed, () => {
-                            typeWriter(document.getElementById('chapter-quote'), "گاهی اوقات هیچ راهی برگشتی نیست...", 100, () => {
-                                typeWriter(document.getElementById('chapter-warning'), "گفته بودم اگه خارج شی، بازی سیو نمیشه.", 100, () => {
-                                    prompt.classList.remove('hidden');
-                                });
-                            });
-                        });
-                    }, 1000);
+<script>
+    // --- 70 Riddles Database ---
+    const riddles = [
+        { riddle: "آن چیست که همه جا هست ولی جایی را اشغال نمی‌کند؟", options: ["هوا", "فکر", "نور", "فضا"], answer: "هوا" },
+        { riddle: "آن چیست که پر دارد ولی پرواز نمی‌کند؟", options: ["کتاب", "بالش", "در", "هواپیما"], answer: "بالش" },
+        { riddle: "آن چیست که روز را آغاز می‌کند و شب را به پایان می‌رساند؟", options: ["حرف ر", "خورشید", "ماه", "حرف ب"], answer: "حرف ر" },
+        { riddle: "آن چیست که هرچه از آن بردارند بزرگتر می‌شود؟", options: ["چاله", "سن", "علم", "کوه"], answer: "چاله" },
+        { riddle: "آن چیست که یک چشم دارد ولی نمی‌بیند؟", options: ["سوزن", "حلقه", "دکمه", "سکه"], answer: "سوزن" },
+        { riddle: "آن چیست که گردن دارد ولی سر ندارد؟", options: ["کوزه", "پیراهن", "بطری", "گیتار"], answer: "پیراهن" },
+        { riddle: "آن چیست که زبان ندارد اما راست می‌گوید؟", options: ["آینه", "کتاب", "ساعت", "ترازو"], answer: "آینه" },
+        { riddle: "آن چیست که اگر در آب بیفتد خیس نمی‌شود؟", options: ["روغن", "نور", "سایه", "یخ"], answer: "سایه" },
+        { riddle: "آن چیست که دندان دارد اما چیزی نمی‌خورد؟", options: ["شانه", "اره", "کیف", "دهان"], answer: "شانه" },
+        { riddle: "آن چیست که شهر دارد اما خانه نه، کوه دارد اما درخت نه؟", options: ["نقشه", "کره زمین", "رویا", "بیابان"], answer: "نقشه" },
+        { riddle: "آن چیست که بی‌صدا زنگ می‌زند؟", options: ["تلفن", "آهن", "ساعت", "در"], answer: "آهن" },
+        { riddle: "برادرِ پدرِ توست، اما عموی تو نیست؟", options: ["دایی", "پدر", "عمه", "پدربزرگ"], answer: "پدر" },
+        { riddle: "آن چیست که متعلق به توست اما دیگران بیشتر از تو از آن استفاده می‌کنند؟", options: ["پول", "اسم", "زمان", "ماشین"], answer: "اسم" },
+        { riddle: "آن چیست که وقتی خشک می‌شود خیس می‌شود؟", options: ["حوله", "یخ", "چوب", "برف"], answer: "حوله" },
+        { riddle: "آن چیست که هر چه بیشتر باشد، کمتر می‌بینید؟", options: ["مه", "نور", "تاریکی", "پرده"], answer: "تاریکی" },
+        { riddle: "آن چیست که جان دارد ولی نفس نمی‌کشد؟", options: ["ماهی", "فنجان", "گیاه", "بادکنک"], answer: "فنجان" },
+        { riddle: "آن چیست که چهار پا دارد اما راه نمی‌رود؟", options: ["میز", "اسب", "لاکپشت", "ماشین"], answer: "میز" },
+        { riddle: "آن چیست که کلیدهای زیادی دارد اما نمی‌تواند دری را باز کند؟", options: ["پیانو", "نقشه", "زندان", "قفل"], answer: "پیانو" },
+        { riddle: "آن چیست که بالا می‌رود اما هرگز پایین نمی‌آید؟", options: ["سن", "باران", "دود", "قیمت"], answer: "سن" },
+        { riddle: "آن چیست که شکستنش واجب است تا بتوان از آن استفاده کرد؟", options: ["تخم مرغ", "گردو", "قول", "سکوت"], answer: "تخم مرغ" },
+        { riddle: "آن چیست که سر ندارد اما کلاه دارد؟", options: ["قارچ", "میخ", "عصا", "بطری"], answer: "قارچ" },
+        { riddle: "آن چیست که پا دارد اما راه نمی‌رود؟", options: ["شلوار", "میز", "صندلی", "نردبان"], answer: "شلوار" },
+        { riddle: "آن چیست که رنگش سفید است اما قند نیست، ریشه دارد اما درخت نیست؟", options: ["دندان", "پیاز", "سیر", "ترب"], answer: "دندان" },
+        { riddle: "آن چیست که در رادیو و دریا مشترک است؟", options: ["موج", "صدا", "آب", "پیام"], answer: "موج" },
+        { riddle: "آن چیست که وقتی تمیز است سیاه است و وقتی کثیف است سفید؟", options: ["تخته سیاه", "کفش", "زغال", "شب"], answer: "تخته سیاه" },
+        { riddle: "آن چیست که گوش دارد ولی نمی‌شنود؟", options: ["دیگ", "سوزن", "ذرت", "فنجان"], answer: "دیگ" },
+        { riddle: "آن چیست که هر چه می‌دوی به آن نمی‌رسی؟", options: ["سایه", "خورشید", "باد", "زمان"], answer: "سایه" },
+        { riddle: "آن کدام پرنده‌ای است که اگر نامش را برعکس کنی نام پرنده دیگری می‌شود؟", options: ["زاغ", "غاز", "باز", "درنا"], answer: "زاغ" },
+        { riddle: "آن چیست که شیرین است اما مزه ندارد؟", options: ["قند", "شکر", "خواب", "عسل"], answer: "خواب" },
+        { riddle: "آن چیست که دو سر دارد و یک کمر؟", options: ["قیچی", "عینک", "دوچرخه", "انسان"], answer: "قیچی" },
+        { riddle: "آن چیست که در هوا می‌پرد ولی بال و پر ندارد؟", options: ["بادبادک", "هواپیما", "ابر", "غبار"], answer: "بادبادک" },
+        { riddle: "آن چیست که فقط با نام بردنش می‌شکند؟", options: ["شیشه", "سکوت", "دل", "یخ"], answer: "سکوت" },
+        { riddle: "آن چیست که چشم دارد اما نمی‌بیند، پوست دارد اما بدن ندارد؟", options: ["سیب زمینی", "مار", "کفش", "درخت"], answer: "سیب زمینی" },
+        { riddle: "آن چیست که اشک دارد اما چشم ندارد؟", options: ["ابر", "شمع", "پیاز", "دریا"], answer: "شمع" },
+        { riddle: "آن چیست که هر چه آن را می‌کشیم کوتاه‌تر می‌شود؟", options: ["سیگار", "طناب", "خط", "زمان"], answer: "سیگار" },
+        { riddle: "آن چیست که برگ دارد اما درخت نیست، شیرازه دارد اما کتاب نیست؟", options: ["دفتر", "کاهو", "تقویم", "روزنامه"], answer: "کاهو" },
+        { riddle: "آن چیست که همیشه دست به کمر ایستاده است؟", options: ["آفتابه", "سماور", "فنجان", "کوزه"], answer: "آفتابه" },
+        { riddle: "آن چیست که آتش است اما دود ندارد؟", options: ["برق", "عشق", "فلفل", "خورشید"], answer: "برق" },
+        { riddle: "آن چیست که همه می‌خورند ولی سیر نمی‌شوند؟", options: ["غصه", "هوا", "کتک", "آب"], answer: "غصه" },
+        { riddle: "آن چیست که یک پا دارد و سه چشم؟", options: ["چراغ راهنما", "عینک", "دوربین", "سوزن"], answer: "چراغ راهنما" },
+        { riddle: "آن چیست که پوستش را می‌کند و گریه می‌کنند؟", options: ["پیاز", "سیب", "موز", "نارگیل"], answer: "پیاز" },
+        { riddle: "آن چیست که در زمستان خانه را گرم می‌کند و در تابستان درخت را خنک؟", options: ["برگ", "بخاری", "کولر", "آفتاب"], answer: "برگ" },
+        { riddle: "آن چیست که اولش عبادت است و آخرش آشامیدنی؟", options: ["شام", "سحر", "چای", "آب"], answer: "شام" },
+        { riddle: "آن چیست که هزاران چشم دارد اما نمی‌بیند؟", options: ["آسمان", "الک", "تور ماهیگیری", "زنبور"], answer: "الک" },
+        { riddle: "آن چیست که می‌رود اما بر نمی‌گردد؟", options: ["عمر", "راه", "رودخانه", "باد"], answer: "عمر" },
+        { riddle: "آن چیست که بی زبان سخن می‌گوید و بی پا راه می‌رود؟", options: ["نامه", "کتاب", "تلفن", "رادیو"], answer: "نامه" },
+        { riddle: "آن چیست که هر چه پاکش کنی کثیف‌تر می‌شود؟", options: ["آب", "دستمال", "صابون", "تخته"], answer: "آب" },
+        { riddle: "آن چیست که سر دارد، ته دارد، اما بدن ندارد؟", options: ["سکه", "کتاب", "صف", "جاده"], answer: "صف" },
+        { riddle: "آن چیست که تا اسمش را صدا می‌زنی ناپدید می‌شود؟", options: ["سکوت", "تاریکی", "راز", "خواب"], answer: "سکوت" },
+        { riddle: "آن چیست که وقتی هوا گرم است لباس می‌پوشد و وقتی سرد است لخت می‌شود؟", options: ["درخت", "کوه", "زمین", "انسان"], answer: "درخت" },
+        { riddle: "آن چیست که با بریدن سرش، زنده می‌شود؟", options: ["خز", "بالش", "دکمه", "قارچ"], answer: "خز" },
+        { riddle: "آن چیست که روز و شب راه می‌رود اما خسته نمی‌شود؟", options: ["آب", "ساعت", "خورشید", "قلب"], answer: "ساعت" },
+        { riddle: "آن چیست که هم در آشپزخانه است هم در اتومبیل؟", options: ["دنده", "چرخ", "فرمان", "صندلی"], answer: "دنده" },
+        { riddle: "آن چیست که نه دست دارد و نه پا، اما از همه جا بالا می‌رود؟", options: ["دود", "پیچک", "سایه", "باد"], answer: "دود" },
+        { riddle: "آن چیست که وقتی می‌خندد لب‌هایش باز نمی‌شود؟", options: ["پسته", "انار", "گردو", "فندق"], answer: "پسته" },
+        { riddle: "آن چیست که پر دارد اما پرواز نمی‌کند، و اگر آب بخورد می‌میرد؟", options: ["آتش", "بالش", "قند", "کاغذ"], answer: "آتش" },
+        { riddle: "آن چیست که هر چه تندتر بدود، زودتر به زمین می‌خورد؟", options: ["دوچرخه", "چرخ", "آبشار", "عمر"], answer: "دوچرخه" },
+        { riddle: "آن چیست که با اینکه پا ندارد اما سفر می‌کند؟", options: ["تمبر", "نامه", "پول", "همه موارد"], answer: "همه موارد" },
+        { riddle: "آن چیست که در آب غرق نمی‌شود و در آتش نمی‌سوزد؟", options: ["یخ", "جیوه", "سایه", "خاک"], answer: "یخ" },
+        { riddle: "آن چیست که یک نفر دارد، دو نفر دارد، اما سه نفر ندارد؟", options: ["راز", "پول", "دوست", "نام"], answer: "راز" },
+        { riddle: "آن چیست که سرخ است اما سیب نیست، لایه لایه است اما پیاز نیست؟", options: ["انار", "گل رز", "کلم قرمز", "لبو"], answer: "انار" },
+        { riddle: "آن چیست که اول چهار پا دارد، بعد دو پا، و در آخر سه پا؟", options: ["انسان", "میمون", "قورباغه", "میز"], answer: "انسان" },
+        { riddle: "آن چیست که همه آن را دارند ولی هیچکس نمی‌تواند آن را از دست بدهد؟", options: ["سایه", "گذشته", "نام", "خاطره"], answer: "سایه" },
+        { riddle: "آن چیست که مادر همه چیز است؟", options: ["زمین", "طبیعت", "صبر", "آب"], answer: "زمین" },
+        { riddle: "آن چیست که هر چه می‌خورد چاق نمی‌شود؟", options: ["آسیاب", "کرم", "آتش", "موریانه"], answer: "آسیاب" },
+        { riddle: "آن چیست که چیستان است؟", options: ["راز", "معما", "سوال", "کلمه"], answer: "معما" },
+        { riddle: "کدام حیوان است که اگر سرش را ببری عضوی از بدن می‌شود؟", options: ["گرگ", "مار", "شیر", "خرس"], answer: "گرگ" },
+        { riddle: "آن چیست که با گریه وارد می‌شود و با گریه بدرقه می‌شود؟", options: ["انسان", "باران", "غم", "شادی"], answer: "انسان" },
+        { riddle: "آن چیست که وقتی راه می‌رود رد پا ندارد؟", options: ["کشتی", "ماهی", "قطار", "هواپیما"], answer: "کشتی" },
+        { riddle: "آن چیست که هر چه تقسیمش کنی کم نمی‌شود؟", options: ["مهربانی", "دانش", "شادی", "همه موارد"], answer: "همه موارد" }
+    ];
 
-                    screen4.addEventListener('click', () => {
-                        if (!prompt.classList.contains('hidden')) {
-                            eventSound.play();
-                            screen4.classList.add('hidden');
-                            startChallengeIntro();
-                        }
-                    }, { once: true });
-                });
-            }
+    // --- Variables ---
+    let gameState = { highScore: 0, coins: 230 };
+    let score = 0;
+    let lives = 3;
+    let currentRiddleIndex = 0;
+    let shuffledRiddles = [];
 
-            function startChallengeIntro() {
-                screen5.classList.remove('hidden');
-                screen5.classList.add('animate-fade-in');
+    // --- Navigation Functions ---
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id === 'main-menu-screen') updateMenuUI();
+    }
 
-                const challengeText = document.getElementById('challenge-text');
-                const challengePrompt = document.getElementById('challenge-continue');
-                const message = "چالش ساده‌س، فقط نزار توپ‌های قرمز به زمین برسن.";
+    function showToast() {
+        const t = document.getElementById('toast-modal');
+        t.style.opacity = '1';
+        t.style.transform = 'translate(-50%, 0)';
+        setTimeout(() => {
+            t.style.opacity = '0';
+            t.style.transform = 'translate(-50%, -20px)';
+        }, 2000);
+    }
 
-                setTimeout(() => {
-                    typeWriter(challengeText, message, 120, () => {
-                        challengePrompt.classList.remove('hidden');
-                        screen5.addEventListener('click', () => {
-                             if (!challengePrompt.classList.contains('hidden')) {
-                                screen5.classList.add('hidden');
-                                startRedBallGame();
-                             }
-                        }, { once: true });
-                    });
-                }, 1000);
-            }
+    // --- Game Logic ---
+    function updateMenuUI() {
+        // نام کاربری ثابت است و در HTML نوشته شده
+        document.getElementById('menu-score').textContent = gameState.highScore;
+        document.getElementById('menu-coins').textContent = gameState.coins;
+    }
 
-            function startRedBallGame() {
-                screen6.classList.remove('hidden');
-                bgMusic.volume = 0.5; 
-                bgMusic.play().catch(e => console.log("Audio play failed", e));
+    function startGame() {
+        score = 0;
+        lives = 3;
+        shuffledRiddles = [...riddles].sort(() => Math.random() - 0.5);
+        currentRiddleIndex = 0;
+        showScreen('gameplay-screen');
+        loadRiddle();
+    }
 
-                const gameDuration = 30000; 
-                const spawnRate = 600; 
-                let gameActive = true;
+    function loadRiddle() {
+        if(currentRiddleIndex >= shuffledRiddles.length || lives <= 0) {
+            endGame();
+            return;
+        }
 
-                setTimeout(() => {
-                    gameActive = false;
-                    endGame();
-                }, gameDuration);
+        const data = shuffledRiddles[currentRiddleIndex];
+        document.getElementById('riddle-text').textContent = data.riddle;
+        document.getElementById('game-score').textContent = score;
+        document.getElementById('game-lives').textContent = lives;
 
-                const spawner = setInterval(() => {
-                    if (!gameActive) {
-                        clearInterval(spawner);
-                        return;
-                    }
-                    spawnBall();
-                }, spawnRate);
-            }
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
 
-            function spawnBall() {
-                const ball = document.createElement('div');
-                ball.classList.add('red-ball');
-                const randomLeft = Math.floor(Math.random() * 90) + 5; 
-                ball.style.left = `${randomLeft}%`;
-                const duration = Math.random() * 2 + 2; 
-                ball.style.animation = `fall-down ${duration}s linear forwards`;
-
-                ball.addEventListener('click', () => {
-                    ball.style.animation = 'pop 0.2s ease-out forwards';
-                    setTimeout(() => {
-                        if(ball.parentNode) ball.parentNode.removeChild(ball);
-                    }, 200);
-                });
-                
-                ball.addEventListener('animationend', (e) => {
-                     if (e.animationName === 'fall-down') {
-                        if(ball.parentNode) ball.parentNode.removeChild(ball);
-                     }
-                });
-                screen6.appendChild(ball);
-            }
-
-            function endGame() {
-                bgMusic.pause();
-                screen6.innerHTML = '';
-                const endMsg = document.createElement('h1');
-                endMsg.className = "text-white text-4xl text-center mt-40 animate-fade-in";
-                endMsg.innerText = "پایان چالش";
-                screen6.appendChild(endMsg);
-            }
-
-            startSequence1();
+        // Shuffle options for display
+        let opts = [...data.options].sort(() => Math.random() - 0.5);
+        
+        opts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(btn, opt, data.answer); 
+            container.appendChild(btn);
         });
-    </script>
+    }
+
+    function checkAnswer(btn, selected, correctText) {
+        // برای پیدا کردن جواب درست در آرایه گزینه‌ها
+        const correctAnswer = correctText; 
+        
+        // مقایسه مستقیم
+        // نکته: در این بازی فرض شده که جواب دقیقا یکی از گزینه‌هاست.
+        // اگر لازم شد، می‌توانید منطق پیچیده‌تری اضافه کنید.
+        const buttons = document.querySelectorAll('.btn-option');
+        let isCorrect = false;
+
+        // چون در دیتا بیس گاهی answer با یکی از option ها یکی است، ما آن را پیدا میکنیم
+        // اما گاهی answer برای حالت تایپی بوده. 
+        // برای اطمینان در حالت ۴ گزینه ای، باید چک کنیم کدام گزینه "درست" است.
+        // در دیتایی که من دادم، answer دقیقا برابر یکی از گزینه ها نیست همیشه (چون برای تایپ بود).
+        // پس بیایید فرض کنیم گزینه اول در آرایه دیتابیس همیشه درست بوده قبل از شافل شدن؟
+        // خیر، آرایه riddles را نگاه کنید:
+        // { riddle: "...", options: ["هوا", ...], answer: "هوا" } -> اینجا گزینه و جواب یکی هستند.
+        // پس مقایسه متنی درست کار میکند.
+        
+        if (selected === correctText) {
+            isCorrect = true;
+        }
+
+        buttons.forEach(b => b.disabled = true);
+
+        if(isCorrect) {
+            btn.classList.add('correct-flash');
+            score += 10;
+            gameState.coins += 5;
+        } else {
+            btn.classList.add('wrong-flash');
+            lives--;
+            // نمایش گزینه صحیح
+            buttons.forEach(b => {
+                if(b.textContent === correctText) b.classList.add('correct-flash');
+            });
+        }
+
+        setTimeout(() => {
+            if(lives > 0) {
+                currentRiddleIndex++;
+                loadRiddle();
+            } else {
+                endGame();
+            }
+        }, 1200);
+    }
+
+    function endGame() {
+        if(score > gameState.highScore) gameState.highScore = score;
+        localStorage.setItem('houshyar_game_data', JSON.stringify(gameState));
+        
+        document.getElementById('final-score').textContent = score;
+        document.getElementById('final-highscore').textContent = gameState.highScore;
+        showScreen('game-over-screen');
+    }
+
+    // --- Events ---
+    document.getElementById('start-game-btn').addEventListener('click', startGame);
+    document.getElementById('play-again-btn').addEventListener('click', startGame);
+    document.getElementById('back-to-menu-btn').addEventListener('click', () => showScreen('main-menu-screen'));
+    document.getElementById('exit-game-btn').addEventListener('click', () => showScreen('main-menu-screen'));
+    
+    // Placeholder buttons
+    document.getElementById('online-game-btn').addEventListener('click', showToast);
+    document.getElementById('settings-btn').addEventListener('click', showToast);
+    document.querySelectorAll('.footer-circle-btn').forEach(b => b.addEventListener('click', showToast));
+
+    // Init
+    window.onload = function() {
+        const saved = localStorage.getItem('houshyar_game_data');
+        if(saved) {
+            const parsed = JSON.parse(saved);
+            gameState.highScore = parsed.highScore || 0;
+            gameState.coins = parsed.coins || 230;
+        }
+        updateMenuUI();
+    };
+
+</script>
 </body>
 </html>
