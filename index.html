@@ -38,6 +38,7 @@
             box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
         }
 
+        /* --- Profile Card (Smaller Size) --- */
         .profile-card {
             background: #111;
             border: 1px solid #FFD700;
@@ -58,8 +59,8 @@
         }
 
         .avatar-circle {
-            width: 100px;
-            height: 100px;
+            width: 80px; /* Smaller avatar */
+            height: 80px;
             border-radius: 50%;
             background: linear-gradient(135deg, #FFD700 30%, #000 70%);
             border: 2px solid #FFD700;
@@ -88,7 +89,7 @@
             color: #000;
             border-radius: 12px;
             padding: 2px 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
         }
 
@@ -155,6 +156,23 @@
         }
         .flash-input:focus { border-color: #FFD700; }
 
+        /* Skip Button */
+        .btn-skip {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            border: 1px solid #818cf8;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-black">
@@ -173,33 +191,46 @@
     </div>
 
     <!-- Center Content -->
-    <div class="flex flex-col items-center justify-center w-full mt-16 space-y-8">
+    <!-- EDIT: Reduced margin-top (mt-8 instead of mt-16) and spacing -->
+    <div class="flex flex-col items-center justify-center w-full mt-8 space-y-6">
         
         <!-- Profile Card -->
-        <div class="profile-card w-[300px] h-[360px] flex flex-col items-center justify-center relative">
-            <div class="avatar-circle mb-4"></div>
+        <!-- EDIT: Reduced size to w-[260px] h-[300px] -->
+        <div class="profile-card w-[260px] h-[300px] flex flex-col items-center justify-center relative">
+            <div class="avatar-circle mb-3"></div>
             <div class="flex flex-col items-center space-y-2">
                 <div class="tag-pill">بازیکن</div>
-                <h1 class="text-3xl font-black gold-text tracking-wide">هوشیار</h1>
-                <div class="flex items-center space-x-4 space-x-reverse mt-4 text-gray-300">
+                <h1 class="text-2xl font-black gold-text tracking-wide">هوشیار</h1>
+                <div class="flex items-center space-x-4 space-x-reverse mt-2 text-gray-300 text-sm">
                     <span>امتیاز: <span id="menu-score">0</span></span>
-                    <span>سکه: <span id="menu-coins">0</span></span>
+                    <span>بلیط: <span id="menu-tickets" class="text-indigo-400 font-bold">0</span></span>
                 </div>
             </div>
         </div>
 
         <!-- Main Buttons -->
-        <div class="w-full max-w-xs space-y-4">
-            <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-xl shadow-lg">شروع بازی</button>
-            <button id="challenges-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2);">چالش‌ها</button>
+        <!-- EDIT: Moved higher by layout changes above -->
+        <div class="w-full max-w-xs space-y-3">
+            <button id="open-mode-modal-btn" class="btn-main w-full py-3 text-lg shadow-lg">شروع بازی</button>
+            <button id="challenges-btn" class="btn-main w-full py-3 text-lg opacity-80" style="filter: grayscale(0.2);">آرشیو</button>
         </div>
     </div>
 
     <!-- Footer Icons -->
     <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-4">
+        <!-- Button 1 (Right in RTL) -->
         <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+        
+        <!-- Button 2 (Center) -->
         <button class="footer-circle-btn" style="width: 65px; height: 65px; border-color: #F0C040;"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></button>
-        <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></button>
+        
+        <!-- Button 3 (Left in RTL - Bottom Left) -->
+        <!-- EDIT: Added specific ID for challenge trigger -->
+        <button id="daily-challenge-btn" class="footer-circle-btn hover:text-indigo-400 hover:border-indigo-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        </button>
     </div>
 </div>
 
@@ -221,17 +252,47 @@
     </div>
 </div>
 
+<!-- SPECIAL CHALLENGE MODAL (New) -->
+<div id="challenge-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
+    <div class="profile-card w-11/12 max-w-sm p-6 text-center" style="border-color: #818cf8;">
+        <div class="w-16 h-16 bg-indigo-900 rounded-full mx-auto flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        </div>
+        <h2 class="text-2xl font-black text-indigo-400 mb-2">چالش سرعت</h2>
+        <p class="text-gray-300 text-sm mb-6 leading-6">
+            به ۳ سوال در حالت تایپی (Flash) پشت سر هم پاسخ درست بدهید.
+        </p>
+        <div class="bg-gray-800 rounded-xl p-3 mb-6 border border-gray-700">
+            <p class="text-xs text-gray-400 mb-1">جایزه:</p>
+            <p class="text-white font-bold text-lg">🎟️ 1x بلیط رد کردن سوال</p>
+        </div>
+        <button onclick="startChallengeRun()" class="btn-main w-full py-3 text-lg shadow-lg" style="background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%); color: white;">شروع چالش</button>
+        <button id="close-challenge-btn" class="mt-4 text-gray-500 text-sm">بستن</button>
+    </div>
+</div>
+
 <!-- 2. GAMEPLAY SCREEN -->
 <div id="gameplay-screen" class="screen p-6 justify-between">
     <header class="flex justify-between items-center w-full pt-4">
         <button id="exit-game-btn" class="text-red-500 font-bold px-3 py-1 border border-red-900 rounded bg-red-900/20">خروج</button>
-        <div class="text-lg font-bold">
-            امتیاز: <span id="game-score" class="gold-text">0</span>
-        </div>
-        <div class="text-lg font-bold">
-            <span id="game-stats">❤️ 3</span>
+        
+        <!-- Reward Skip Button (Initially Hidden) -->
+        <button id="skip-btn" class="hidden btn-skip" onclick="useSkipTicket()">
+            🎟️ رد کردن سوال
+        </button>
+
+        <div class="text-lg font-bold text-right">
+            <div id="score-display">امتیاز: <span id="game-score" class="gold-text">0</span></div>
+            <!-- Progress for Challenge Mode -->
+            <div id="challenge-progress" class="hidden text-sm text-indigo-400">پیشرفت: <span id="challenge-count">0</span>/3</div>
         </div>
     </header>
+    
+    <div class="w-full flex justify-end px-1 mt-1">
+        <span id="game-stats" class="text-lg font-bold">❤️ 3</span>
+    </div>
 
     <main class="flex-grow flex flex-col justify-center items-center w-full max-w-md mx-auto">
         <!-- Riddle Box -->
@@ -239,30 +300,26 @@
              <div id="timer-bar-container" class="absolute top-0 left-0 right-0 hidden rounded-t-xl">
                 <div id="timer-bar"></div>
             </div>
-            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200 mt-2">متن سوال اینجا قرار می‌گیرد</p>
+            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200 mt-2">...</p>
         </div>
 
         <!-- Mode: 2 Old (Buttons) -->
-        <div id="options-container" class="grid grid-cols-2 gap-4 w-full">
-            <!-- JS populates buttons here -->
-        </div>
+        <div id="options-container" class="grid grid-cols-2 gap-4 w-full"></div>
 
         <!-- Mode: 2.5 Flash (Input) -->
         <div id="flash-container" class="w-full flex flex-col items-center hidden">
             <input type="text" id="flash-input" class="flash-input" placeholder="پاسخ را بنویسید...">
             <button id="flash-submit-btn" class="btn-main w-full py-3 mt-4 text-lg">ثبت پاسخ</button>
-            <p class="text-gray-500 text-xs mt-2">توجه: کیبورد فارسی استفاده کنید</p>
         </div>
     </main>
 </div>
 
 <!-- 3. GAME OVER SCREEN -->
 <div id="game-over-screen" class="screen justify-center items-center p-8 text-center">
-    <h1 class="text-5xl font-black mb-6 gold-text">پایان بازی</h1>
-    <p class="text-2xl text-gray-300 mb-2">امتیاز شما: <span id="final-score" class="text-white">0</span></p>
-    <p class="text-sm text-gray-500 mb-8">رکورد قبلی: <span id="final-highscore">0</span></p>
+    <h1 id="game-over-title" class="text-5xl font-black mb-6 gold-text">پایان بازی</h1>
+    <p id="game-over-msg" class="text-2xl text-gray-300 mb-2">امتیاز شما: <span id="final-score" class="text-white">0</span></p>
     
-    <div class="w-full max-w-xs space-y-4">
+    <div class="w-full max-w-xs space-y-4 mt-8">
         <button id="play-again-btn" class="btn-main w-full py-3">بازی مجدد</button>
         <button id="back-to-menu-btn" class="w-full py-3 border border-gray-600 rounded-xl text-gray-400">بازگشت به منو</button>
     </div>
@@ -270,11 +327,11 @@
 
 <!-- Toast -->
 <div id="toast-modal" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gold px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none">
-    <p class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
+    <p id="toast-msg" class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
 </div>
 
 <script>
-    // --- 70 Riddles Database ---
+    // --- Database ---
     const riddles = [
         { riddle: "آن چیست که همه جا هست ولی جایی را اشغال نمی‌کند؟", options: ["هوا", "فکر", "نور", "فضا"], answer: "هوا" },
         { riddle: "آن چیست که پر دارد ولی پرواز نمی‌کند؟", options: ["کتاب", "بالش", "در", "هواپیما"], answer: "بالش" },
@@ -349,16 +406,20 @@
     ];
 
     // --- Variables ---
-    let gameState = { highScore: 0, coins: 230 };
+    // Added 'skipTickets'
+    let gameState = { highScore: 0, coins: 230, skipTickets: 0 };
     let score = 0;
     let lives = 3;
     let currentRiddleIndex = 0;
     let shuffledRiddles = [];
-    let currentMode = 'old'; // 'old' or 'flash'
+    let currentMode = 'old'; 
     let timerInterval;
     let timeLeft = 30;
+    
+    // Challenge Specifics
+    let isChallengeMode = false;
+    let challengeStreak = 0;
 
-    // --- Helper ---
     const normalize = (str) => str.trim().replace(/ی/g, 'ي').replace(/ک/g, 'ك');
 
     // --- Navigation ---
@@ -368,8 +429,12 @@
         if (id === 'main-menu-screen') updateMenuUI();
     }
 
-    function showToast() {
+    function showToast(msg) {
         const t = document.getElementById('toast-modal');
+        const p = document.getElementById('toast-msg');
+        if(msg) p.textContent = msg;
+        else p.textContent = "⚠️ این بخش به زودی اضافه می‌شود";
+        
         t.style.opacity = '1';
         t.style.transform = 'translate(-50%, 0)';
         setTimeout(() => {
@@ -380,6 +445,8 @@
 
     // --- Modal Logic ---
     const modeModal = document.getElementById('mode-modal');
+    const challengeModal = document.getElementById('challenge-modal');
+
     document.getElementById('open-mode-modal-btn').onclick = () => {
         modeModal.classList.remove('hidden');
     };
@@ -387,16 +454,34 @@
         modeModal.classList.add('hidden');
     };
 
+    // Challenge Modal Triggers
+    document.getElementById('daily-challenge-btn').onclick = () => {
+        challengeModal.classList.remove('hidden');
+    };
+    document.getElementById('close-challenge-btn').onclick = () => {
+        challengeModal.classList.add('hidden');
+    };
+
     function selectMode(mode) {
         currentMode = mode;
+        isChallengeMode = false;
         modeModal.classList.add('hidden');
+        startGame();
+    }
+
+    // --- Challenge Logic ---
+    function startChallengeRun() {
+        challengeModal.classList.add('hidden');
+        currentMode = 'flash';
+        isChallengeMode = true;
+        challengeStreak = 0;
         startGame();
     }
 
     // --- Game Logic ---
     function updateMenuUI() {
         document.getElementById('menu-score').textContent = gameState.highScore;
-        document.getElementById('menu-coins').textContent = gameState.coins;
+        document.getElementById('menu-tickets').textContent = gameState.skipTickets || 0;
     }
 
     function startGame() {
@@ -404,19 +489,37 @@
         currentRiddleIndex = 0;
         shuffledRiddles = [...riddles].sort(() => Math.random() - 0.5);
         
-        // Mode specific setup
-        if(currentMode === 'old') {
+        // UI Reset
+        document.getElementById('score-display').classList.remove('hidden');
+        document.getElementById('challenge-progress').classList.add('hidden');
+        document.getElementById('skip-btn').classList.add('hidden');
+
+        if(isChallengeMode) {
+            lives = 1; // Or just infinite, controlled by streak
+            document.getElementById('score-display').classList.add('hidden');
+            document.getElementById('challenge-progress').classList.remove('hidden');
+            document.getElementById('challenge-count').textContent = '0';
+            document.getElementById('options-container').classList.add('hidden');
+            document.getElementById('flash-container').classList.remove('hidden');
+            document.getElementById('timer-bar-container').classList.remove('hidden');
+            document.getElementById('game-stats').textContent = '⚠️ چالش';
+        } else if(currentMode === 'old') {
             lives = 3;
             document.getElementById('options-container').classList.remove('hidden');
             document.getElementById('flash-container').classList.add('hidden');
             document.getElementById('timer-bar-container').classList.add('hidden');
             document.getElementById('game-stats').textContent = '❤️ ' + lives;
         } else {
-            // Flash Mode
+            // Flash Normal
             document.getElementById('options-container').classList.add('hidden');
             document.getElementById('flash-container').classList.remove('hidden');
             document.getElementById('timer-bar-container').classList.remove('hidden');
             document.getElementById('game-stats').textContent = '⏳ 30';
+        }
+        
+        // Show Skip Button if user has tickets and NOT in challenge mode
+        if(!isChallengeMode && gameState.skipTickets > 0) {
+            document.getElementById('skip-btn').classList.remove('hidden');
         }
 
         showScreen('gameplay-screen');
@@ -429,17 +532,16 @@
             return;
         }
 
-        // Check for game over in old mode
-        if(currentMode === 'old' && lives <= 0) {
-            endGame();
-            return;
-        }
-
         const data = shuffledRiddles[currentRiddleIndex];
         document.getElementById('riddle-text').textContent = data.riddle;
         document.getElementById('game-score').textContent = score;
 
-        if(currentMode === 'old') {
+        // Reset inputs
+        const input = document.getElementById('flash-input');
+        input.value = '';
+        input.classList.remove('correct-flash', 'wrong-flash');
+
+        if(currentMode === 'old' && !isChallengeMode) {
             setupOldMode(data);
         } else {
             setupFlashMode(data);
@@ -473,20 +575,18 @@
             btn.classList.add('wrong-flash');
             lives--;
             document.getElementById('game-stats').textContent = '❤️ ' + lives;
-            // Show correct answer
             buttons.forEach(b => {
                 if(b.textContent === correctText) b.classList.add('correct-flash');
             });
-            setTimeout(nextQuestion, 1200);
+            
+            if(lives <= 0) setTimeout(endGame, 1500);
+            else setTimeout(nextQuestion, 1500);
         }
     }
 
     function setupFlashMode(data) {
         const input = document.getElementById('flash-input');
-        input.value = '';
         input.focus();
-        input.classList.remove('correct-flash', 'wrong-flash');
-        
         startTimer();
     }
 
@@ -505,7 +605,7 @@
     }
 
     function updateTimerUI() {
-        document.getElementById('game-stats').textContent = '⏳ ' + timeLeft;
+        if(!isChallengeMode) document.getElementById('game-stats').textContent = '⏳ ' + timeLeft;
         const pct = (timeLeft / 30) * 100;
         document.getElementById('timer-bar').style.width = pct + '%';
         if(timeLeft < 5) document.getElementById('timer-bar').style.backgroundColor = '#ef4444';
@@ -516,9 +616,16 @@
         clearInterval(timerInterval);
         const input = document.getElementById('flash-input');
         input.classList.add('wrong-flash');
-        // Time out is instant game over in some flash versions, or just next question.
-        // Let's make it Game Over to be challenging.
-        setTimeout(endGame, 1000);
+        
+        if(isChallengeMode) {
+            // Fail challenge
+            showToast("زمان تمام شد! چالش باختید.");
+            setTimeout(() => {
+                showScreen('main-menu-screen');
+            }, 1500);
+        } else {
+            setTimeout(endGame, 1000);
+        }
     }
 
     function checkFlashAnswer() {
@@ -529,14 +636,50 @@
         if(userVal === correctVal) {
             clearInterval(timerInterval);
             input.classList.add('correct-flash');
-            score += 20; // More points for typing
-            gameState.coins += 10;
+            
+            if(isChallengeMode) {
+                challengeStreak++;
+                document.getElementById('challenge-count').textContent = challengeStreak;
+                if(challengeStreak >= 3) {
+                    // Win Challenge
+                    setTimeout(winChallenge, 1000);
+                    return;
+                }
+            } else {
+                score += 20;
+                gameState.coins += 10;
+            }
             setTimeout(nextQuestion, 1000);
         } else {
             input.classList.add('wrong-flash');
-            setTimeout(() => {
-                input.classList.remove('wrong-flash');
-            }, 500);
+            setTimeout(() => input.classList.remove('wrong-flash'), 500);
+        }
+    }
+
+    function winChallenge() {
+        gameState.skipTickets = (gameState.skipTickets || 0) + 1;
+        saveData();
+        
+        document.getElementById('game-over-title').textContent = "تبریک!";
+        document.getElementById('game-over-title').className = "text-5xl font-black mb-6 text-indigo-400";
+        document.getElementById('game-over-msg').innerHTML = "شما برنده <span class='text-white font-bold'>یک بلیط رد کردن</span> شدید!";
+        document.getElementById('final-score').parentElement.style.display = 'none'; // Hide score
+        
+        showScreen('game-over-screen');
+    }
+
+    function useSkipTicket() {
+        if(gameState.skipTickets > 0) {
+            gameState.skipTickets--;
+            saveData();
+            clearInterval(timerInterval); // Stop current timer
+            showToast("سوال رد شد! (تعداد بلیط: " + gameState.skipTickets + ")");
+            
+            // Hide button if no tickets left
+            if(gameState.skipTickets <= 0) document.getElementById('skip-btn').classList.add('hidden');
+            
+            // Go to next
+            nextQuestion();
         }
     }
 
@@ -547,12 +690,20 @@
 
     function endGame() {
         clearInterval(timerInterval);
-        if(score > gameState.highScore) gameState.highScore = score;
-        localStorage.setItem('houshyar_game_data', JSON.stringify(gameState));
+        if(!isChallengeMode && score > gameState.highScore) gameState.highScore = score;
+        saveData();
         
+        document.getElementById('game-over-title').textContent = "پایان بازی";
+        document.getElementById('game-over-title').className = "text-5xl font-black mb-6 gold-text";
+        document.getElementById('game-over-msg').innerHTML = 'امتیاز شما: <span id="final-score" class="text-white">0</span>';
+        document.getElementById('final-score').parentElement.style.display = 'block';
         document.getElementById('final-score').textContent = score;
-        document.getElementById('final-highscore').textContent = gameState.highScore;
+        
         showScreen('game-over-screen');
+    }
+
+    function saveData() {
+        localStorage.setItem('houshyar_game_data', JSON.stringify(gameState));
     }
 
     // --- Event Listeners ---
@@ -562,7 +713,7 @@
     });
 
     document.getElementById('play-again-btn').addEventListener('click', () => {
-         // Re-open modal or restart same mode? Let's restart same mode for UX
+         // Reset UI titles to normal in case they were changed by Challenge win
          startGame();
     });
     
@@ -573,9 +724,8 @@
     });
     
     // Placeholder buttons
-    document.getElementById('challenges-btn').addEventListener('click', showToast);
-    document.getElementById('settings-btn').addEventListener('click', showToast);
-    document.querySelectorAll('.footer-circle-btn').forEach(b => b.addEventListener('click', showToast));
+    document.getElementById('challenges-btn').addEventListener('click', () => showToast('آرشیو سوالات هنوز فعال نیست'));
+    document.getElementById('settings-btn').addEventListener('click', () => showToast());
 
     // Init
     window.onload = function() {
@@ -584,6 +734,7 @@
             const parsed = JSON.parse(saved);
             gameState.highScore = parsed.highScore || 0;
             gameState.coins = parsed.coins || 230;
+            gameState.skipTickets = parsed.skipTickets || 0;
         }
         updateMenuUI();
     };
