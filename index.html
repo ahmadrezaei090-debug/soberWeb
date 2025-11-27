@@ -36,74 +36,77 @@
             box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
         }
 
-        /* --- EXACT PROFILE STYLE (Based on Image) --- */
+        /* --- UPDATED: SMALLER PROFILE STYLE --- */
         .profile-wrapper {
             position: absolute;
-            top: 25px;
-            right: 20px;
+            top: 15px; /* کمی بالاتر رفت */
+            right: 15px; /* کمی راست‌تر رفت */
             display: flex;
             align-items: center;
             z-index: 20;
         }
 
-        /* The Round Avatar */
+        /* The Round Avatar - Smaller */
         .profile-avatar-circle {
-            width: 70px;
-            height: 70px;
+            width: 50px; /* قبلا 70 بود */
+            height: 50px; /* قبلا 70 بود */
             border-radius: 50%;
             border: 2px solid #FFD700;
             background: #000;
-            z-index: 10; /* On top of the card */
+            z-index: 10;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            box-shadow: 0 0 8px rgba(0,0,0,0.8);
         }
         
-        /* The Card Container */
+        /* The Card Container - Smaller */
         .profile-card-box {
             background-color: #111;
-            border: 2px solid #FFD700;
-            border-radius: 16px;
-            width: 200px;
-            padding: 10px 10px 12px 35px; /* Extra padding right for avatar overlap */
-            margin-right: -30px; /* Pulls the card UNDER the avatar in RTL */
+            border: 1px solid #FFD700; /* خط نازک‌تر */
+            border-radius: 12px;
+            width: 140px; /* قبلا 200 بود */
+            padding: 6px 6px 8px 25px; /* پدینگ کمتر */
+            margin-right: -25px; 
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            gap: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             position: relative;
             z-index: 5;
         }
 
-        /* The Inset "Pressed" Boxes inside the card */
+        /* The Inset Boxes - Smaller */
         .inset-box {
             background: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
-            border-radius: 8px;
-            padding: 6px 12px;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.9), inset -1px -1px 0px rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 3px 8px;
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-right: 4px solid #b89626; /* Gold accent on side */
+            border-right: 3px solid #b89626;
         }
 
         .label-text {
-            font-size: 0.7rem;
+            font-size: 0.6rem; /* فونت ریزتر */
             color: #aaa;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             display: block;
             text-align: right;
-            font-family: 'Vazirmatn', serif; /* A bit more classic look */
         }
+        
+        /* اصلاح سایز فونت‌های داخل باکس */
+        .profile-name-text { font-size: 0.75rem; }
+        .profile-coin-text { font-size: 0.9rem; }
 
         /* --- Settings Button --- */
         .settings-btn-circle {
             background: rgba(20, 20, 20, 0.8);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px; /* کمی کوچک‌تر */
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -140,28 +143,40 @@
         .btn-skip { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); border: 1px solid #818cf8; color: white; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
+        /* Intro Screen Styles */
+        #intro-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-black">
+
+<!-- 0. INTRO SCREEN (NEW) -->
+<div id="intro-screen" class="screen h-full w-full bg-black justify-center items-center z-50">
+    <img id="intro-image" src="" alt="Intro">
+</div>
 
 <!-- 1. MAIN MENU SCREEN -->
 <div id="main-menu-screen" class="screen h-full justify-between p-6 relative active">
     
     <!-- TOP LEFT: Settings -->
-    <div class="absolute top-6 left-6 z-20">
+    <div class="absolute top-4 left-4 z-20">
         <button id="settings-btn" class="settings-btn-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
         </button>
     </div>
 
-    <!-- TOP RIGHT: EXACT PROFILE DESIGN -->
+    <!-- TOP RIGHT: EXACT PROFILE DESIGN (SMALLER) -->
     <div class="profile-wrapper">
-        <!-- 1. The Avatar (First in RTL = Rightmost) -->
+        <!-- 1. The Avatar -->
         <div class="profile-avatar-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
             </svg>
         </div>
@@ -172,7 +187,7 @@
             <div>
                 <span class="label-text">بازیکن:</span>
                 <div class="inset-box">
-                    <span class="text-white font-bold text-sm tracking-wider">هوشیار</span>
+                    <span class="text-white font-bold tracking-wider profile-name-text">هوشیار</span>
                     <span class="text-[10px] opacity-70">✏️</span>
                 </div>
             </div>
@@ -181,7 +196,7 @@
             <div>
                 <span class="label-text">سکه:</span>
                 <div class="inset-box" style="justify-content: center;">
-                    <span id="menu-coins" class="text-yellow-400 font-bold text-lg">500</span>
+                    <span id="menu-coins" class="text-yellow-400 font-bold profile-coin-text">500</span>
                 </div>
             </div>
             
@@ -191,11 +206,8 @@
         </div>
     </div>
 
-    <!-- Center Content (Buttons Only - Title Removed) -->
+    <!-- Center Content -->
     <div class="flex flex-col items-center justify-center w-full h-full pt-10 pb-10">
-        <!-- Removed H1 Title as requested -->
-
-        <!-- Main Buttons -->
         <div class="w-full max-w-xs space-y-5">
             <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-2xl shadow-xl hover:scale-105 transition-transform">
                 شروع بازی
@@ -391,6 +403,12 @@
     let isChallengeMode = false;
     let challengeStreak = 0;
 
+    // INTRO IMAGES CONFIG
+    const introImages = [
+        "https://s6.uupload.ir/files/inshot_۲۰۲۵۱۱۲۷_۱۲۱۶۵۲۶۵۰_ia50.png",
+        "https://s6.uupload.ir/files/inshot_۲۰۲۵۱۱۲۷_۱۲۱۸۳۵۳۷۸_f2rw.png"
+    ];
+
     const normalize = (str) => str.trim().replace(/ی/g, 'ي').replace(/ک/g, 'ك');
 
     // --- Navigation ---
@@ -433,20 +451,47 @@
         challengeModal.classList.add('hidden');
     };
 
+    // --- INTRO & GAME START LOGIC ---
+
     function selectMode(mode) {
         currentMode = mode;
         isChallengeMode = false;
         modeModal.classList.add('hidden');
-        startGame();
+        
+        // Start Intro Sequence instead of direct game start
+        playIntroAndStartGame();
     }
 
-    // --- Challenge Logic ---
     function startChallengeRun() {
         challengeModal.classList.add('hidden');
         currentMode = 'flash';
         isChallengeMode = true;
         challengeStreak = 0;
-        startGame();
+        
+        // Start Intro Sequence for challenge as well (or skip if desired, currently playing)
+        playIntroAndStartGame();
+    }
+
+    // New Function: Plays the 12 second intro then starts game
+    function playIntroAndStartGame() {
+        showScreen('intro-screen');
+        const imgEl = document.getElementById('intro-image');
+        
+        // Show 1st Image
+        imgEl.src = introImages[0];
+        
+        // Wait 6 Seconds
+        setTimeout(() => {
+            // Show 2nd Image
+            imgEl.src = introImages[1];
+            
+            // Wait another 6 Seconds
+            setTimeout(() => {
+                // Start Actual Game
+                startGame();
+            }, 6000);
+            
+        }, 6000);
     }
 
     // --- Game Logic ---
@@ -684,7 +729,8 @@
     });
 
     document.getElementById('play-again-btn').addEventListener('click', () => {
-         startGame();
+         // Direct start without intro for "Play Again" for better UX
+         startGame(); 
     });
     
     document.getElementById('back-to-menu-btn').addEventListener('click', () => showScreen('main-menu-screen'));
