@@ -47,7 +47,6 @@
             flex-direction: row; 
         }
 
-        /* آواتار دایره‌ای */
         .profile-avatar-circle {
             width: 55px;
             height: 55px;
@@ -63,15 +62,14 @@
             position: relative;
         }
         
-        /* کارت مشخصات */
         .profile-card-box {
             background-color: #111;
             border: 1px solid #FFD700;
             border-radius: 12px;
             height: auto;
             min-width: 130px;
-            padding: 5px 35px 5px 10px; /* پدینگ راست زیاد برای فاصله از آواتار */
-            margin-right: -28px; /* کارت میره زیر آواتار */
+            padding: 5px 35px 5px 10px;
+            margin-right: -28px;
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -144,13 +142,38 @@
         .challenge-btn-sm {
             padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
         }
+        
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease;
+        }
+        #splash-screen img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            animation: pulse-logo 3s infinite;
+        }
+        @keyframes pulse-logo {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
 
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-black">
 
+<!-- SPLASH SCREEN (INTRO) -->
+<div id="splash-screen">
+    <!-- از ?raw=true استفاده شده تا عکس مستقیما بارگذاری شود -->
+    <img src="https://github.com/ahmadrezaei090-debug/soberWeb/blob/main/negin-art-1764247215354.png?raw=true" alt="Intro Logo">
+</div>
+
 <!-- 1. MAIN MENU SCREEN -->
-<div id="main-menu-screen" class="screen h-full justify-between p-6 relative active">
+<div id="main-menu-screen" class="screen h-full justify-between p-6 relative">
     
     <!-- Matrix Background Canvas -->
     <canvas id="matrix-bg"></canvas>
@@ -240,7 +263,7 @@
     </div>
 </div>
 
-<!-- UPDATED CHALLENGE MODAL (3 Challenges) -->
+<!-- UPDATED CHALLENGE MODAL (With Rewards) -->
 <div id="challenge-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
     <div class="game-card w-11/12 max-w-sm text-center bg-black" style="border-color: #818cf8;">
         <h2 class="text-xl font-black text-indigo-400 mb-4">مرکز چالش‌ها</h2>
@@ -251,24 +274,27 @@
                 <div class="text-right">
                     <p class="text-white text-sm font-bold">سرعت (Flash)</p>
                     <p class="text-[10px] text-gray-400">۳ پاسخ صحیح پشت هم</p>
+                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۱ بلیط رد کردن</p>
                 </div>
                 <button onclick="startChallengeRun('speed')" class="challenge-btn-sm bg-indigo-600 text-white">شروع</button>
             </div>
 
-            <!-- Challenge 2: Marathon (New) -->
+            <!-- Challenge 2: Marathon -->
             <div class="challenge-item">
                 <div class="text-right">
                     <p class="text-yellow-400 text-sm font-bold">استقامت (Old)</p>
                     <p class="text-[10px] text-gray-400">۵ پاسخ بدون باخت جان</p>
+                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۲۰۰ سکه</p>
                 </div>
                 <button onclick="startChallengeRun('marathon')" class="challenge-btn-sm bg-yellow-700 text-white">شروع</button>
             </div>
 
-            <!-- Challenge 3: Hardcore (New) -->
+            <!-- Challenge 3: Hardcore -->
             <div class="challenge-item">
                 <div class="text-right">
                     <p class="text-red-500 text-sm font-bold">هاردکور 🔥</p>
                     <p class="text-[10px] text-gray-400">تایپی | ۱۵ ثانیه زمان</p>
+                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۲ بلیط رد کردن</p>
                 </div>
                 <button onclick="startChallengeRun('hardcore')" class="challenge-btn-sm bg-red-900 text-white">شروع</button>
             </div>
@@ -828,6 +854,7 @@
 
     // Init
     window.onload = function() {
+        // Load Data
         const saved = localStorage.getItem('houshyar_game_data');
         if(saved) {
             const parsed = JSON.parse(saved);
@@ -835,8 +862,20 @@
             gameState.coins = parsed.coins || 500;
             gameState.skipTickets = parsed.skipTickets || 0;
         }
-        updateMenuUI();
-        startMatrixEffect(); // Start immediately
+        
+        // Handle Splash Screen Logic
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0'; // Start fade out
+            setTimeout(() => {
+                splash.style.display = 'none'; // Remove from DOM flow
+                
+                // Show Main Menu & Start Matrix
+                document.getElementById('main-menu-screen').classList.add('active');
+                updateMenuUI();
+                startMatrixEffect();
+            }, 1000); // Wait for fade out
+        }, 6000); // 6 Seconds Duration
     };
 
 </script>
