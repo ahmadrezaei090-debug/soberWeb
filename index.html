@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* --- Base & Fonts --- */
+        /* --- Base Styles --- */
         body {
             font-family: 'Vazirmatn', sans-serif;
             background-color: #050505;
@@ -17,15 +17,15 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Gold Theme --- */
+        /* --- Gold & Button Styles --- */
         .gold-text {
             color: #FFD700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
         
         .btn-main {
             background: linear-gradient(180deg, #F0C040 0%, #c39d1a 100%);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             color: #000;
             font-weight: 800;
             border-radius: 50px;
@@ -36,39 +36,71 @@
             box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
         }
 
-        /* --- Top Right Profile Corner --- */
-        .profile-corner {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #333;
-            border-radius: 50px; /* Pill shape */
-            padding: 5px 8px 5px 20px;
+        /* --- EXACT PROFILE STYLE (Based on Image) --- */
+        .profile-wrapper {
+            position: absolute;
+            top: 25px;
+            right: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: border-color 0.3s;
-        }
-        .profile-corner:active {
-            border-color: #FFD700;
+            z-index: 20;
         }
 
-        .corner-avatar {
-            width: 45px;
-            height: 45px;
+        /* The Round Avatar */
+        .profile-avatar-circle {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid #FFD700;
-            background: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #000;
+            z-index: 10; /* On top of the card */
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+        
+        /* The Card Container */
+        .profile-card-box {
+            background-color: #111;
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            width: 200px;
+            padding: 10px 10px 12px 35px; /* Extra padding right for avatar overlap */
+            margin-right: -30px; /* Pulls the card UNDER the avatar in RTL */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 5;
         }
 
-        /* --- Settings Button (Top Left) --- */
+        /* The Inset "Pressed" Boxes inside the card */
+        .inset-box {
+            background: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
+            border-radius: 8px;
+            padding: 6px 12px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.9), inset -1px -1px 0px rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-right: 4px solid #b89626; /* Gold accent on side */
+        }
+
+        .label-text {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-bottom: 2px;
+            display: block;
+            text-align: right;
+            font-family: 'Vazirmatn', serif; /* A bit more classic look */
+        }
+
+        /* --- Settings Button --- */
         .settings-btn-circle {
             background: rgba(20, 20, 20, 0.8);
-            backdrop-filter: blur(10px);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -77,81 +109,35 @@
             justify-content: center;
             border: 1px solid #333;
             color: #ccc;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .settings-btn-circle:active { color: #FFD700; border-color: #FFD700; }
-
-        /* --- Footer --- */
-        .footer-circle-btn {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #333;
-            color: #FFD700;
-            transition: all 0.2s;
-        }
-        .footer-circle-btn:active { background: #333; transform: scale(0.9); }
-
-        /* --- Modals --- */
-        .screen {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            flex-direction: column;
-            animation: fadeIn 0.4s ease;
-        }
-        .screen.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .modal-overlay {
-            background-color: rgba(0,0,0,0.92);
             backdrop-filter: blur(5px);
         }
 
-        .profile-box-outer {
-            background: #111;
-            border: 1px solid #FFD700;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        /* --- Footer --- */
+        .footer-circle-btn {
+            width: 55px; height: 55px; border-radius: 50%; background: #1a1a1a;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #333; color: #FFD700; transition: all 0.2s;
         }
+        .footer-circle-btn:active { background: #333; transform: scale(0.9); }
 
-        /* Game Elements */
-        .btn-option {
-            background-color: #1a1a1a;
-            border: 1px solid #444;
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-            width: 100%;
-        }
+        /* --- Common Modal & Game Styles --- */
+        .screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease; }
+        .screen.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-overlay { background-color: rgba(0,0,0,0.92); backdrop-filter: blur(5px); }
+        .game-card { background: #111; border: 1px solid #FFD700; border-radius: 24px; padding: 24px; }
+        
+        .btn-option { background-color: #1a1a1a; border: 1px solid #444; color: white; padding: 15px; border-radius: 12px; width: 100%; }
         .correct-flash { background-color: #04d182 !important; border-color: #04d182 !important; color: #000; }
         .wrong-flash { background-color: #ef4444 !important; border-color: #ef4444 !important; }
-
-        #timer-bar-container {
-            width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 20px; overflow: hidden;
-        }
+        
+        #timer-bar-container { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
         #timer-bar { height: 100%; background: #FFD700; width: 100%; transition: width 1s linear; }
-
-        .flash-input {
-            width: 100%; padding: 16px; font-size: 1.25rem;
-            background: rgba(255,255,255,0.1); border: 2px solid #555;
-            border-radius: 12px; color: #fff; text-align: center; outline: none;
-        }
+        
+        .flash-input { width: 100%; padding: 16px; font-size: 1.25rem; background: rgba(255,255,255,0.1); border: 2px solid #555; border-radius: 12px; color: #fff; text-align: center; outline: none; }
         .flash-input:focus { border-color: #FFD700; }
-
-        .btn-skip {
-            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            border: 1px solid #818cf8; color: white; font-size: 0.8rem;
-            padding: 4px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
-            animation: pulse 2s infinite;
-        }
+        
+        .btn-skip { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); border: 1px solid #818cf8; color: white; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
     </style>
@@ -171,37 +157,43 @@
         </button>
     </div>
 
-    <!-- TOP RIGHT: Profile (Corner Style) -->
-    <div class="absolute top-6 right-6 z-20">
-        <div class="profile-corner">
-            <!-- Text Info -->
-            <div class="flex flex-col items-end justify-center">
-                <div class="text-white font-bold text-sm leading-tight flex items-center gap-1">
-                    هوشیار <span class="text-[10px] text-gray-500">✏️</span>
-                </div>
-                <div class="text-yellow-400 font-bold text-sm tracking-wide mt-1">
-                    <span id="menu-coins">500</span> 🪙
-                </div>
-                <!-- Hidden fields for logic -->
-                <span id="menu-score" class="hidden">0</span>
-                <span id="menu-tickets" class="hidden">0</span>
-            </div>
+    <!-- TOP RIGHT: EXACT PROFILE DESIGN -->
+    <div class="profile-wrapper">
+        <!-- 1. The Avatar (First in RTL = Rightmost) -->
+        <div class="profile-avatar-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+        </div>
 
-            <!-- Avatar -->
-            <div class="corner-avatar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                </svg>
+        <!-- 2. The Info Card -->
+        <div class="profile-card-box">
+            <!-- Name Row -->
+            <div>
+                <span class="label-text">بازیکن:</span>
+                <div class="inset-box">
+                    <span class="text-white font-bold text-sm tracking-wider">هوشیار</span>
+                    <span class="text-[10px] opacity-70">✏️</span>
+                </div>
             </div>
+            
+            <!-- Coin Row -->
+            <div>
+                <span class="label-text">سکه:</span>
+                <div class="inset-box" style="justify-content: center;">
+                    <span id="menu-coins" class="text-yellow-400 font-bold text-lg">500</span>
+                </div>
+            </div>
+            
+            <!-- Hidden Data -->
+            <span id="menu-score" class="hidden">0</span>
+            <span id="menu-tickets" class="hidden">0</span>
         </div>
     </div>
 
-    <!-- Center Content (Title & Main Buttons) -->
-    <div class="flex flex-col items-center justify-center w-full h-full pb-10">
-        <!-- Big Logo Title -->
-        <h1 class="text-7xl font-black gold-text mb-12 tracking-tighter" style="font-family: 'Vazirmatn', sans-serif;">
-            هوشیار
-        </h1>
+    <!-- Center Content (Buttons Only - Title Removed) -->
+    <div class="flex flex-col items-center justify-center w-full h-full pt-10 pb-10">
+        <!-- Removed H1 Title as requested -->
 
         <!-- Main Buttons -->
         <div class="w-full max-w-xs space-y-5">
@@ -226,9 +218,9 @@
     </div>
 </div>
 
-<!-- MODE SELECTION MODAL -->
+<!-- MODE MODAL -->
 <div id="mode-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
-    <div class="profile-box-outer w-11/12 max-w-sm text-center animate-bounce-in bg-black">
+    <div class="game-card w-11/12 max-w-sm text-center animate-bounce-in bg-black">
         <h2 class="text-2xl font-black gold-text mb-6">انتخاب سبک بازی</h2>
         <div class="space-y-4">
             <button onclick="selectMode('old')" class="btn-option flex flex-col items-center py-4 hover:bg-yellow-900/30">
@@ -244,18 +236,16 @@
     </div>
 </div>
 
-<!-- SPECIAL CHALLENGE MODAL -->
+<!-- CHALLENGE MODAL -->
 <div id="challenge-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
-    <div class="profile-box-outer w-11/12 max-w-sm text-center bg-black" style="border-color: #818cf8;">
+    <div class="game-card w-11/12 max-w-sm text-center bg-black" style="border-color: #818cf8;">
         <div class="w-16 h-16 bg-indigo-900 rounded-full mx-auto flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
         </div>
         <h2 class="text-2xl font-black text-indigo-400 mb-2">چالش سرعت</h2>
-        <p class="text-gray-300 text-sm mb-6 leading-6">
-            به ۳ سوال در حالت تایپی (Flash) پشت سر هم پاسخ درست بدهید.
-        </p>
+        <p class="text-gray-300 text-sm mb-6 leading-6">به ۳ سوال در حالت تایپی پشت سر هم پاسخ درست بدهید.</p>
         <div class="bg-gray-800 rounded-xl p-3 mb-6 border border-gray-700">
             <p class="text-xs text-gray-400 mb-1">جایزه:</p>
             <p class="text-white font-bold text-lg">🎟️ 1x بلیط رد کردن سوال</p>
@@ -265,7 +255,7 @@
     </div>
 </div>
 
-<!-- 2. GAMEPLAY SCREEN -->
+<!-- GAMEPLAY SCREEN -->
 <div id="gameplay-screen" class="screen p-6 justify-between">
     <header class="flex justify-between items-center w-full pt-4">
         <button id="exit-game-btn" class="text-red-500 font-bold px-3 py-1 border border-red-900 rounded bg-red-900/20">خروج</button>
@@ -281,7 +271,7 @@
     </div>
 
     <main class="flex-grow flex flex-col justify-center items-center w-full max-w-md mx-auto">
-        <div class="profile-box-outer w-full p-8 mb-8 text-center bg-gray-900/90 relative">
+        <div class="game-card w-full p-8 mb-8 text-center bg-gray-900/90 relative">
              <div id="timer-bar-container" class="absolute top-0 left-0 right-0 hidden rounded-t-xl" style="margin:0;">
                 <div id="timer-bar"></div>
             </div>
@@ -297,11 +287,10 @@
     </main>
 </div>
 
-<!-- 3. GAME OVER SCREEN -->
+<!-- GAME OVER SCREEN -->
 <div id="game-over-screen" class="screen justify-center items-center p-8 text-center">
     <h1 id="game-over-title" class="text-5xl font-black mb-6 gold-text">پایان بازی</h1>
     <p id="game-over-msg" class="text-2xl text-gray-300 mb-2">امتیاز شما: <span id="final-score" class="text-white">0</span></p>
-    
     <div class="w-full max-w-xs space-y-4 mt-8">
         <button id="play-again-btn" class="btn-main w-full py-3">بازی مجدد</button>
         <button id="back-to-menu-btn" class="w-full py-3 border border-gray-600 rounded-xl text-gray-400">بازگشت به منو</button>
