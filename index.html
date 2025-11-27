@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بازی هوشیار - نسخه جدید</title>
+    <title>بازی هوشیار</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* --- Base & Fonts --- */
@@ -19,15 +17,15 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- Gradients & Effects --- */
+        /* --- Gold Theme --- */
         .gold-text {
             color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
         }
         
         .btn-main {
             background: linear-gradient(180deg, #F0C040 0%, #c39d1a 100%);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
             color: #000;
             font-weight: 800;
             border-radius: 50px;
@@ -38,82 +36,52 @@
             box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
         }
 
-        /* --- New Profile Style (Based on Image) --- */
-        .profile-container {
-            position: relative;
-            width: 300px;
-            margin-top: 40px; /* Space for avatar overlap */
-        }
-
-        .profile-box-outer {
-            background: #111;
-            border: 2px solid #FFD700; /* Gold border */
-            border-radius: 20px;
-            padding: 20px;
-            padding-top: 25px;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.1);
-        }
-
-        .info-field-box {
-            background-color: #0a0a0a;
-            border-radius: 12px;
-            padding: 10px 15px;
-            border-right: 4px solid #FFD700; /* Gold accent on right */
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); /* Inset shadow for depth */
-            margin-bottom: 12px;
+        /* --- Top Right Profile Corner --- */
+        .profile-corner {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 50px; /* Pill shape */
+            padding: 5px 8px 5px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+        .profile-corner:active {
+            border-color: #FFD700;
         }
 
-        .field-label {
-            font-size: 0.75rem;
-            color: #888;
-            margin-bottom: 4px;
-            display: block;
-            text-align: right;
-            margin-right: 5px;
-        }
-
-        /* Avatar positioning */
-        .avatar-floating {
-            position: absolute;
-            top: -30px;
-            right: -15px;
-            width: 90px;
-            height: 90px;
+        .corner-avatar {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background: #111;
             border: 2px solid #FFD700;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            z-index: 10;
-            overflow: hidden;
-        }
-        
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* Using a generic cool avatar or gradient */
-            background: linear-gradient(135deg, #333 0%, #000 100%);
+            background: #111;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
-        /* --- Buttons --- */
+        /* --- Settings Button (Top Left) --- */
         .settings-btn-circle {
-            background: #1a1a1a;
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(10px);
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid #333;
-            color: #FFD700;
+            color: #ccc;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+        .settings-btn-circle:active { color: #FFD700; border-color: #FFD700; }
 
+        /* --- Footer --- */
         .footer-circle-btn {
             width: 55px;
             height: 55px;
@@ -128,7 +96,7 @@
         }
         .footer-circle-btn:active { background: #333; transform: scale(0.9); }
 
-        /* --- Animations & Modals --- */
+        /* --- Modals --- */
         .screen {
             display: none;
             position: absolute;
@@ -140,11 +108,19 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .modal-overlay {
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0,0,0,0.92);
             backdrop-filter: blur(5px);
         }
 
-        /* Game Options */
+        .profile-box-outer {
+            background: #111;
+            border: 1px solid #FFD700;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+
+        /* Game Elements */
         .btn-option {
             background-color: #1a1a1a;
             border: 1px solid #444;
@@ -155,58 +131,28 @@
             transition: all 0.2s;
             width: 100%;
         }
-        .btn-option:active { background-color: #333; }
-        
         .correct-flash { background-color: #04d182 !important; border-color: #04d182 !important; color: #000; }
         .wrong-flash { background-color: #ef4444 !important; border-color: #ef4444 !important; }
 
-        /* Timer Bar */
         #timer-bar-container {
-            width: 100%;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 20px; overflow: hidden;
         }
-        #timer-bar {
-            height: 100%;
-            background: #FFD700;
-            width: 100%;
-            transition: width 1s linear;
-        }
+        #timer-bar { height: 100%; background: #FFD700; width: 100%; transition: width 1s linear; }
 
-        /* Flash Input */
         .flash-input {
-            width: 100%;
-            padding: 16px;
-            font-size: 1.25rem;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #555;
-            border-radius: 12px;
-            color: #fff;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 16px; font-size: 1.25rem;
+            background: rgba(255,255,255,0.1); border: 2px solid #555;
+            border-radius: 12px; color: #fff; text-align: center; outline: none;
         }
         .flash-input:focus { border-color: #FFD700; }
 
-        /* Skip Button */
         .btn-skip {
             background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            border: 1px solid #818cf8;
-            color: white;
-            font-size: 0.8rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+            border: 1px solid #818cf8; color: white; font-size: 0.8rem;
+            padding: 4px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
             animation: pulse 2s infinite;
         }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
     </style>
 </head>
@@ -215,8 +161,8 @@
 <!-- 1. MAIN MENU SCREEN -->
 <div id="main-menu-screen" class="screen h-full justify-between p-6 relative active">
     
-    <!-- Settings Gear -->
-    <div class="absolute top-6 left-6 z-10">
+    <!-- TOP LEFT: Settings -->
+    <div class="absolute top-6 left-6 z-20">
         <button id="settings-btn" class="settings-btn-circle">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -225,59 +171,53 @@
         </button>
     </div>
 
-    <!-- Center Content -->
-    <div class="flex flex-col items-center justify-center w-full mt-10 space-y-8">
-        
-        <!-- NEW PROFILE SECTION (Based on Image) -->
-        <div class="profile-container">
-            <!-- Avatar (Top Right) -->
-            <div class="avatar-floating">
-                <!-- Simple silhouette icon for avatar -->
-                <div class="avatar-img">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                    </svg>
+    <!-- TOP RIGHT: Profile (Corner Style) -->
+    <div class="absolute top-6 right-6 z-20">
+        <div class="profile-corner">
+            <!-- Text Info -->
+            <div class="flex flex-col items-end justify-center">
+                <div class="text-white font-bold text-sm leading-tight flex items-center gap-1">
+                    هوشیار <span class="text-[10px] text-gray-500">✏️</span>
                 </div>
+                <div class="text-yellow-400 font-bold text-sm tracking-wide mt-1">
+                    <span id="menu-coins">500</span> 🪙
+                </div>
+                <!-- Hidden fields for logic -->
+                <span id="menu-score" class="hidden">0</span>
+                <span id="menu-tickets" class="hidden">0</span>
             </div>
 
-            <!-- Profile Info Box -->
-            <div class="profile-box-outer">
-                <!-- Name Field -->
-                <div>
-                    <span class="field-label">بازیکن:</span>
-                    <div class="info-field-box">
-                        <span class="text-xl font-bold text-white tracking-wide">هوشیار</span>
-                        <span class="text-gray-500">✏️</span>
-                    </div>
-                </div>
-
-                <!-- Coins Field -->
-                <div>
-                    <span class="field-label">سکه:</span>
-                    <div class="info-field-box">
-                        <span id="menu-coins" class="text-2xl font-black text-yellow-400">0</span>
-                        <!-- Hidden score to maintain layout but keep data accessible via JS -->
-                        <div class="flex flex-col items-end">
-                            <span class="text-[10px] text-gray-600">امتیاز: <span id="menu-score">0</span></span>
-                            <span class="text-[10px] text-indigo-400">بلیط: <span id="menu-tickets">0</span></span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Avatar -->
+            <div class="corner-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
             </div>
         </div>
-        <!-- End Profile Section -->
+    </div>
+
+    <!-- Center Content (Title & Main Buttons) -->
+    <div class="flex flex-col items-center justify-center w-full h-full pb-10">
+        <!-- Big Logo Title -->
+        <h1 class="text-7xl font-black gold-text mb-12 tracking-tighter" style="font-family: 'Vazirmatn', sans-serif;">
+            هوشیار
+        </h1>
 
         <!-- Main Buttons -->
-        <div class="w-full max-w-xs space-y-4 pt-4">
-            <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-xl shadow-lg">شروع بازی</button>
-            <button id="challenges-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2);">آرشیو</button>
+        <div class="w-full max-w-xs space-y-5">
+            <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-2xl shadow-xl hover:scale-105 transition-transform">
+                شروع بازی
+            </button>
+            <button id="challenges-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2); background: #333; color: #aaa; box-shadow:none; border: 1px solid #444;">
+                آرشیو
+            </button>
         </div>
     </div>
 
     <!-- Footer Icons -->
-    <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-4">
+    <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-6">
         <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-        <button class="footer-circle-btn" style="width: 65px; height: 65px; border-color: #F0C040;"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></button>
+        <button class="footer-circle-btn" style="width: 70px; height: 70px; border-color: #F0C040; box-shadow: 0 0 15px rgba(255,215,0,0.1);"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></button>
         <button id="daily-challenge-btn" class="footer-circle-btn hover:text-indigo-400 hover:border-indigo-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -368,6 +308,7 @@
     </div>
 </div>
 
+<!-- Toast -->
 <div id="toast-modal" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gold px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none">
     <p id="toast-msg" class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
 </div>
@@ -537,7 +478,7 @@
         document.getElementById('skip-btn').classList.add('hidden');
 
         if(isChallengeMode) {
-            lives = 1; // Or just infinite, controlled by streak
+            lives = 1; 
             document.getElementById('score-display').classList.add('hidden');
             document.getElementById('challenge-progress').classList.remove('hidden');
             document.getElementById('challenge-count').textContent = '0';
@@ -683,7 +624,6 @@
                 challengeStreak++;
                 document.getElementById('challenge-count').textContent = challengeStreak;
                 if(challengeStreak >= 3) {
-                    // Win Challenge
                     setTimeout(winChallenge, 1000);
                     return;
                 }
@@ -755,7 +695,6 @@
     });
 
     document.getElementById('play-again-btn').addEventListener('click', () => {
-         // Reset UI titles to normal in case they were changed by Challenge win
          startGame();
     });
     
