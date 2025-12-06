@@ -1,888 +1,460 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بازی هوشیار</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* --- Base Styles --- */
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background-color: #050505;
-            color: #E0E0E0;
-            overscroll-behavior: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
-        }
 
-        /* --- Gold & Button Styles --- */
-        .gold-text {
-            color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-        
-        .btn-main {
-            background: linear-gradient(180deg, #F0C040 0%, #c39d1a 100%);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-            color: #000;
-            font-weight: 800;
-            border-radius: 50px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-main:active {
-            transform: scale(0.96);
-            box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
-        }
 
-        /* --- FIXED PROFILE STYLE --- */
-        .profile-wrapper {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            z-index: 20;
-            flex-direction: row; 
-        }
 
-        .profile-avatar-circle {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 2px solid #FFD700;
-            background: #111;
-            z-index: 10;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        
-        .profile-card-box {
-            background-color: #111;
-            border: 1px solid #FFD700;
-            border-radius: 12px;
-            height: auto;
-            min-width: 130px;
-            padding: 5px 35px 5px 10px;
-            margin-right: -28px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            position: relative;
-            z-index: 5;
-        }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-        .inset-box {
-            background: linear-gradient(180deg, #1a1a1a 0%, #222 100%);
-            border-radius: 6px;
-            padding: 2px 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-right: 2px solid #b89626;
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	سیستم ناظم نت
+</title>
+    <script src="https://nazemonweb.ir/js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="https://nazemonweb.ir/js/general.js" type="text/javascript"></script>
+    <link href="https://nazemonweb.ir/css/style.css?t=&lt;%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" /><link href="https://nazemonweb.ir/css/iecss.css" rel="stylesheet" type="text/css" /><link href="https://nazemonweb.ir/images/favicon.ico" rel="shortcut icon" />
+    
+    <script type="text/javascript">
+        function show(id) {
+            document.getElementById(id).style.visibility = "visible";
         }
-
-        .label-text { font-size: 0.6rem; color: #aaa; margin-bottom: 1px; display: block; text-align: right; }
-        .profile-name-text { font-size: 0.7rem; }
-        .profile-coin-text { font-size: 0.8rem; }
-
-        /* --- Settings Button --- */
-        .settings-btn-circle {
-            background: rgba(20, 20, 20, 0.8);
-            border-radius: 50%; width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid #333; color: #ccc; backdrop-filter: blur(5px);
+        function hide(id) {
+            document.getElementById(id).style.visibility = "hidden";
         }
-
-        /* --- Footer --- */
-        .footer-circle-btn {
-            width: 55px; height: 55px; border-radius: 50%; background: #1a1a1a;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid #333; color: #FFD700; transition: all 0.2s;
+    </script>
+    <style type="text/css">
+        @font-face {
+          font-family: 'BYekan';
+          src: url('~/fonts/BYekan.eot?#') format('eot'),  /* IE6–8 */
+               url('fonts/BYekan.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+               url('fonts/BYekan.ttf') format('truetype');  /* Saf3—5, Chrome4+, FF3.5, Opera 10+ */
         }
-        .footer-circle-btn:active { background: #333; transform: scale(0.9); }
-
-        /* --- Matrix Canvas --- */
-        #matrix-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; opacity: 0.4; pointer-events: none;
+        .BYekan
+        {
+            font-family: BYekan, Tahoma, Helvetica, sans-serif;
+            color: #FFFFFF;font-size:20px;text-align:center;
         }
-
-        /* --- Common Modal & Game Styles --- */
-        .screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; flex-direction: column; animation: fadeIn 0.4s ease; }
-        .screen.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-overlay { background-color: rgba(0,0,0,0.92); backdrop-filter: blur(5px); }
-        .game-card { background: #111; border: 1px solid #FFD700; border-radius: 24px; padding: 24px; }
-        
-        .btn-option { background-color: #1a1a1a; border: 1px solid #444; color: white; padding: 15px; border-radius: 12px; width: 100%; }
-        .correct-flash { background-color: #04d182 !important; border-color: #04d182 !important; color: #000; }
-        .wrong-flash { background-color: #ef4444 !important; border-color: #ef4444 !important; }
-        
-        #timer-bar-container { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
-        #timer-bar { height: 100%; background: #FFD700; width: 100%; transition: width 1s linear; }
-        
-        .flash-input { width: 100%; padding: 16px; font-size: 1.25rem; background: rgba(255,255,255,0.1); border: 2px solid #555; border-radius: 12px; color: #fff; text-align: center; outline: none; }
-        .flash-input:focus { border-color: #FFD700; }
-        
-        .btn-skip { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); border: 1px solid #818cf8; color: white; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; box-shadow: 0 0 10px rgba(99, 102, 241, 0.4); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
-
-        /* Challenge Card Styles */
-        .challenge-item {
-            border: 1px solid #333; background: #1a1a1a; padding: 10px; border-radius: 10px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .challenge-btn-sm {
-            padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
-        }
-        
-        /* --- SPLASH SCREEN FIX (FULL SCREEN) --- */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000; z-index: 100;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 1s ease;
-            overflow: hidden; /* جلوگیری از اسکرول */
-        }
-        
-        #splash-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* این باعث میشه عکس کل صفحه رو پر کنه */
-            object-position: center; /* مرکز عکس رو نشون میده */
-            animation: pulse-logo 4s infinite; /* انیمیشن نرم‌تر */
-        }
-        
-        @keyframes pulse-logo {
-            0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.03); opacity: 1; } /* زوم خیلی ملایم */
-            100% { transform: scale(1); opacity: 0.9; }
-        }
-
     </style>
-</head>
-<body class="h-screen w-screen overflow-hidden bg-black">
-
-<!-- SPLASH SCREEN (INTRO) - FULL SCREEN -->
-<div id="splash-screen">
-    <img src="https://github.com/ahmadrezaei090-debug/soberWeb/blob/main/negin-art-1764247215354.png?raw=true" alt="Intro Logo">
-</div>
-
-<!-- 1. MAIN MENU SCREEN -->
-<div id="main-menu-screen" class="screen h-full justify-between p-6 relative">
     
-    <!-- Matrix Background Canvas -->
-    <canvas id="matrix-bg"></canvas>
+    <script type="text/javascript">
+        function checkTextAreaMaxLength(textBox, e, length) {
 
-    <!-- TOP LEFT: Settings -->
-    <div class="absolute top-6 left-6 z-20">
-        <button id="settings-btn" class="settings-btn-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        </button>
-    </div>
+            var mLen = textBox["MaxLength"];
+            if (null == mLen)
+                mLen = length;
 
-    <!-- TOP RIGHT: FIXED PROFILE DESIGN -->
-    <div class="profile-wrapper">
-        <!-- 1. The Avatar (Rightmost) -->
-        <div class="profile-avatar-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-            </svg>
-        </div>
-
-        <!-- 2. The Info Card (Pushed underneath from the left) -->
-        <div class="profile-card-box">
-            <!-- Name Row -->
-            <div>
-                <span class="label-text">بازیکن:</span>
-                <div class="inset-box">
-                    <span class="text-white font-bold tracking-wider profile-name-text">هوشیار</span>
-                    <span class="text-[8px] opacity-70">✏️</span>
-                </div>
-            </div>
-            
-            <!-- Coin Row -->
-            <div>
-                <span class="label-text">سکه:</span>
-                <div class="inset-box" style="justify-content: center;">
-                    <span id="menu-coins" class="text-yellow-400 font-bold profile-coin-text">500</span>
-                </div>
-            </div>
-            
-            <span id="menu-score" class="hidden">0</span>
-            <span id="menu-tickets" class="hidden">0</span>
-        </div>
-    </div>
-
-    <!-- Center Content -->
-    <div class="flex flex-col items-center justify-center w-full h-full pt-10 pb-10 z-10">
-        <div class="w-full max-w-xs space-y-5">
-            <button id="open-mode-modal-btn" class="btn-main w-full py-4 text-2xl shadow-xl hover:scale-105 transition-transform">
-                شروع بازی
-            </button>
-            <button id="challenges-btn" class="btn-main w-full py-4 text-xl opacity-80" style="filter: grayscale(0.2); background: #333; color: #aaa; box-shadow:none; border: 1px solid #444;">
-                آرشیو
-            </button>
-        </div>
-    </div>
-
-    <!-- Footer Icons -->
-    <div class="w-full flex justify-center items-center space-x-8 space-x-reverse pb-6 z-10">
-        <button class="footer-circle-btn"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
-        <button class="footer-circle-btn" style="width: 70px; height: 70px; border-color: #F0C040; box-shadow: 0 0 15px rgba(255,215,0,0.1);"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg></button>
-        <button id="daily-challenge-btn" class="footer-circle-btn hover:text-indigo-400 hover:border-indigo-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-        </button>
-    </div>
-</div>
-
-<!-- MODE MODAL -->
-<div id="mode-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
-    <div class="game-card w-11/12 max-w-sm text-center animate-bounce-in bg-black">
-        <h2 class="text-2xl font-black gold-text mb-6">انتخاب سبک بازی</h2>
-        <div class="space-y-4">
-            <button onclick="selectMode('old')" class="btn-option flex flex-col items-center py-4 hover:bg-yellow-900/30">
-                <span class="text-xl font-bold text-yellow-400">2 Old (کلاسیک)</span>
-                <span class="text-xs text-gray-400 mt-1">۴ گزینه‌ای | ۳ جان</span>
-            </button>
-            <button onclick="selectMode('flash')" class="btn-option flex flex-col items-center py-4 hover:bg-yellow-900/30">
-                <span class="text-xl font-bold text-yellow-400">2.5 Flash (تایپی)</span>
-                <span class="text-xs text-gray-400 mt-1">تایپ پاسخ | ۳۰ ثانیه زمان</span>
-            </button>
-        </div>
-        <button id="close-mode-btn" class="mt-6 text-gray-500 text-sm border-b border-gray-600">انصراف</button>
-    </div>
-</div>
-
-<!-- UPDATED CHALLENGE MODAL (With Rewards) -->
-<div id="challenge-modal" class="fixed inset-0 z-50 hidden modal-overlay flex justify-center items-center">
-    <div class="game-card w-11/12 max-w-sm text-center bg-black" style="border-color: #818cf8;">
-        <h2 class="text-xl font-black text-indigo-400 mb-4">مرکز چالش‌ها</h2>
-        
-        <div class="space-y-3">
-            <!-- Challenge 1: Speed -->
-            <div class="challenge-item">
-                <div class="text-right">
-                    <p class="text-white text-sm font-bold">سرعت (Flash)</p>
-                    <p class="text-[10px] text-gray-400">۳ پاسخ صحیح پشت هم</p>
-                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۱ بلیط رد کردن</p>
-                </div>
-                <button onclick="startChallengeRun('speed')" class="challenge-btn-sm bg-indigo-600 text-white">شروع</button>
-            </div>
-
-            <!-- Challenge 2: Marathon -->
-            <div class="challenge-item">
-                <div class="text-right">
-                    <p class="text-yellow-400 text-sm font-bold">استقامت (Old)</p>
-                    <p class="text-[10px] text-gray-400">۵ پاسخ بدون باخت جان</p>
-                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۲۰۰ سکه</p>
-                </div>
-                <button onclick="startChallengeRun('marathon')" class="challenge-btn-sm bg-yellow-700 text-white">شروع</button>
-            </div>
-
-            <!-- Challenge 3: Hardcore -->
-            <div class="challenge-item">
-                <div class="text-right">
-                    <p class="text-red-500 text-sm font-bold">هاردکور 🔥</p>
-                    <p class="text-[10px] text-gray-400">تایپی | ۱۵ ثانیه زمان</p>
-                    <p class="text-[10px] text-green-400 mt-1">🎁 جایزه: ۲ بلیط رد کردن</p>
-                </div>
-                <button onclick="startChallengeRun('hardcore')" class="challenge-btn-sm bg-red-900 text-white">شروع</button>
-            </div>
-        </div>
-
-        <button id="close-challenge-btn" class="mt-6 text-gray-500 text-sm">بستن</button>
-    </div>
-</div>
-
-<!-- GAMEPLAY SCREEN -->
-<div id="gameplay-screen" class="screen p-6 justify-between">
-    <header class="flex justify-between items-center w-full pt-4">
-        <button id="exit-game-btn" class="text-red-500 font-bold px-3 py-1 border border-red-900 rounded bg-red-900/20">خروج</button>
-        <button id="skip-btn" class="hidden btn-skip" onclick="useSkipTicket()">🎟️ رد کردن سوال</button>
-        <div class="text-lg font-bold text-right">
-            <div id="score-display">امتیاز: <span id="game-score" class="gold-text">0</span></div>
-            <div id="challenge-progress" class="hidden text-sm text-indigo-400">پیشرفت: <span id="challenge-count">0</span>/<span id="challenge-target">3</span></div>
-        </div>
-    </header>
-    
-    <div class="w-full flex justify-end px-1 mt-1">
-        <span id="game-stats" class="text-lg font-bold">❤️ 3</span>
-    </div>
-
-    <main class="flex-grow flex flex-col justify-center items-center w-full max-w-md mx-auto">
-        <div class="game-card w-full p-8 mb-8 text-center bg-gray-900/90 relative">
-             <div id="timer-bar-container" class="absolute top-0 left-0 right-0 hidden rounded-t-xl" style="margin:0;">
-                <div id="timer-bar"></div>
-            </div>
-            <p id="riddle-text" class="text-xl leading-8 font-bold text-gray-200 mt-2">...</p>
-        </div>
-
-        <div id="options-container" class="grid grid-cols-2 gap-4 w-full"></div>
-
-        <div id="flash-container" class="w-full flex flex-col items-center hidden">
-            <input type="text" id="flash-input" class="flash-input" placeholder="پاسخ را بنویسید...">
-            <button id="flash-submit-btn" class="btn-main w-full py-3 mt-4 text-lg">ثبت پاسخ</button>
-        </div>
-    </main>
-</div>
-
-<!-- GAME OVER SCREEN -->
-<div id="game-over-screen" class="screen justify-center items-center p-8 text-center">
-    <h1 id="game-over-title" class="text-5xl font-black mb-6 gold-text">پایان بازی</h1>
-    <p id="game-over-msg" class="text-2xl text-gray-300 mb-2">امتیاز شما: <span id="final-score" class="text-white">0</span></p>
-    <div class="w-full max-w-xs space-y-4 mt-8">
-        <button id="play-again-btn" class="btn-main w-full py-3">بازی مجدد</button>
-        <button id="back-to-menu-btn" class="w-full py-3 border border-gray-600 rounded-xl text-gray-400">بازگشت به منو</button>
-    </div>
-</div>
-
-<!-- Toast -->
-<div id="toast-modal" class="fixed top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gold px-6 py-3 rounded-full shadow-xl z-50 transition-all duration-300 opacity-0 pointer-events-none">
-    <p id="toast-msg" class="text-gold text-sm font-bold">⚠️ این بخش به زودی اضافه می‌شود</p>
-</div>
-
-<script>
-    // --- Database ---
-    const riddles = [
-        { riddle: "آن چیست که همه جا هست ولی جایی را اشغال نمی‌کند؟", options: ["هوا", "فکر", "نور", "فضا"], answer: "هوا" },
-        { riddle: "آن چیست که پر دارد ولی پرواز نمی‌کند؟", options: ["کتاب", "بالش", "در", "هواپیما"], answer: "بالش" },
-        { riddle: "آن چیست که روز را آغاز می‌کند و شب را به پایان می‌رساند؟", options: ["حرف ر", "خورشید", "ماه", "حرف ب"], answer: "حرف ر" },
-        { riddle: "آن چیست که هرچه از آن بردارند بزرگتر می‌شود؟", options: ["چاله", "سن", "علم", "کوه"], answer: "چاله" },
-        { riddle: "آن چیست که یک چشم دارد ولی نمی‌بیند؟", options: ["سوزن", "حلقه", "دکمه", "سکه"], answer: "سوزن" },
-        { riddle: "آن چیست که گردن دارد ولی سر ندارد؟", options: ["کوزه", "پیراهن", "بطری", "گیتار"], answer: "پیراهن" },
-        { riddle: "آن چیست که زبان ندارد اما راست می‌گوید؟", options: ["آینه", "کتاب", "ساعت", "ترازو"], answer: "آینه" },
-        { riddle: "آن چیست که اگر در آب بیفتد خیس نمی‌شود؟", options: ["روغن", "نور", "سایه", "یخ"], answer: "سایه" },
-        { riddle: "آن چیست که دندان دارد اما چیزی نمی‌خورد؟", options: ["شانه", "اره", "کیف", "دهان"], answer: "شانه" },
-        { riddle: "آن چیست که شهر دارد اما خانه نه، کوه دارد اما درخت نه؟", options: ["نقشه", "کره زمین", "رویا", "بیابان"], answer: "نقشه" },
-        { riddle: "آن چیست که بی‌صدا زنگ می‌زند؟", options: ["تلفن", "آهن", "ساعت", "در"], answer: "آهن" },
-        { riddle: "برادرِ پدرِ توست، اما عموی تو نیست؟", options: ["دایی", "پدر", "عمه", "پدربزرگ"], answer: "پدر" },
-        { riddle: "آن چیست که متعلق به توست اما دیگران بیشتر از تو از آن استفاده می‌کنند؟", options: ["پول", "اسم", "زمان", "ماشین"], answer: "اسم" },
-        { riddle: "آن چیست که وقتی خشک می‌شود خیس می‌شود؟", options: ["حوله", "یخ", "چوب", "برف"], answer: "حوله" },
-        { riddle: "آن چیست که هر چه بیشتر باشد، کمتر می‌بینید؟", options: ["مه", "نور", "تاریکی", "پرده"], answer: "تاریکی" },
-        { riddle: "آن چیست که جان دارد ولی نفس نمی‌کشد؟", options: ["ماهی", "فنجان", "گیاه", "بادکنک"], answer: "فنجان" },
-        { riddle: "آن چیست که چهار پا دارد اما راه نمی‌رود؟", options: ["میز", "اسب", "لاکپشت", "ماشین"], answer: "میز" },
-        { riddle: "آن چیست که کلیدهای زیادی دارد اما نمی‌تواند دری را باز کند؟", options: ["پیانو", "نقشه", "زندان", "قفل"], answer: "پیانو" },
-        { riddle: "آن چیست که بالا می‌رود اما هرگز پایین نمی‌آید؟", options: ["سن", "باران", "دود", "قیمت"], answer: "سن" },
-        { riddle: "آن چیست که شکستنش واجب است تا بتوان از آن استفاده کرد؟", options: ["تخم مرغ", "گردو", "قول", "سکوت"], answer: "تخم مرغ" },
-        { riddle: "آن چیست که سر ندارد اما کلاه دارد؟", options: ["قارچ", "میخ", "عصا", "بطری"], answer: "قارچ" },
-        { riddle: "آن چیست که پا دارد اما راه نمی‌رود؟", options: ["شلوار", "میز", "صندلی", "نردبان"], answer: "شلوار" },
-        { riddle: "آن چیست که رنگش سفید است اما قند نیست، ریشه دارد اما درخت نیست؟", options: ["دندان", "پیاز", "سیر", "ترب"], answer: "دندان" },
-        { riddle: "آن چیست که در رادیو و دریا مشترک است؟", options: ["موج", "صدا", "آب", "پیام"], answer: "موج" },
-        { riddle: "آن چیست که وقتی تمیز است سیاه است و وقتی کثیف است سفید؟", options: ["تخته سیاه", "کفش", "زغال", "شب"], answer: "تخته سیاه" },
-        { riddle: "آن چیست که گوش دارد ولی نمی‌شنود؟", options: ["دیگ", "سوزن", "ذرت", "فنجان"], answer: "دیگ" },
-        { riddle: "آن چیست که هر چه می‌دوی به آن نمی‌رسی؟", options: ["سایه", "خورشید", "باد", "زمان"], answer: "سایه" },
-        { riddle: "آن کدام پرنده‌ای است که اگر نامش را برعکس کنی نام پرنده دیگری می‌شود؟", options: ["زاغ", "غاز", "باز", "درنا"], answer: "زاغ" },
-        { riddle: "آن چیست که شیرین است اما مزه ندارد؟", options: ["قند", "شکر", "خواب", "عسل"], answer: "خواب" },
-        { riddle: "آن چیست که دو سر دارد و یک کمر؟", options: ["قیچی", "عینک", "دوچرخه", "انسان"], answer: "قیچی" },
-        { riddle: "آن چیست که در هوا می‌پرد ولی بال و پر ندارد؟", options: ["بادبادک", "هواپیما", "ابر", "غبار"], answer: "بادبادک" },
-        { riddle: "آن چیست که فقط با نام بردنش می‌شکند؟", options: ["شیشه", "سکوت", "دل", "یخ"], answer: "سکوت" },
-        { riddle: "آن چیست که چشم دارد اما نمی‌بیند، پوست دارد اما بدن ندارد؟", options: ["سیب زمینی", "مار", "کفش", "درخت"], answer: "سیب زمینی" },
-        { riddle: "آن چیست که اشک دارد اما چشم ندارد؟", options: ["ابر", "شمع", "پیاز", "دریا"], answer: "شمع" },
-        { riddle: "آن چیست که هر چه آن را می‌کشیم کوتاه‌تر می‌شود؟", options: ["سیگار", "طناب", "خط", "زمان"], answer: "سیگار" },
-        { riddle: "آن چیست که برگ دارد اما درخت نیست، شیرازه دارد اما کتاب نیست؟", options: ["دفتر", "کاهو", "تقویم", "روزنامه"], answer: "کاهو" },
-        { riddle: "آن چیست که همیشه دست به کمر ایستاده است؟", options: ["آفتابه", "سماور", "فنجان", "کوزه"], answer: "آفتابه" },
-        { riddle: "آن چیست که آتش است اما دود ندارد؟", options: ["برق", "عشق", "فلفل", "خورشید"], answer: "برق" },
-        { riddle: "آن چیست که همه می‌خورند ولی سیر نمی‌شوند؟", options: ["غصه", "هوا", "کتک", "آب"], answer: "غصه" },
-        { riddle: "آن چیست که یک پا دارد و سه چشم؟", options: ["چراغ راهنما", "عینک", "دوربین", "سوزن"], answer: "چراغ راهنما" },
-        { riddle: "آن چیست که پوستش را می‌کند و گریه می‌کنند؟", options: ["پیاز", "سیب", "موز", "نارگیل"], answer: "پیاز" },
-        { riddle: "آن چیست که در زمستان خانه را گرم می‌کند و در تابستان درخت را خنک؟", options: ["برگ", "بخاری", "کولر", "آفتاب"], answer: "برگ" },
-        { riddle: "آن چیست که اولش عبادت است و آخرش آشامیدنی؟", options: ["شام", "سحر", "چای", "آب"], answer: "شام" },
-        { riddle: "آن چیست که هزاران چشم دارد اما نمی‌بیند؟", options: ["آسمان", "الک", "تور ماهیگیری", "زنبور"], answer: "الک" },
-        { riddle: "آن چیست که می‌رود اما بر نمی‌گردد؟", options: ["عمر", "راه", "رودخانه", "باد"], answer: "عمر" },
-        { riddle: "آن چیست که بی زبان سخن می‌گوید و بی پا راه می‌رود؟", options: ["نامه", "کتاب", "تلفن", "رادیو"], answer: "نامه" },
-        { riddle: "آن چیست که هر چه پاکش کنی کثیف‌تر می‌شود؟", options: ["آب", "دستمال", "صابون", "تخته"], answer: "آب" },
-        { riddle: "آن چیست که سر دارد، ته دارد، اما بدن ندارد؟", options: ["سکه", "کتاب", "صف", "جاده"], answer: "صف" },
-        { riddle: "آن چیست که تا اسمش را صدا می‌زنی ناپدید می‌شود؟", options: ["سکوت", "تاریکی", "راز", "خواب"], answer: "سکوت" },
-        { riddle: "آن چیست که وقتی هوا گرم است لباس می‌پوشد و وقتی سرد است لخت می‌شود؟", options: ["درخت", "کوه", "زمین", "انسان"], answer: "درخت" },
-        { riddle: "آن چیست که با بریدن سرش، زنده می‌شود؟", options: ["خز", "بالش", "دکمه", "قارچ"], answer: "خز" },
-        { riddle: "آن چیست که روز و شب راه می‌رود اما خسته نمی‌شود؟", options: ["آب", "ساعت", "خورشید", "قلب"], answer: "ساعت" },
-        { riddle: "آن چیست که هم در آشپزخانه است هم در اتومبیل؟", options: ["دنده", "چرخ", "فرمان", "صندلی"], answer: "دنده" },
-        { riddle: "آن چیست که نه دست دارد و نه پا، اما از همه جا بالا می‌رود؟", options: ["دود", "پیچک", "سایه", "باد"], answer: "دود" },
-        { riddle: "آن چیست که وقتی می‌خندد لب‌هایش باز نمی‌شود؟", options: ["پسته", "انار", "گردو", "فندق"], answer: "پسته" },
-        { riddle: "آن چیست که پر دارد اما پرواز نمی‌کند، و اگر آب بخورد می‌میرد؟", options: ["آتش", "بالش", "قند", "کاغذ"], answer: "آتش" },
-        { riddle: "آن چیست که هر چه تندتر بدود، زودتر به زمین می‌خورد؟", options: ["دوچرخه", "چرخ", "آبشار", "عمر"], answer: "دوچرخه" },
-        { riddle: "آن چیست که با اینکه پا ندارد اما سفر می‌کند؟", options: ["تمبر", "نامه", "پول", "همه موارد"], answer: "همه موارد" },
-        { riddle: "آن چیست که در آب غرق نمی‌شود و در آتش نمی‌سوزد؟", options: ["یخ", "جیوه", "سایه", "خاک"], answer: "یخ" },
-        { riddle: "آن چیست که یک نفر دارد، دو نفر دارد، اما سه نفر ندارد؟", options: ["راز", "پول", "دوست", "نام"], answer: "راز" },
-        { riddle: "آن چیست که سرخ است اما سیب نیست، لایه لایه است اما پیاز نیست؟", options: ["انار", "گل رز", "کلم قرمز", "لبو"], answer: "انار" },
-        { riddle: "آن چیست که اول چهار پا دارد، بعد دو پا، و در آخر سه پا؟", options: ["انسان", "میمون", "قورباغه", "میز"], answer: "انسان" },
-        { riddle: "آن چیست که همه آن را دارند ولی هیچکس نمی‌تواند آن را از دست بدهد؟", options: ["سایه", "گذشته", "نام", "خاطره"], answer: "سایه" },
-        { riddle: "آن چیست که مادر همه چیز است؟", options: ["زمین", "طبیعت", "صبر", "آب"], answer: "زمین" },
-        { riddle: "آن چیست که هر چه می‌خورد چاق نمی‌شود؟", options: ["آسیاب", "کرم", "آتش", "موریانه"], answer: "آسیاب" },
-        { riddle: "آن چیست که چیستان است؟", options: ["راز", "معما", "سوال", "کلمه"], answer: "معما" },
-        { riddle: "کدام حیوان است که اگر سرش را ببری عضوی از بدن می‌شود؟", options: ["گرگ", "مار", "شیر", "خرس"], answer: "گرگ" },
-        { riddle: "آن چیست که با گریه وارد می‌شود و با گریه بدرقه می‌شود؟", options: ["انسان", "باران", "غم", "شادی"], answer: "انسان" },
-        { riddle: "آن چیست که وقتی راه می‌رود رد پا ندارد؟", options: ["کشتی", "ماهی", "قطار", "هواپیما"], answer: "کشتی" },
-        { riddle: "آن چیست که هر چه تقسیمش کنی کم نمی‌شود؟", options: ["مهربانی", "دانش", "شادی", "همه موارد"], answer: "همه موارد" }
-    ];
-
-    // --- Variables ---
-    let gameState = { highScore: 0, coins: 500, skipTickets: 0 };
-    let score = 0;
-    let lives = 3;
-    let currentRiddleIndex = 0;
-    let shuffledRiddles = [];
-    let currentMode = 'old'; 
-    let timerInterval;
-    let timeLeft = 30;
-    let maxTime = 30; // To handle Hardcore mode
-    
-    // Challenge Specifics
-    let isChallengeMode = false;
-    let challengeType = ''; // 'speed', 'marathon', 'hardcore'
-    let challengeStreak = 0;
-    let challengeTarget = 3;
-
-    const normalize = (str) => str.trim().replace(/ی/g, 'ي').replace(/ک/g, 'ك');
-
-    // --- Navigation ---
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if (id === 'main-menu-screen') {
-            updateMenuUI();
-            startMatrixEffect();
-        } else {
-            stopMatrixEffect();
-        }
-    }
-
-    function showToast(msg) {
-        const t = document.getElementById('toast-modal');
-        const p = document.getElementById('toast-msg');
-        if(msg) p.textContent = msg;
-        else p.textContent = "⚠️ این بخش به زودی اضافه می‌شود";
-        
-        t.style.opacity = '1';
-        t.style.transform = 'translate(-50%, 0)';
-        setTimeout(() => {
-            t.style.opacity = '0';
-            t.style.transform = 'translate(-50%, -20px)';
-        }, 2000);
-    }
-
-    // --- MATRIX BACKGROUND LOGIC ---
-    let matrixInterval;
-    const canvas = document.getElementById('matrix-bg');
-    const ctx = canvas.getContext('2d');
-    const persianChars = ['ی', 'ت', 'ق', 'ط', 'ه', 'و', 'ش', 'ی', 'ا', 'ر', 'ع', 'غ', 'ف', 'ک', 'گ', 'چ', 'پ', 'ژ'];
-    let drops = [];
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        drops = [];
-        for(let x = 0; x < columns; x++) drops[x] = 1;
-    }
-
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(5, 5, 5, 0.1)'; // Trail effect
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#FFD700'; // Gold Color
-        ctx.font = '14px Vazirmatn';
-        
-        for(let i = 0; i < drops.length; i++) {
-            const text = persianChars[Math.floor(Math.random() * persianChars.length)];
-            ctx.fillText(text, i * 14, drops[i] * 14);
-            
-            if(drops[i] * 14 > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
-    }
-
-    function startMatrixEffect() {
-        if(matrixInterval) clearInterval(matrixInterval);
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        matrixInterval = setInterval(drawMatrix, 50);
-    }
-
-    function stopMatrixEffect() {
-        clearInterval(matrixInterval);
-        window.removeEventListener('resize', resizeCanvas);
-    }
-
-    // --- Modal Logic ---
-    const modeModal = document.getElementById('mode-modal');
-    const challengeModal = document.getElementById('challenge-modal');
-
-    document.getElementById('open-mode-modal-btn').onclick = () => {
-        modeModal.classList.remove('hidden');
-    };
-    document.getElementById('close-mode-btn').onclick = () => {
-        modeModal.classList.add('hidden');
-    };
-
-    // Challenge Modal Triggers
-    document.getElementById('daily-challenge-btn').onclick = () => {
-        challengeModal.classList.remove('hidden');
-    };
-    document.getElementById('close-challenge-btn').onclick = () => {
-        challengeModal.classList.add('hidden');
-    };
-
-    // --- GAME START LOGIC ---
-
-    function selectMode(mode) {
-        currentMode = mode;
-        isChallengeMode = false;
-        modeModal.classList.add('hidden');
-        startGame(); // Starts immediately
-    }
-
-    function startChallengeRun(type) {
-        challengeModal.classList.add('hidden');
-        isChallengeMode = true;
-        challengeType = type;
-        challengeStreak = 0;
-        
-        if(type === 'speed') {
-            currentMode = 'flash';
-            challengeTarget = 3;
-            maxTime = 30;
-        } else if (type === 'marathon') {
-            currentMode = 'old';
-            challengeTarget = 5;
-            maxTime = 30; 
-        } else if (type === 'hardcore') {
-            currentMode = 'flash';
-            challengeTarget = 3;
-            maxTime = 15; // Hardcore time
-        }
-        
-        startGame(); // Starts immediately
-    }
-
-    // --- Game Logic ---
-    function updateMenuUI() {
-        document.getElementById('menu-score').textContent = gameState.highScore;
-        document.getElementById('menu-coins').textContent = gameState.coins;
-        document.getElementById('menu-tickets').textContent = gameState.skipTickets || 0;
-    }
-
-    function startGame() {
-        score = 0;
-        currentRiddleIndex = 0;
-        shuffledRiddles = [...riddles].sort(() => Math.random() - 0.5);
-        
-        // UI Reset
-        document.getElementById('score-display').classList.remove('hidden');
-        document.getElementById('challenge-progress').classList.add('hidden');
-        document.getElementById('skip-btn').classList.add('hidden');
-
-        if(isChallengeMode) {
-            lives = 1; // All challenges are 1 life usually (streak based)
-            document.getElementById('score-display').classList.add('hidden');
-            document.getElementById('challenge-progress').classList.remove('hidden');
-            document.getElementById('challenge-count').textContent = '0';
-            document.getElementById('challenge-target').textContent = challengeTarget;
-            
-            document.getElementById('game-stats').textContent = '⚠️ چالش';
-
-            if(currentMode === 'flash') {
-                document.getElementById('options-container').classList.add('hidden');
-                document.getElementById('flash-container').classList.remove('hidden');
-                document.getElementById('timer-bar-container').classList.remove('hidden');
-            } else {
-                // Marathon (Old mode)
-                document.getElementById('options-container').classList.remove('hidden');
-                document.getElementById('flash-container').classList.add('hidden');
-                document.getElementById('timer-bar-container').classList.add('hidden');
-            }
-
-        } else if(currentMode === 'old') {
-            lives = 3;
-            maxTime = 30;
-            document.getElementById('options-container').classList.remove('hidden');
-            document.getElementById('flash-container').classList.add('hidden');
-            document.getElementById('timer-bar-container').classList.add('hidden');
-            document.getElementById('game-stats').textContent = '❤️ ' + lives;
-        } else {
-            // Flash Normal
-            lives = 3;
-            maxTime = 30;
-            document.getElementById('options-container').classList.add('hidden');
-            document.getElementById('flash-container').classList.remove('hidden');
-            document.getElementById('timer-bar-container').classList.remove('hidden');
-            document.getElementById('game-stats').textContent = '⏳ ' + maxTime;
-        }
-        
-        if(!isChallengeMode && gameState.skipTickets > 0) {
-            document.getElementById('skip-btn').classList.remove('hidden');
-        }
-
-        showScreen('gameplay-screen');
-        loadRiddle();
-    }
-
-    function loadRiddle() {
-        if(currentRiddleIndex >= shuffledRiddles.length) {
-            endGame();
-            return;
-        }
-
-        const data = shuffledRiddles[currentRiddleIndex];
-        document.getElementById('riddle-text').textContent = data.riddle;
-        document.getElementById('game-score').textContent = score;
-
-        const input = document.getElementById('flash-input');
-        input.value = '';
-        input.classList.remove('correct-flash', 'wrong-flash');
-
-        if(currentMode === 'old') {
-            setupOldMode(data);
-        } else {
-            setupFlashMode(data);
-        }
-    }
-
-    function setupOldMode(data) {
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        let opts = [...data.options].sort(() => Math.random() - 0.5);
-        
-        opts.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-option';
-            btn.textContent = opt;
-            btn.onclick = () => checkOldAnswer(btn, opt, data.answer);
-            container.appendChild(btn);
-        });
-    }
-
-    function checkOldAnswer(btn, selected, correctText) {
-        const buttons = document.querySelectorAll('.btn-option');
-        buttons.forEach(b => b.disabled = true);
-
-        if(selected === correctText) {
-            btn.classList.add('correct-flash');
-            if(isChallengeMode) {
-                challengeStreak++;
-                document.getElementById('challenge-count').textContent = challengeStreak;
-                if(challengeStreak >= challengeTarget) {
-                    setTimeout(winChallenge, 1000);
-                    return;
+            var maxLength = parseInt(mLen);
+            if (!checkSpecialKeys(e)) {
+                if (textBox.value.length > maxLength - 1) {
+                    if (window.event)//IE
+                    {
+                        e.returnValue = false;
+                        return false;
+                    }
+                    else//Firefox
+                        e.preventDefault();
                 }
-            } else {
-                score += 10;
-                gameState.coins += 5;
             }
-            setTimeout(nextQuestion, 1200);
-        } else {
-            btn.classList.add('wrong-flash');
-            
-            if(isChallengeMode) {
-                 showToast("چالش باختید!");
-                 setTimeout(() => showScreen('main-menu-screen'), 1500);
-                 return;
-            }
-
-            lives--;
-            document.getElementById('game-stats').textContent = '❤️ ' + lives;
-            buttons.forEach(b => {
-                if(b.textContent === correctText) b.classList.add('correct-flash');
-            });
-            
-            if(lives <= 0) setTimeout(endGame, 1500);
-            else setTimeout(nextQuestion, 1500);
-        }
-    }
-
-    function setupFlashMode(data) {
-        const input = document.getElementById('flash-input');
-        input.focus();
-        startTimer();
-    }
-
-    function startTimer() {
-        clearInterval(timerInterval);
-        timeLeft = maxTime;
-        updateTimerUI();
-        
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerUI();
-            if(timeLeft <= 0) {
-                handleFlashTimeOut();
-            }
-        }, 1000);
-    }
-
-    function updateTimerUI() {
-        if(!isChallengeMode || challengeType === 'hardcore') {
-             document.getElementById('game-stats').textContent = (isChallengeMode ? '🔥 ' : '⏳ ') + timeLeft;
-        }
-        
-        const pct = (timeLeft / maxTime) * 100;
-        document.getElementById('timer-bar').style.width = pct + '%';
-        if(timeLeft < 5) document.getElementById('timer-bar').style.backgroundColor = '#ef4444';
-        else document.getElementById('timer-bar').style.backgroundColor = '#FFD700';
-    }
-
-    function handleFlashTimeOut() {
-        clearInterval(timerInterval);
-        document.getElementById('flash-input').classList.add('wrong-flash');
-        
-        if(isChallengeMode) {
-            showToast("زمان تمام شد! باختید.");
-            setTimeout(() => {
-                showScreen('main-menu-screen');
-            }, 1500);
-        } else {
-            setTimeout(endGame, 1000);
-        }
-    }
-
-    function checkFlashAnswer() {
-        const input = document.getElementById('flash-input');
-        const userVal = normalize(input.value);
-        const correctVal = normalize(shuffledRiddles[currentRiddleIndex].answer);
-
-        if(userVal === correctVal) {
-            clearInterval(timerInterval);
-            input.classList.add('correct-flash');
-            
-            if(isChallengeMode) {
-                challengeStreak++;
-                document.getElementById('challenge-count').textContent = challengeStreak;
-                if(challengeStreak >= challengeTarget) {
-                    setTimeout(winChallenge, 1000);
-                    return;
-                }
-            } else {
-                score += 20;
-                gameState.coins += 10;
-            }
-            setTimeout(nextQuestion, 1000);
-        } else {
-            input.classList.add('wrong-flash');
-            setTimeout(() => input.classList.remove('wrong-flash'), 500);
-        }
-    }
-
-    function winChallenge() {
-        let rewardMsg = "";
-        
-        if(challengeType === 'speed') {
-            gameState.skipTickets = (gameState.skipTickets || 0) + 1;
-            rewardMsg = "1x بلیط رد کردن";
-        } else if (challengeType === 'marathon') {
-            gameState.coins += 200;
-            rewardMsg = "200 سکه";
-        } else if (challengeType === 'hardcore') {
-            gameState.skipTickets = (gameState.skipTickets || 0) + 2;
-            rewardMsg = "2x بلیط رد کردن";
         }
 
-        saveData();
-        
-        document.getElementById('game-over-title').textContent = "تبریک!";
-        document.getElementById('game-over-title').className = "text-5xl font-black mb-6 text-indigo-400";
-        document.getElementById('game-over-msg').innerHTML = `شما برنده <span class='text-white font-bold'>${rewardMsg}</span> شدید!`;
-        document.getElementById('final-score').parentElement.style.display = 'none'; 
-        
-        showScreen('game-over-screen');
-    }
-
-    function useSkipTicket() {
-        if(gameState.skipTickets > 0) {
-            gameState.skipTickets--;
-            saveData();
-            clearInterval(timerInterval);
-            showToast("سوال رد شد! (" + gameState.skipTickets + ")");
-            if(gameState.skipTickets <= 0) document.getElementById('skip-btn').classList.add('hidden');
-            nextQuestion();
+        function checkSpecialKeys(e) {
+            if (e.keyCode != 8 && e.keyCode != 46 && e.keyCode != 35 && e.keyCode != 36 && e.keyCode != 37 && e.keyCode != 38 && e.keyCode != 39 && e.keyCode != 40)
+                return false;
+            else
+                return true;
         }
+
+    </script>
+<meta name="keywords" content="مدرسه,کتاب,معلم,هوشمند,تدریس,هوشمندسازی,نرم افزار,دانش آموز," /></head>
+<body>
+    <form method="post" action="./Default.aspx" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTEwMjAxNjQxNzYPZBYCZg9kFgICAw9kFgoCAQ8PZBYCHgdvbmVycm9yBS90aGlzLnNyYz0naHR0cHM6Ly9uYXplbW9ud2ViLmlyL2xvZ28vbG9nby5wbmcnO2QCAw8PFgIeBFRleHQFOtmG2LPYrtmHINmG2YXYp9uM2LTbjCDZiNio2LPYp9uM2Kog2YXYr9in2LHYsyDZh9mI2LTZhdmG2K9kZAIFDw8WAh8BBSPYqNiz2KrZhyDZhtix2YUg2KfZgdiy2KfYsSDZhtin2LjZhWRkAgkPFgIeCWlubmVyaHRtbAUg2KfZhdix2YjYsiAg27HbtSDYotiw2LEg27HbtNuw27RkAgsPZBYMAgEPFgIfAgVb2KfbjNinINmF24zYr9in2YbbjNivINiu2YbYr9mHINmF2YjYrNioINiq2YLZiNuM2Kog2LPbjNiz2KrZhSDYp9uM2YXZhtuMINio2K/ZhiDZhduMINi02YjYr2QCBw88KwAJAGQCCA88KwARAgEQFgAWABYADBQrAABkAgkPFgIfAgWqAtm+2LHZiNix2K/ar9in2LHYpyEg2KfYsiDYr9mI2LPYqiDYrduM2YTZh+KAjNqv2LHbjCDaqdmHINqG2LTZhdin2YbYtCDZhdix2Kcg2YXbjOKAjNio24zZhtivINmIINiv2YTYtCDZhdix2KfZgtioINmF2YYg2KfYs9iqICjYqNmHINi32YjYsduMINqp2YcpINin2q/YsSDYrtmI2KjbjCDYqNio24zZhtiv2Iwg2b7ZhtmH2KfZhiDaqdix2K/ZhyDZiCDYp9qv2LEg2KjYr9uM24wg2KjYqNuM2YbYr9iMINii2YYg2LHYpyDYp9i52YTYp9mFINmF24zigIzaqdmG2K/YjCDYqNmHINiq2Ygg2b7Zhtin2Ycg2YXbjOKAjNio2LHZhS5kAgoPFgIfAgUK2KjZh9ix2KfZhWQCEA9kFgJmD2QWDgIBDxBkDxYeZgIBAgICAwIEAgUCBgIHAggCCQIKAgsCDAINAg4CDwIQAhECEgITAhQCFQIWAhcCGAIZAhoCGwIcAh0WHhAFCNin2LHYp9qpBQjYp9ix2KfaqWcQBQzYp9ix2K/YqNuM2YQFDNin2LHYr9io24zZhGcQBQzYp9ix2YjZhduM2YcFDNin2LHZiNmF24zZh2cQBQrYp9mE2KjYsdiyBQrYp9mE2KjYsdiyZxAFDNin2LXZgdmH2KfZhgUM2KfYtdmB2YfYp9mGZxAFCtin2YfZiNin2LIFCtin2YfZiNin2LJnEAUK2KfbjNmE2KfZhQUK2KfbjNmE2KfZhWcQBQzYqNis2YbZiNix2K8FDNio2KzZhtmI2LHYr2cQBRHYqNmG2K/YsSDYudio2KfYswUR2KjZhtiv2LEg2LnYqNin2LNnEAUK2KjZiNi02YfYsQUK2KjZiNi02YfYsWcQBQzYqNuM2LHYrNmG2K8FDNio24zYsdis2YbYr2cQBQrYqtio2LHbjNiyBQrYqtio2LHbjNiyZxAFCtiq2YfYsdin2YYFCtiq2YfYsdin2YZnEAUP2K7YsdmFINii2KjYp9ivBQ/Yrtix2YUg2KLYqNin2K9nEAUG2LHYtNiqBQbYsdi02KpnEAUM2LLYp9mH2K/Yp9mGBQzYstin2YfYr9in2YZnEAUK2LLZhtis2KfZhgUK2LLZhtis2KfZhmcQBQjYs9in2LHbjAUI2LPYp9ix24xnEAUK2LPZhdmG2KfZhgUK2LPZhdmG2KfZhmcQBQrYs9mG2YbYr9isBQrYs9mG2YbYr9isZxAFDNi02YfYsdqp2LHYrwUM2LTZh9ix2qnYsdivZxAFCti024zYsdin2LIFCti024zYsdin2LJnEAUK2YLYstmI24zZhgUK2YLYstmI24zZhmcQBQTZgtmFBQTZgtmFZxAFCtqp2LHZhdin2YYFCtqp2LHZhdin2YZnEAUQ2qnYsdmF2KfZhti02KfZhwUQ2qnYsdmF2KfZhti02KfZh2cQBQrar9ix2q/Yp9mGBQrar9ix2q/Yp9mGZxAFCNmF2LTZh9ivBQjZhdi02YfYr2cQBQrZh9mF2K/Yp9mGBQrZh9mF2K/Yp9mGZxAFCtuM2KfYs9mI2KwFCtuM2KfYs9mI2KxnFgECDGQCAw8PFgIfAQUFMDU6MjhkZAIFDw8WAh8BBQUwNzowMGRkAgcPDxYCHwEFBTExOjU1ZGQCCQ8PFgIfAQUFMTY6NTBkZAILDw8WAh8BBQUxNzowOWRkAg0PDxYCHwEFBTIzOjEwZGQYAQUUY3RsMDAkY29udGVudCRndk5ld3MPZ2QO69HRk+sDmM148ny/Pc9w9LSiS2N2VwVFAHvYR2nSLQ==" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
     }
-
-    function nextQuestion() {
-        currentRiddleIndex++;
-        loadRiddle();
-    }
-
-    function endGame() {
-        clearInterval(timerInterval);
-        if(!isChallengeMode && score > gameState.highScore) gameState.highScore = score;
-        saveData();
-        
-        document.getElementById('game-over-title').textContent = "پایان بازی";
-        document.getElementById('game-over-title').className = "text-5xl font-black mb-6 gold-text";
-        document.getElementById('game-over-msg').innerHTML = 'امتیاز شما: <span id="final-score" class="text-white">0</span>';
-        document.getElementById('final-score').parentElement.style.display = 'block';
-        document.getElementById('final-score').textContent = score;
-        
-        showScreen('game-over-screen');
-    }
-
-    function saveData() {
-        localStorage.setItem('houshyar_game_data', JSON.stringify(gameState));
-    }
-
-    // --- Event Listeners ---
-    document.getElementById('flash-submit-btn').addEventListener('click', checkFlashAnswer);
-    document.getElementById('flash-input').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') checkFlashAnswer();
-    });
-
-    document.getElementById('play-again-btn').addEventListener('click', () => {
-         startGame(); 
-    });
-    
-    document.getElementById('back-to-menu-btn').addEventListener('click', () => showScreen('main-menu-screen'));
-    document.getElementById('exit-game-btn').addEventListener('click', () => {
-        clearInterval(timerInterval);
-        showScreen('main-menu-screen');
-    });
-    
-    document.getElementById('challenges-btn').addEventListener('click', () => showToast('آرشیو سوالات هنوز فعال نیست'));
-    document.getElementById('settings-btn').addEventListener('click', () => showToast());
-
-    // Init
-    window.onload = function() {
-        // Load Data
-        const saved = localStorage.getItem('houshyar_game_data');
-        if(saved) {
-            const parsed = JSON.parse(saved);
-            gameState.highScore = parsed.highScore || 0;
-            gameState.coins = parsed.coins || 500;
-            gameState.skipTickets = parsed.skipTickets || 0;
-        }
-        
-        // Handle Splash Screen Logic
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0'; // Start fade out
-            setTimeout(() => {
-                splash.style.display = 'none'; // Remove from DOM flow
-                
-                // Show Main Menu & Start Matrix
-                document.getElementById('main-menu-screen').classList.add('active');
-                updateMenuUI();
-                startMatrixEffect();
-            }, 1000); // Wait for fade out
-        }, 6000); // 6 Seconds Duration
-    };
-
+}
+//]]>
 </script>
+
+
+<script src="/WebResource.axd?d=CBdt_rLLhQY7rLlM-ahk3It9sUXXwmtkBVTEaBQbHAjy6kaVPK2RQJgcR-ICCoqklI3mqM-EpGq56fsqucT69w9fRsOR8qCucLFT8_ap0Bs1&amp;t=638901667900000000" type="text/javascript"></script>
+
+
+<script src="/ScriptResource.axd?d=G-x-Znk2YIJbJ5ypbjWQ4U0Oy3BufqZ6p6u0QAZMOXTz-e-I4kxFw3Fg6YuvKCGj_7QMh-8WR8bK3cKAzXK6vasZrhdWNhaWz1YUpn7ih0WjTInAvy1qqbxl67t5NmoJ0&amp;t=f2cd5c5" type="text/javascript"></script>
+<script src="/ScriptResource.axd?d=hnE3vO3YTOa5nMsyQF0ybpCJ-U1SEcVgjfeNAtgInuRQ7EguH6S0906apqBzOeiTumfDF0V2hlYopnR_Ja6tTXwEKlvtCRcsbD_vC5lO3PRless5yigmwHh7Ofq-0RZI2jaGwvm1L5pJRI7I1nb7IA2&amp;t=f2cd5c5" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CA0B0334" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdACUbDfdfeJ6wGQyLJbNckNkL/UnfcMVNgbQtD10APOc9fhzis88eVlGwk++7k37NrPx3H+38R8DY8gCV9wziUbjifIEtjyRsA9gUK0XuAxkJwNx7M+AJcDCHvTW5dKyi5bNUPyV2+rwagUf4fzWTO8pwQl4Y44kG0zgRzaIxhhz1uFzCUJoUdP8QMvCzz6b/3qEtcLdxEWzscrwH2WkUvbrMDli2D7lEK3m2vFyi0HmLQ7VTRFxWbznEoimF1HqkTZXZ8Wx0mopk7EGRJi0LuseHv/np2M5wW8fw09TzmbwKSU1UzOlglGE8xaAUKsl1JtuWDY8aWZH6zVcM75Qds6JhnjTWEUbT78N4gkPEuAyV9+qU1Kc1Iw6TrWAJPDaL9oLguvvxwsXuasr/3XZEGVLi1hf44Nm1nkXSdtXr+V0S8hW4XgRiBd+37VT1feiuB7V5MdrhLEuQXReANWoK437MJva+suIHp3ZUG1ZJb10qEc+R60gh9KzSSQBkaRyjki3hzC/ZTpSFBeWKv7cNPmLnxSqxMBNXB/XpUEaCXfJvjLOSI7V+AFtretbc+eE0emf+iA3mplfvRrTRPXfIJX2Yf+qfLGj8wq3wYHgCVoEOIDVeYQCWl6QSSfXdO0H27ax/XlkvRkar5a3yKqOLzJCfmzwGOE8uuVA6OLnL9Tb/1FCC3yz+cf6DwT9WRPRkU8dD+bBXOHo+YCO8MF5ezacJj5X1Sz1Tc/XcmDaj881Wgzeww5Oy8jlqlbgVikOG5S+u3rPfXiBMb7zVQgy8KKrKnPok0qOoN4ecsYssgkGTD6iz6Bf15jSb+Ue6d6fwvBU=" />
+</div>
+        <div id="main_container">
+            <div class="top_bar"><a href="agent/Default.aspx?userID=agent" target="_blank"></a></div>
+            <div id="header" align="right" dir="rtl">
+                <div id="logo">
+                    <img id="imgLogo" asp-append-version="true" onerror="this.src=&#39;https://nazemonweb.ir/logo/logo.png&#39;;" src="" style="height:150px;width:150px;" />
+	            </div>
+                <div class="oferte_content">
+                    <div class="oferta">
+           		        <div class="oferta_content" dir="rtl">
+                            <div class="oferta_details">
+                                <p class="BYekan"><span id="lblOffice">نسخه نمایشی وبسایت مدارس هوشمند</span></p>
+                                <hr />
+                                <p class="BYekan"><span id="lblSchool">بسته نرم افزار ناظم</span></p>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="top_divider"><img src="http://nazemonweb.ir/images/header_divider.png" alt="" title="" width="1" height="164" /></div>
+                </div>
+            </div>
+            <div id="menu_tab">
+                <div class="left_menu_corner"></div>
+                    <ul class="menu">
+                        <li><a id="lbBack" class="nav1" href="javascript:__doPostBack(&#39;ctl00$lbBack&#39;,&#39;&#39;)">خانه</a></li>
+                        <li class="divider"></li>
+                        <li><a id="contact" href="admin/Default.aspx?userID=admin" class="nav2" onmouseover="show('contactMe')" onmouseout="hide('contactMe')">تماس با پشتیبانی</a></li>
+                        <li class="divider"></li>
+                        <li><a href="RegCode.aspx" style="color:red;font-size:2em" class="nav2 BYekan">پیش ثبت نام</a></li>
+                        <li class="divider"></li>
+                        <li><a href="About.aspx" class="nav3" target="_blank">درباره</a></li>
+                        <li class="divider"></li>
+                        <li class="currencies"><div id="showDate" align="right">امروز  ۱۵ آذر ۱۴۰۴</div></li>
+                    </ul>
+                 <div class="right_menu_corner"></div>
+            </div><!-- end of menu tab -->
+
+            <div id="contactMe" align="center">
+                <div class="shopping_cart" dir="rtl">
+                    <br />
+                    <div dir="ltr">
+                        <h3>ali.tolouei@gmail.com</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="main_content">
+                
+    <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$content$ScriptManager1', 'form1', ['tctl00$content$UpdatePanel1','content_UpdatePanel1'], [], [], 90, 'ctl00');
+//]]>
+</script>
+
+    <div class="left_content" dir="rtl">
+        <div  class="title_box" >آیا میدانید که...</div>  
+        <div class="border_box" style="overflow:hidden;">
+            <img src="images/bozorgan.png" alt=""/>
+            <div id="content_infoText" style="padding: 5px; text-align:justify; color: #FF00FF; ">ایا میدانید خنده موجب تقویت سیستم ایمنی بدن می شود</div>
+        </div>
+        <div class="title_box">لینکهای مدرسه</div>  
+        <div class="border_box" dir="rtl">
+            
+        </div>
+        <div class="title_box">لینکهای مفید</div>
+        <ul class="left_menu">
+            <li class="odd"><a href="http://www.time.ir" target="_blank">تاریخ و ساعت رسمی ایران</a></li>
+            <li class="even"><a href="http://www.roshd.ir/Default.aspx?tabid=543&SSOReturnPage=Check&Rand=0" target="_blank">دانلود کتابهای درسی</a></li>
+            <li class="odd"><a href="http://icnl.nlai.ir" target="_blank">کتابخانه ملی کودکان و نوجوانان</a></li>
+            <li class="even"><a href="http://www.parsquran.com/" target="_blank">یک وب سایت قرآنی بسیار عالی</a></li>
+            <li class="odd"><a href="http://dabirnahavand.lxb.ir" target="_blank">سایتی برای دانش آموزان</a></li>
+            <li class="even"><a href="http://www.koodakaneh.com/" target="_blank">وب سایت کودکان</a></li>
+            <li class="odd"><a href="http://www.koodakcity.com/" target="_blank">شهر کودکان</a></li>
+            <li class="even"><a href="http://www.rahmandoost.org/" target="_blank">وبسایت مصطفی رحماندوست</a></li>
+            <li class="odd"><a href="http://www.valeh.ir/" target="_blank">موسسه آموزشی فرهنگی واله</a></li>
+            <li class="even"><a href="http://www.meraat.ir/" target="_blank">مرکز نوآوریهای آموزشی مرآت</a></li>
+            <li class="odd"><a href="http://www.gozine2.ir/" target="_blank">گزینه دو</a></li>
+        </ul> 
+
+        <div class="title_box">راهنمای کدهای پیامک</div>  
+        <div class="border_box">
+            <div class="product_title"><a id="content_lbSmsCodes" href="javascript:__doPostBack(&#39;ctl00$content$lbSmsCodes&#39;,&#39;&#39;)">دانلود</a></div>
+            <div class="product_img"><a id="content_LinkButton2" href="javascript:__doPostBack(&#39;ctl00$content$LinkButton2&#39;,&#39;&#39;)"><img src="images/laptop.png" alt="" title="" border="0" /></a></div>
+        </div>
+        <div class="title_box">آیین نامه انضباطی</div>  
+        <div class="border_box">
+            <div class="product_title"><a id="content_lbAeinname" href="javascript:__doPostBack(&#39;ctl00$content$lbAeinname&#39;,&#39;&#39;)">دانلود</a></div>
+            <div class="product_img"><a id="content_LinkButton1" href="javascript:__doPostBack(&#39;ctl00$content$LinkButton1&#39;,&#39;&#39;)"><img src="images/law.png" alt="" title="" border="0" /></a></div>
+        </div>
+    </div>  
+    <!--end of left_content-->
+
+    <div class="center_content">
+        <div class="center_title_bar">امکانات</div>
+        <div class="prod_box">
+        	<div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/album.aspx' target="_blank">آلبوم عکس</a></div>
+                <div class="product_img"><a href='/contents/album.aspx' target="_blank"><img src="images/album.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div>             
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/awards.aspx' target="_blank">جوایز مدرسه</a></div>
+                <div class="product_img"><a href='/contents/awards.aspx' target="_blank"><img src="images/gift.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/honors.aspx' target="_blank">افتخارات مدرسه</a></div>
+                <div class="product_img"><a href='/contents/honors.aspx' target="_blank"><img src="images/honor.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/tops.aspx' target="_blank">برترینهای مدرسه</a></div>
+                <div class="product_img"><a href='/contents/tops.aspx' target="_blank"><img src="images/tops.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/plans.aspx' target="_blank">برنامه های مدرسه</a></div>
+                <div class="product_img"><a href='/contents/plans.aspx' target="_blank"><img src="images/plan.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/sampleQuestions.aspx' target="_blank">نمونه سئوال</a></div>
+                <div class="product_img"><a href='/contents/sampleQuestions.aspx' target="_blank"><img src="images/question.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/clips.aspx' target="_blank">فیلم و انیمیشن آموزشی</a></div>
+                <div class="product_img"><a href='/contents/clips.aspx' target="_blank"><img src="images/movie.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/articles.aspx' target="_blank">مقالات علمی</a></div>
+                <div class="product_img"><a href='/contents/articles.aspx' target="_blank"><img src="images/article.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/magazines.aspx' target="_blank">گروه بندی دانش آموزان</a></div>
+                <div class="product_img"><a href='/contents/magazines.aspx' target="_blank"><img src="images/magezine.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="prod_box">
+            <div class="top_prod_box"></div>
+            <div class="center_prod_box">            
+                <div class="product_title"><a href='/contents/miscellaneous.aspx' target="_blank">فایلهای متفرقه</a></div>
+                <div class="product_img"><a href='/contents/miscellaneous.aspx' target="_blank"><img src="images/etc.png" alt="" title="" border="0" /></a></div>                        
+            </div>
+            <div class="bottom_prod_box"></div> 
+        </div>
+        <div class="center_title_bar">دانش آموزان متولد امروز *** تولدتان مبارک ***</div>
+        <div class="center_content" align="center">
+            
+        </div>
+        <div class="center_title_bar">اخبار و پیامهای مدرسه</div>
+        <div class="center_content">
+            <div>
+
+</div>
+        </div>
+    </div>
+    <!--end of center_content-->
+
+    <div class="right_content" dir="rtl">
+        <div  class="title_box" >سخن بزرگان</div>  
+        <div class="border_box" style="overflow:hidden;">
+            <img src="images/bozorgan.png" alt=""/>
+            <div id="content_quotationText" style="padding: 5px; text-align:justify; color: #FF00FF; ">پروردگارا! از دوست حیله‌گری که چشمانش مرا می‌بیند و دلش مراقب من است (به طوری که) اگر خوبی ببیند، پنهان کرده و اگر بدیی ببیند، آن را اعلام می‌کند، به تو پناه می‌برم.</div>
+            <div id="content_quotationTitle" style="float:left;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;background-color:#99CCFF; padding:3px; margin-left: 2px; margin-bottom: 2px;">بهرام</div>
+        </div>
+
+        <div class="title_box">منوی ورود</div>
+        <ul class="left_menu">
+            <li class="odd"><a href="school/yearSelection.aspx?userID=school">ورود مدرسه</a></li>
+            <li class="even"><a href="employee/schoolSelection.aspx?userID=employee">ورود کارمند</a></li>
+            <li class="odd"><a href="student/schoolSelection.aspx?userID=iranianStudent">ورود دانش آموز ایرانی</a></li>
+            <li class="even"><a href="student/schoolSelection.aspx?userID=foreignStudent">ورود دانش آموز تبعه خارجی</a></li>
+        </ul>      
+
+        <div class="title_box">منوی ثبت نام</div>
+        <ul class="left_menu">
+            <li class="odd"><a href="student/pictureUpload.aspx?userID=iranianNewStudent">ثبت نام دانش آموز ایرانی</a></li>
+            <li class="even"><a href="student/pictureUpload.aspx?userID=foreignNewStudent">ثبت نام دانش آموز تبعه خارجی</a></li>
+        </ul>  
+
+        <div class="title_box">منوی اطلاعات</div>
+        <ul class="left_menu">
+            
+            <li class="even"><a href="contents/councilMembers.aspx" target="_blank">اعضای شورای دانش آموزی</a></li>
+            <li class="odd"><a href="contents/representatives.aspx" target="_blank">نمایندگان کلاسها</a></li>
+            <li class="even"><a href="contents/communityMembers.aspx" target="_blank">اعضای انجمن اولیاء و مربیان</a></li>
+        </ul> 
+
+        <div class="title_box">آمار وبسایت</div>  
+        <div class="border_box">
+                <div dir="rtl" align="right">
+                <div style=" float:left;margin-left:5px;"><img id="content_Image1" src="images/gnome.png" /></div>
+                <table>
+                    <tr>
+                        <td>
+                            افراد آنلاین:
+                        </td>
+                        <td >
+                            <span id="content_lblOnlineUsers"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            بازدید امروز:
+                        </td>
+                        <td >
+                            <span id="content_lblTodayVisit"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            بازدید دیروز:
+                        </td>
+                        <td >
+                            <span id="content_lblYesterdayVisit"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            بازدید کل:
+                        </td>
+                        <td>
+                            <span id="content_lblTotalVisit"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div> 
+        <div class="title_box">اوقات شرعی</div>  
+        <div class="border_box" >
+            <div id="content_UpdatePanel1">
+	
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <img src="images/azan.png" alt=""/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" valign="middle" colspan="2">
+                                <select name="ctl00$content$ddlCity" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$content$ddlCity\&#39;,\&#39;\&#39;)&#39;, 0)" id="content_ddlCity" class="persianTextBox" style="width:100%;">
+		<option value="اراک">اراک</option>
+		<option value="اردبیل">اردبیل</option>
+		<option value="ارومیه">ارومیه</option>
+		<option value="البرز">البرز</option>
+		<option value="اصفهان">اصفهان</option>
+		<option value="اهواز">اهواز</option>
+		<option value="ایلام">ایلام</option>
+		<option value="بجنورد">بجنورد</option>
+		<option value="بندر عباس">بندر عباس</option>
+		<option value="بوشهر">بوشهر</option>
+		<option value="بیرجند">بیرجند</option>
+		<option value="تبریز">تبریز</option>
+		<option selected="selected" value="تهران">تهران</option>
+		<option value="خرم آباد">خرم آباد</option>
+		<option value="رشت">رشت</option>
+		<option value="زاهدان">زاهدان</option>
+		<option value="زنجان">زنجان</option>
+		<option value="ساری">ساری</option>
+		<option value="سمنان">سمنان</option>
+		<option value="سنندج">سنندج</option>
+		<option value="شهرکرد">شهرکرد</option>
+		<option value="شیراز">شیراز</option>
+		<option value="قزوین">قزوین</option>
+		<option value="قم">قم</option>
+		<option value="کرمان">کرمان</option>
+		<option value="کرمانشاه">کرمانشاه</option>
+		<option value="گرگان">گرگان</option>
+		<option value="مشهد">مشهد</option>
+		<option value="همدان">همدان</option>
+		<option value="یاسوج">یاسوج</option>
+
+	</select> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="leftcol">
+                                اذان صبح:
+                                <span id="content_lblSobh">05:28</span>
+                            </td>
+                            <td class="leftcol">
+                                طلوع:
+                                <span id="content_lblTolo">07:00</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="leftcol">
+                                اذان ظهر:
+                                <span id="content_lblZohr">11:55</span>
+                            </td>
+                            <td class="leftcol">
+                                غروب:
+                                <span id="content_lblGhorub">16:50</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="leftcol">
+                                اذان مغرب:
+                                <span id="content_lblMaghreb">17:09</span>
+                            </td>
+                            <td class="leftcol">
+                                نیمه شب:
+                                <span id="content_lblNime">23:10</span>
+                            </td>
+                        </tr>
+                    </table>
+                
+</div>
+        </div>
+        <div class="banner_adds">
+            <a href='/contents/softwares.aspx' target="_blank">
+                <img src="images/bann1.jpg" alt="" title="" border="0" />
+            </a>
+         </div> 
+    </div> 
+    <!--end of right_content-->
+
+            </div>
+
+            <div id="footer" class="footer">
+                <div class="center_footer" dir="rtl">
+                    
+                    <p><p><span id="lblCopyRight">کلیه حقوق مادی و معنوی این سامانه متعلق به شرکت نرم افزاری داکا می باشد</span></p></p>
+                    <p><span id="lblEmail"></span></p>
+                    <p><span id="lblPhone"></span></p>
+                    <p><span id="lblAddress"></span></p><br />
+                </div> 
+           </div>            
+        </div>
+    </form>
 </body>
 </html>
