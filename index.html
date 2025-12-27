@@ -1,460 +1,1173 @@
-
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>
-	سیستم ناظم نت
-</title>
-    <script src="https://nazemonweb.ir/js/jquery-1.7.1.min.js" type="text/javascript"></script>
-    <script src="https://nazemonweb.ir/js/general.js" type="text/javascript"></script>
-    <link href="https://nazemonweb.ir/css/style.css?t=&lt;%= DateTime.Now.Ticks %>" rel="stylesheet" type="text/css" /><link href="https://nazemonweb.ir/css/iecss.css" rel="stylesheet" type="text/css" /><link href="https://nazemonweb.ir/images/favicon.ico" rel="shortcut icon" />
-    
-    <script type="text/javascript">
-        function show(id) {
-            document.getElementById(id).style.visibility = "visible";
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فروشگاه تلفن همراه - دمو تاریک</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        function hide(id) {
-            document.getElementById(id).style.visibility = "hidden";
-        }
-    </script>
-    <style type="text/css">
-        @font-face {
-          font-family: 'BYekan';
-          src: url('~/fonts/BYekan.eot?#') format('eot'),  /* IE6–8 */
-               url('fonts/BYekan.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
-               url('fonts/BYekan.ttf') format('truetype');  /* Saf3—5, Chrome4+, FF3.5, Opera 10+ */
-        }
-        .BYekan
-        {
-            font-family: BYekan, Tahoma, Helvetica, sans-serif;
-            color: #FFFFFF;font-size:20px;text-align:center;
-        }
-    </style>
-    
-    <script type="text/javascript">
-        function checkTextAreaMaxLength(textBox, e, length) {
 
-            var mLen = textBox["MaxLength"];
-            if (null == mLen)
-                mLen = length;
+        :root {
+            --primary-color: #6366f1; /* بنفش-آبی */
+            --secondary-color: #10b981; /* سبز نئون */
+            --accent-color: #f59e0b; /* نارنجی طلایی */
+            --dark-bg: #0f172a; /* پس‌زمینه تیره */
+            --card-bg: #1e293b; /* رنگ کارت */
+            --text-color: #e2e8f0; /* متن روشن */
+            --text-light: #94a3b8; /* متن خاکستری */
+            --border-color: #334155; /* رنگ حاشیه */
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-secondary: linear-gradient(135deg, #10b981, #34d399);
+            --gradient-accent: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
 
-            var maxLength = parseInt(mLen);
-            if (!checkSpecialKeys(e)) {
-                if (textBox.value.length > maxLength - 1) {
-                    if (window.event)//IE
-                    {
-                        e.returnValue = false;
-                        return false;
-                    }
-                    else//Firefox
-                        e.preventDefault();
-                }
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: 10px;
+        }
+
+        .logo span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-right: 1.5rem;
+        }
+
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7)), url('https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #e2e8f0, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text-light);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--dark-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 4px;
+            background: var(--gradient-primary);
+            bottom: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* Products Section */
+        .products {
+            padding: 5rem 0;
+            background-color: #0f172a;
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 2rem;
+            margin: 0 0.5rem 1rem;
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            display: none;
+        }
+
+        .products-grid.active {
+            display: grid;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-color);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-card .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .product-card p {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card .price {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .product-card .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gradient-accent);
+            color: #1e293b;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 0;
+            background-color: var(--dark-bg);
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info p {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+        }
+
+        .contact-info i {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: 10px;
+            font-size: 1.2rem;
+            width: 25px;
+        }
+
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-form h3 {
+            font-size: 1.8rem;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #1e293b;
+            color: var(--text-color);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0f1f;
+            color: white;
+            padding: 3rem 0 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--accent-color);
+            padding-right: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--gradient-primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+        }
+
+        .floating-element {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* New color accents */
+        .color-accent-1 {
+            color: var(--primary-color);
+        }
+        
+        .color-accent-2 {
+            color: var(--secondary-color);
+        }
+        
+        .color-accent-3 {
+            color: var(--accent-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
             }
         }
 
-        function checkSpecialKeys(e) {
-            if (e.keyCode != 8 && e.keyCode != 46 && e.keyCode != 35 && e.keyCode != 36 && e.keyCode != 37 && e.keyCode != 38 && e.keyCode != 39 && e.keyCode != 40)
-                return false;
-            else
-                return true;
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background-color: rgba(15, 23, 42, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            nav ul.active {
+                display: flex;
+            }
+            
+            nav ul li {
+                margin: 0;
+                text-align: center;
+            }
+            
+            nav ul li a {
+                display: block;
+                padding: 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
         }
 
-    </script>
-<meta name="keywords" content="مدرسه,کتاب,معلم,هوشمند,تدریس,هوشمندسازی,نرم افزار,دانش آموز," /></head>
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.7rem;
+            }
+            
+            .tab-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Motion Graphics Effects */
+        .phone-animation {
+            position: absolute;
+            width: 300px;
+            height: 500px;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-radius: 30px;
+            bottom: -100px;
+            left: 5%;
+            box-shadow: 
+                20px 20px 60px rgba(0, 0, 0, 0.5),
+                -20px -20px 60px rgba(30, 41, 59, 0.5);
+            z-index: 1;
+            overflow: hidden;
+            display: none;
+            border: 1px solid var(--border-color);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .phone-animation::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--border-color), #475569);
+            border-radius: 3px;
+        }
+
+        .phone-animation::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 1200px) {
+            .phone-animation {
+                display: block;
+            }
+        }
+
+        /* Decorative elements */
+        .circle-decoration {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.05;
+            background: var(--gradient-primary);
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--gradient-accent);
+            bottom: 20%;
+            right: 5%;
+        }
+        
+        .circle-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--gradient-secondary);
+            top: 40%;
+            right: 15%;
+        }
+
+        /* Glowing effect for important elements */
+        .glow-on-hover:hover {
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+    </style>
+</head>
 <body>
-    <form method="post" action="./Default.aspx" id="form1">
-<div class="aspNetHidden">
-<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
-<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
-<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTEwMjAxNjQxNzYPZBYCZg9kFgICAw9kFgoCAQ8PZBYCHgdvbmVycm9yBS90aGlzLnNyYz0naHR0cHM6Ly9uYXplbW9ud2ViLmlyL2xvZ28vbG9nby5wbmcnO2QCAw8PFgIeBFRleHQFOtmG2LPYrtmHINmG2YXYp9uM2LTbjCDZiNio2LPYp9uM2Kog2YXYr9in2LHYsyDZh9mI2LTZhdmG2K9kZAIFDw8WAh8BBSPYqNiz2KrZhyDZhtix2YUg2KfZgdiy2KfYsSDZhtin2LjZhWRkAgkPFgIeCWlubmVyaHRtbAUg2KfZhdix2YjYsiAg27HbtSDYotiw2LEg27HbtNuw27RkAgsPZBYMAgEPFgIfAgVb2KfbjNinINmF24zYr9in2YbbjNivINiu2YbYr9mHINmF2YjYrNioINiq2YLZiNuM2Kog2LPbjNiz2KrZhSDYp9uM2YXZhtuMINio2K/ZhiDZhduMINi02YjYr2QCBw88KwAJAGQCCA88KwARAgEQFgAWABYADBQrAABkAgkPFgIfAgWqAtm+2LHZiNix2K/ar9in2LHYpyEg2KfYsiDYr9mI2LPYqiDYrduM2YTZh+KAjNqv2LHbjCDaqdmHINqG2LTZhdin2YbYtCDZhdix2Kcg2YXbjOKAjNio24zZhtivINmIINiv2YTYtCDZhdix2KfZgtioINmF2YYg2KfYs9iqICjYqNmHINi32YjYsduMINqp2YcpINin2q/YsSDYrtmI2KjbjCDYqNio24zZhtiv2Iwg2b7ZhtmH2KfZhiDaqdix2K/ZhyDZiCDYp9qv2LEg2KjYr9uM24wg2KjYqNuM2YbYr9iMINii2YYg2LHYpyDYp9i52YTYp9mFINmF24zigIzaqdmG2K/YjCDYqNmHINiq2Ygg2b7Zhtin2Ycg2YXbjOKAjNio2LHZhS5kAgoPFgIfAgUK2KjZh9ix2KfZhWQCEA9kFgJmD2QWDgIBDxBkDxYeZgIBAgICAwIEAgUCBgIHAggCCQIKAgsCDAINAg4CDwIQAhECEgITAhQCFQIWAhcCGAIZAhoCGwIcAh0WHhAFCNin2LHYp9qpBQjYp9ix2KfaqWcQBQzYp9ix2K/YqNuM2YQFDNin2LHYr9io24zZhGcQBQzYp9ix2YjZhduM2YcFDNin2LHZiNmF24zZh2cQBQrYp9mE2KjYsdiyBQrYp9mE2KjYsdiyZxAFDNin2LXZgdmH2KfZhgUM2KfYtdmB2YfYp9mGZxAFCtin2YfZiNin2LIFCtin2YfZiNin2LJnEAUK2KfbjNmE2KfZhQUK2KfbjNmE2KfZhWcQBQzYqNis2YbZiNix2K8FDNio2KzZhtmI2LHYr2cQBRHYqNmG2K/YsSDYudio2KfYswUR2KjZhtiv2LEg2LnYqNin2LNnEAUK2KjZiNi02YfYsQUK2KjZiNi02YfYsWcQBQzYqNuM2LHYrNmG2K8FDNio24zYsdis2YbYr2cQBQrYqtio2LHbjNiyBQrYqtio2LHbjNiyZxAFCtiq2YfYsdin2YYFCtiq2YfYsdin2YZnEAUP2K7YsdmFINii2KjYp9ivBQ/Yrtix2YUg2KLYqNin2K9nEAUG2LHYtNiqBQbYsdi02KpnEAUM2LLYp9mH2K/Yp9mGBQzYstin2YfYr9in2YZnEAUK2LLZhtis2KfZhgUK2LLZhtis2KfZhmcQBQjYs9in2LHbjAUI2LPYp9ix24xnEAUK2LPZhdmG2KfZhgUK2LPZhdmG2KfZhmcQBQrYs9mG2YbYr9isBQrYs9mG2YbYr9isZxAFDNi02YfYsdqp2LHYrwUM2LTZh9ix2qnYsdivZxAFCti024zYsdin2LIFCti024zYsdin2LJnEAUK2YLYstmI24zZhgUK2YLYstmI24zZhmcQBQTZgtmFBQTZgtmFZxAFCtqp2LHZhdin2YYFCtqp2LHZhdin2YZnEAUQ2qnYsdmF2KfZhti02KfZhwUQ2qnYsdmF2KfZhti02KfZh2cQBQrar9ix2q/Yp9mGBQrar9ix2q/Yp9mGZxAFCNmF2LTZh9ivBQjZhdi02YfYr2cQBQrZh9mF2K/Yp9mGBQrZh9mF2K/Yp9mGZxAFCtuM2KfYs9mI2KwFCtuM2KfYs9mI2KxnFgECDGQCAw8PFgIfAQUFMDU6MjhkZAIFDw8WAh8BBQUwNzowMGRkAgcPDxYCHwEFBTExOjU1ZGQCCQ8PFgIfAQUFMTY6NTBkZAILDw8WAh8BBQUxNzowOWRkAg0PDxYCHwEFBTIzOjEwZGQYAQUUY3RsMDAkY29udGVudCRndk5ld3MPZ2QO69HRk+sDmM148ny/Pc9w9LSiS2N2VwVFAHvYR2nSLQ==" />
-</div>
+    <!-- Decorative circles -->
+    <div class="circle-decoration circle-1"></div>
+    <div class="circle-decoration circle-2"></div>
+    <div class="circle-decoration circle-3"></div>
+    
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-mobile-alt"></i>
+                <span>فون</span>شاپ
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="#home">خانه</a></li>
+                    <li><a href="#products">محصولات</a></li>
+                    <li><a href="#about">درباره ما</a></li>
+                    <li><a href="#contact">تماس با ما</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<script type="text/javascript">
-//<![CDATA[
-var theForm = document.forms['form1'];
-if (!theForm) {
-    theForm = document.form1;
-}
-function __doPostBack(eventTarget, eventArgument) {
-    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
-        theForm.__EVENTTARGET.value = eventTarget;
-        theForm.__EVENTARGUMENT.value = eventArgument;
-        theForm.submit();
-    }
-}
-//]]>
-</script>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="phone-animation floating-element"></div>
+        <div class="container">
+            <h1 class="animate__animated animate__fadeInDown">فروشگاه تخصصی تلفن همراه</h1>
+            <p class="animate__animated animate__fadeInUp animate__delay-1s">جدیدترین گوشی‌های موبایل، قاب و لوازم جانبی با بهترین قیمت و کیفیت. خدمات پس از فروش معتبر و ارسال فوری به سراسر شهر.</p>
+            <a href="#products" class="cta-button animate__animated animate__pulse animate__delay-2s glow-on-hover">مشاهده محصولات</a>
+        </div>
+    </section>
 
-
-<script src="/WebResource.axd?d=CBdt_rLLhQY7rLlM-ahk3It9sUXXwmtkBVTEaBQbHAjy6kaVPK2RQJgcR-ICCoqklI3mqM-EpGq56fsqucT69w9fRsOR8qCucLFT8_ap0Bs1&amp;t=638901667900000000" type="text/javascript"></script>
-
-
-<script src="/ScriptResource.axd?d=G-x-Znk2YIJbJ5ypbjWQ4U0Oy3BufqZ6p6u0QAZMOXTz-e-I4kxFw3Fg6YuvKCGj_7QMh-8WR8bK3cKAzXK6vasZrhdWNhaWz1YUpn7ih0WjTInAvy1qqbxl67t5NmoJ0&amp;t=f2cd5c5" type="text/javascript"></script>
-<script src="/ScriptResource.axd?d=hnE3vO3YTOa5nMsyQF0ybpCJ-U1SEcVgjfeNAtgInuRQ7EguH6S0906apqBzOeiTumfDF0V2hlYopnR_Ja6tTXwEKlvtCRcsbD_vC5lO3PRless5yigmwHh7Ofq-0RZI2jaGwvm1L5pJRI7I1nb7IA2&amp;t=f2cd5c5" type="text/javascript"></script>
-<div class="aspNetHidden">
-
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CA0B0334" />
-	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdACUbDfdfeJ6wGQyLJbNckNkL/UnfcMVNgbQtD10APOc9fhzis88eVlGwk++7k37NrPx3H+38R8DY8gCV9wziUbjifIEtjyRsA9gUK0XuAxkJwNx7M+AJcDCHvTW5dKyi5bNUPyV2+rwagUf4fzWTO8pwQl4Y44kG0zgRzaIxhhz1uFzCUJoUdP8QMvCzz6b/3qEtcLdxEWzscrwH2WkUvbrMDli2D7lEK3m2vFyi0HmLQ7VTRFxWbznEoimF1HqkTZXZ8Wx0mopk7EGRJi0LuseHv/np2M5wW8fw09TzmbwKSU1UzOlglGE8xaAUKsl1JtuWDY8aWZH6zVcM75Qds6JhnjTWEUbT78N4gkPEuAyV9+qU1Kc1Iw6TrWAJPDaL9oLguvvxwsXuasr/3XZEGVLi1hf44Nm1nkXSdtXr+V0S8hW4XgRiBd+37VT1feiuB7V5MdrhLEuQXReANWoK437MJva+suIHp3ZUG1ZJb10qEc+R60gh9KzSSQBkaRyjki3hzC/ZTpSFBeWKv7cNPmLnxSqxMBNXB/XpUEaCXfJvjLOSI7V+AFtretbc+eE0emf+iA3mplfvRrTRPXfIJX2Yf+qfLGj8wq3wYHgCVoEOIDVeYQCWl6QSSfXdO0H27ax/XlkvRkar5a3yKqOLzJCfmzwGOE8uuVA6OLnL9Tb/1FCC3yz+cf6DwT9WRPRkU8dD+bBXOHo+YCO8MF5ezacJj5X1Sz1Tc/XcmDaj881Wgzeww5Oy8jlqlbgVikOG5S+u3rPfXiBMb7zVQgy8KKrKnPok0qOoN4ecsYssgkGTD6iz6Bf15jSb+Ue6d6fwvBU=" />
-</div>
-        <div id="main_container">
-            <div class="top_bar"><a href="agent/Default.aspx?userID=agent" target="_blank"></a></div>
-            <div id="header" align="right" dir="rtl">
-                <div id="logo">
-                    <img id="imgLogo" asp-append-version="true" onerror="this.src=&#39;https://nazemonweb.ir/logo/logo.png&#39;;" src="" style="height:150px;width:150px;" />
-	            </div>
-                <div class="oferte_content">
-                    <div class="oferta">
-           		        <div class="oferta_content" dir="rtl">
-                            <div class="oferta_details">
-                                <p class="BYekan"><span id="lblOffice">نسخه نمایشی وبسایت مدارس هوشمند</span></p>
-                                <hr />
-                                <p class="BYekan"><span id="lblSchool">بسته نرم افزار ناظم</span></p>
-                            </div>
-                        </div>  
-                    </div>
-                    <div class="top_divider"><img src="http://nazemonweb.ir/images/header_divider.png" alt="" title="" width="1" height="164" /></div>
+    <!-- Features Section -->
+    <section class="features" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>چرا فروشگاه ما؟</h2>
+                <p>با اطمینان از ما خرید کنید</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card animate__animated" data-animation="fadeInUp">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h3>ارسال فوری پیک</h3>
+                    <p>ارسال سریع محصولات در کوتاه‌ترین زمان ممکن با پیک اختصاصی فروشگاه</p>
+                </div>
+                
+                <div class="feature-card animate__animated" data-animation="fadeInUp" data-delay="0.2s">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>ضمانت اصالت کالا</h3>
+                    <p>تمامی محصولات با گارانتی اصالت و سلامت فنی ارائه می‌شوند</p>
+                </div>
+                
+                <div class="feature-card animate__animated" data-animation="fadeInUp" data-delay="0.4s">
+                    <i class="fas fa-headset"></i>
+                    <h3>پشتیبانی ۲۴ ساعته</h3>
+                    <p>پشتیبانی تلفنی و آنلاین در تمامی ساعات شبانه‌روز</p>
                 </div>
             </div>
-            <div id="menu_tab">
-                <div class="left_menu_corner"></div>
-                    <ul class="menu">
-                        <li><a id="lbBack" class="nav1" href="javascript:__doPostBack(&#39;ctl00$lbBack&#39;,&#39;&#39;)">خانه</a></li>
-                        <li class="divider"></li>
-                        <li><a id="contact" href="admin/Default.aspx?userID=admin" class="nav2" onmouseover="show('contactMe')" onmouseout="hide('contactMe')">تماس با پشتیبانی</a></li>
-                        <li class="divider"></li>
-                        <li><a href="RegCode.aspx" style="color:red;font-size:2em" class="nav2 BYekan">پیش ثبت نام</a></li>
-                        <li class="divider"></li>
-                        <li><a href="About.aspx" class="nav3" target="_blank">درباره</a></li>
-                        <li class="divider"></li>
-                        <li class="currencies"><div id="showDate" align="right">امروز  ۱۵ آذر ۱۴۰۴</div></li>
-                    </ul>
-                 <div class="right_menu_corner"></div>
-            </div><!-- end of menu tab -->
+        </div>
+    </section>
 
-            <div id="contactMe" align="center">
-                <div class="shopping_cart" dir="rtl">
-                    <br />
-                    <div dir="ltr">
-                        <h3>ali.tolouei@gmail.com</h3>
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-title">
+                <h2>محصولات ما</h2>
+                <p>جدیدترین محصولات با بهترین قیمت</p>
+            </div>
+            
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="new-phones">گوشی‌های نو</button>
+                <button class="tab-btn" data-category="used-phones">گوشی‌های دست دوم</button>
+                <button class="tab-btn" data-category="covers">قاب گوشی</button>
+                <button class="tab-btn" data-category="earbuds">ایرپاد و هندزفری</button>
+            </div>
+            
+            <!-- New Phones -->
+            <div class="products-grid active" id="new-phones">
+                <div class="product-card animate__animated" data-animation="fadeIn">
+                    <div class="badge">نو</div>
+                    <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی نو">
+                    <div class="product-info">
+                        <h3>آیفون ۱۴ پرو</h3>
+                        <p>ظرفیت ۲۵۶ گیگابایت، رنگ بنفش</p>
+                        <div class="price">۴۹,۹۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card animate__animated" data-animation="fadeIn" data-delay="0.1s">
+                    <div class="badge">نو</div>
+                    <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی نو">
+                    <div class="product-info">
+                        <h3>سامسونگ S23 اولترا</h3>
+                        <p>ظرفیت ۵۱۲ گیگابایت، رنگ مشکی</p>
+                        <div class="price">۴۲,۵۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card animate__animated" data-animation="fadeIn" data-delay="0.2s">
+                    <div class="badge">نو</div>
+                    <img src="https://images.unsplash.com/photo-1592910147752-1b4e63d85c6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی نو">
+                    <div class="product-info">
+                        <h3>شیائومی ۱۳ پرو</h3>
+                        <p>ظرفیت ۲۵۶ گیگابایت، رنگ آبی</p>
+                        <div class="price">۱۸,۹۰۰,۰۰۰ تومان</div>
                     </div>
                 </div>
             </div>
-
-            <div id="main_content">
+            
+            <!-- Used Phones -->
+            <div class="products-grid" id="used-phones">
+                <div class="product-card">
+                    <div class="badge">دست دوم</div>
+                    <img src="https://images.unsplash.com/photo-1580910051074-3eb694886505?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی دست دوم">
+                    <div class="product-info">
+                        <h3>آیفون ۱۲</h3>
+                        <p>ظرفیت ۱۲۸ گیگابایت، سلامت ۹۵٪</p>
+                        <div class="price">۲۲,۵۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
                 
-    <script type="text/javascript">
-//<![CDATA[
-Sys.WebForms.PageRequestManager._initialize('ctl00$content$ScriptManager1', 'form1', ['tctl00$content$UpdatePanel1','content_UpdatePanel1'], [], [], 90, 'ctl00');
-//]]>
-</script>
-
-    <div class="left_content" dir="rtl">
-        <div  class="title_box" >آیا میدانید که...</div>  
-        <div class="border_box" style="overflow:hidden;">
-            <img src="images/bozorgan.png" alt=""/>
-            <div id="content_infoText" style="padding: 5px; text-align:justify; color: #FF00FF; ">ایا میدانید خنده موجب تقویت سیستم ایمنی بدن می شود</div>
-        </div>
-        <div class="title_box">لینکهای مدرسه</div>  
-        <div class="border_box" dir="rtl">
-            
-        </div>
-        <div class="title_box">لینکهای مفید</div>
-        <ul class="left_menu">
-            <li class="odd"><a href="http://www.time.ir" target="_blank">تاریخ و ساعت رسمی ایران</a></li>
-            <li class="even"><a href="http://www.roshd.ir/Default.aspx?tabid=543&SSOReturnPage=Check&Rand=0" target="_blank">دانلود کتابهای درسی</a></li>
-            <li class="odd"><a href="http://icnl.nlai.ir" target="_blank">کتابخانه ملی کودکان و نوجوانان</a></li>
-            <li class="even"><a href="http://www.parsquran.com/" target="_blank">یک وب سایت قرآنی بسیار عالی</a></li>
-            <li class="odd"><a href="http://dabirnahavand.lxb.ir" target="_blank">سایتی برای دانش آموزان</a></li>
-            <li class="even"><a href="http://www.koodakaneh.com/" target="_blank">وب سایت کودکان</a></li>
-            <li class="odd"><a href="http://www.koodakcity.com/" target="_blank">شهر کودکان</a></li>
-            <li class="even"><a href="http://www.rahmandoost.org/" target="_blank">وبسایت مصطفی رحماندوست</a></li>
-            <li class="odd"><a href="http://www.valeh.ir/" target="_blank">موسسه آموزشی فرهنگی واله</a></li>
-            <li class="even"><a href="http://www.meraat.ir/" target="_blank">مرکز نوآوریهای آموزشی مرآت</a></li>
-            <li class="odd"><a href="http://www.gozine2.ir/" target="_blank">گزینه دو</a></li>
-        </ul> 
-
-        <div class="title_box">راهنمای کدهای پیامک</div>  
-        <div class="border_box">
-            <div class="product_title"><a id="content_lbSmsCodes" href="javascript:__doPostBack(&#39;ctl00$content$lbSmsCodes&#39;,&#39;&#39;)">دانلود</a></div>
-            <div class="product_img"><a id="content_LinkButton2" href="javascript:__doPostBack(&#39;ctl00$content$LinkButton2&#39;,&#39;&#39;)"><img src="images/laptop.png" alt="" title="" border="0" /></a></div>
-        </div>
-        <div class="title_box">آیین نامه انضباطی</div>  
-        <div class="border_box">
-            <div class="product_title"><a id="content_lbAeinname" href="javascript:__doPostBack(&#39;ctl00$content$lbAeinname&#39;,&#39;&#39;)">دانلود</a></div>
-            <div class="product_img"><a id="content_LinkButton1" href="javascript:__doPostBack(&#39;ctl00$content$LinkButton1&#39;,&#39;&#39;)"><img src="images/law.png" alt="" title="" border="0" /></a></div>
-        </div>
-    </div>  
-    <!--end of left_content-->
-
-    <div class="center_content">
-        <div class="center_title_bar">امکانات</div>
-        <div class="prod_box">
-        	<div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/album.aspx' target="_blank">آلبوم عکس</a></div>
-                <div class="product_img"><a href='/contents/album.aspx' target="_blank"><img src="images/album.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div>             
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/awards.aspx' target="_blank">جوایز مدرسه</a></div>
-                <div class="product_img"><a href='/contents/awards.aspx' target="_blank"><img src="images/gift.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/honors.aspx' target="_blank">افتخارات مدرسه</a></div>
-                <div class="product_img"><a href='/contents/honors.aspx' target="_blank"><img src="images/honor.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/tops.aspx' target="_blank">برترینهای مدرسه</a></div>
-                <div class="product_img"><a href='/contents/tops.aspx' target="_blank"><img src="images/tops.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/plans.aspx' target="_blank">برنامه های مدرسه</a></div>
-                <div class="product_img"><a href='/contents/plans.aspx' target="_blank"><img src="images/plan.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/sampleQuestions.aspx' target="_blank">نمونه سئوال</a></div>
-                <div class="product_img"><a href='/contents/sampleQuestions.aspx' target="_blank"><img src="images/question.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/clips.aspx' target="_blank">فیلم و انیمیشن آموزشی</a></div>
-                <div class="product_img"><a href='/contents/clips.aspx' target="_blank"><img src="images/movie.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/articles.aspx' target="_blank">مقالات علمی</a></div>
-                <div class="product_img"><a href='/contents/articles.aspx' target="_blank"><img src="images/article.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/magazines.aspx' target="_blank">گروه بندی دانش آموزان</a></div>
-                <div class="product_img"><a href='/contents/magazines.aspx' target="_blank"><img src="images/magezine.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="prod_box">
-            <div class="top_prod_box"></div>
-            <div class="center_prod_box">            
-                <div class="product_title"><a href='/contents/miscellaneous.aspx' target="_blank">فایلهای متفرقه</a></div>
-                <div class="product_img"><a href='/contents/miscellaneous.aspx' target="_blank"><img src="images/etc.png" alt="" title="" border="0" /></a></div>                        
-            </div>
-            <div class="bottom_prod_box"></div> 
-        </div>
-        <div class="center_title_bar">دانش آموزان متولد امروز *** تولدتان مبارک ***</div>
-        <div class="center_content" align="center">
-            
-        </div>
-        <div class="center_title_bar">اخبار و پیامهای مدرسه</div>
-        <div class="center_content">
-            <div>
-
-</div>
-        </div>
-    </div>
-    <!--end of center_content-->
-
-    <div class="right_content" dir="rtl">
-        <div  class="title_box" >سخن بزرگان</div>  
-        <div class="border_box" style="overflow:hidden;">
-            <img src="images/bozorgan.png" alt=""/>
-            <div id="content_quotationText" style="padding: 5px; text-align:justify; color: #FF00FF; ">پروردگارا! از دوست حیله‌گری که چشمانش مرا می‌بیند و دلش مراقب من است (به طوری که) اگر خوبی ببیند، پنهان کرده و اگر بدیی ببیند، آن را اعلام می‌کند، به تو پناه می‌برم.</div>
-            <div id="content_quotationTitle" style="float:left;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;background-color:#99CCFF; padding:3px; margin-left: 2px; margin-bottom: 2px;">بهرام</div>
-        </div>
-
-        <div class="title_box">منوی ورود</div>
-        <ul class="left_menu">
-            <li class="odd"><a href="school/yearSelection.aspx?userID=school">ورود مدرسه</a></li>
-            <li class="even"><a href="employee/schoolSelection.aspx?userID=employee">ورود کارمند</a></li>
-            <li class="odd"><a href="student/schoolSelection.aspx?userID=iranianStudent">ورود دانش آموز ایرانی</a></li>
-            <li class="even"><a href="student/schoolSelection.aspx?userID=foreignStudent">ورود دانش آموز تبعه خارجی</a></li>
-        </ul>      
-
-        <div class="title_box">منوی ثبت نام</div>
-        <ul class="left_menu">
-            <li class="odd"><a href="student/pictureUpload.aspx?userID=iranianNewStudent">ثبت نام دانش آموز ایرانی</a></li>
-            <li class="even"><a href="student/pictureUpload.aspx?userID=foreignNewStudent">ثبت نام دانش آموز تبعه خارجی</a></li>
-        </ul>  
-
-        <div class="title_box">منوی اطلاعات</div>
-        <ul class="left_menu">
-            
-            <li class="even"><a href="contents/councilMembers.aspx" target="_blank">اعضای شورای دانش آموزی</a></li>
-            <li class="odd"><a href="contents/representatives.aspx" target="_blank">نمایندگان کلاسها</a></li>
-            <li class="even"><a href="contents/communityMembers.aspx" target="_blank">اعضای انجمن اولیاء و مربیان</a></li>
-        </ul> 
-
-        <div class="title_box">آمار وبسایت</div>  
-        <div class="border_box">
-                <div dir="rtl" align="right">
-                <div style=" float:left;margin-left:5px;"><img id="content_Image1" src="images/gnome.png" /></div>
-                <table>
-                    <tr>
-                        <td>
-                            افراد آنلاین:
-                        </td>
-                        <td >
-                            <span id="content_lblOnlineUsers"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            بازدید امروز:
-                        </td>
-                        <td >
-                            <span id="content_lblTodayVisit"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            بازدید دیروز:
-                        </td>
-                        <td >
-                            <span id="content_lblYesterdayVisit"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            بازدید کل:
-                        </td>
-                        <td>
-                            <span id="content_lblTotalVisit"></span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div> 
-        <div class="title_box">اوقات شرعی</div>  
-        <div class="border_box" >
-            <div id="content_UpdatePanel1">
-	
-                    <table>
-                        <tr>
-                            <td colspan="2">
-                                <img src="images/azan.png" alt=""/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" valign="middle" colspan="2">
-                                <select name="ctl00$content$ddlCity" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;ctl00$content$ddlCity\&#39;,\&#39;\&#39;)&#39;, 0)" id="content_ddlCity" class="persianTextBox" style="width:100%;">
-		<option value="اراک">اراک</option>
-		<option value="اردبیل">اردبیل</option>
-		<option value="ارومیه">ارومیه</option>
-		<option value="البرز">البرز</option>
-		<option value="اصفهان">اصفهان</option>
-		<option value="اهواز">اهواز</option>
-		<option value="ایلام">ایلام</option>
-		<option value="بجنورد">بجنورد</option>
-		<option value="بندر عباس">بندر عباس</option>
-		<option value="بوشهر">بوشهر</option>
-		<option value="بیرجند">بیرجند</option>
-		<option value="تبریز">تبریز</option>
-		<option selected="selected" value="تهران">تهران</option>
-		<option value="خرم آباد">خرم آباد</option>
-		<option value="رشت">رشت</option>
-		<option value="زاهدان">زاهدان</option>
-		<option value="زنجان">زنجان</option>
-		<option value="ساری">ساری</option>
-		<option value="سمنان">سمنان</option>
-		<option value="سنندج">سنندج</option>
-		<option value="شهرکرد">شهرکرد</option>
-		<option value="شیراز">شیراز</option>
-		<option value="قزوین">قزوین</option>
-		<option value="قم">قم</option>
-		<option value="کرمان">کرمان</option>
-		<option value="کرمانشاه">کرمانشاه</option>
-		<option value="گرگان">گرگان</option>
-		<option value="مشهد">مشهد</option>
-		<option value="همدان">همدان</option>
-		<option value="یاسوج">یاسوج</option>
-
-	</select> 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="leftcol">
-                                اذان صبح:
-                                <span id="content_lblSobh">05:28</span>
-                            </td>
-                            <td class="leftcol">
-                                طلوع:
-                                <span id="content_lblTolo">07:00</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="leftcol">
-                                اذان ظهر:
-                                <span id="content_lblZohr">11:55</span>
-                            </td>
-                            <td class="leftcol">
-                                غروب:
-                                <span id="content_lblGhorub">16:50</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="leftcol">
-                                اذان مغرب:
-                                <span id="content_lblMaghreb">17:09</span>
-                            </td>
-                            <td class="leftcol">
-                                نیمه شب:
-                                <span id="content_lblNime">23:10</span>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="product-card">
+                    <div class="badge">دست دوم</div>
+                    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی دست دوم">
+                    <div class="product-info">
+                        <h3>سامسونگ S21 FE</h3>
+                        <p>ظرفیت ۲۵۶ گیگابایت، سلامت ۹۰٪</p>
+                        <div class="price">۱۵,۷۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
                 
-</div>
-        </div>
-        <div class="banner_adds">
-            <a href='/contents/softwares.aspx' target="_blank">
-                <img src="images/bann1.jpg" alt="" title="" border="0" />
-            </a>
-         </div> 
-    </div> 
-    <!--end of right_content-->
-
+                <div class="product-card">
+                    <div class="badge">دست دوم</div>
+                    <img src="https://images.unsplash.com/photo-1598327105854-c8674faddf74?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="گوشی دست دوم">
+                    <div class="product-info">
+                        <h3>هواوی P30 پرو</h3>
+                        <p>ظرفیت ۱۲۸ گیگابایت، سلامت ۸۵٪</p>
+                        <div class="price">۱۱,۲۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
             </div>
+            
+            <!-- Covers -->
+            <div class="products-grid" id="covers">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="قاب گوشی">
+                    <div class="product-info">
+                        <h3>قاب سیلیکونی آیفون ۱۴</h3>
+                        <p>ضد ضربه، تنوع رنگ بالا</p>
+                        <div class="price">۱۸۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="قاب گوشی">
+                    <div class="product-info">
+                        <h3>قاب چرمی گلکسی S23</h3>
+                        <p>چرم اصل، دوام بالا</p>
+                        <div class="price">۲۵۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1605408499391-6368c628ef42?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="قاب گوشی">
+                    <div class="product-info">
+                        <h3>قاب شفاف شیائومی</h3>
+                        <p>ضد خش، نازک و سبک</p>
+                        <div class="price">۱۲۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Earbuds -->
+            <div class="products-grid" id="earbuds">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1590658165737-15a047b9e4a8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="ایرپاد">
+                    <div class="product-info">
+                        <h3>ایرپاد پرو اپل</h3>
+                        <p>نسخه ۲، نویز کنسلینگ فعال</p>
+                        <div class="price">۱۴,۵۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="هندزفری">
+                    <div class="product-info">
+                        <h3>هندزفری سامسونگ</h3>
+                        <p>باتری ۲۴ ساعته، کیفیت صدای عالی</p>
+                        <div class="price">۳,۸۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1589003077984-894e133dabab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="هندزفری">
+                    <div class="product-info">
+                        <h3>هندزفری سونی</h3>
+                        <p>نسخه ۴، ضد آب و عرق</p>
+                        <div class="price">۵,۲۰۰,۰۰۰ تومان</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <div id="footer" class="footer">
-                <div class="center_footer" dir="rtl">
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>تماس با ما</h2>
+                <p>برای ارتباط با ما از راه‌های زیر استفاده کنید</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>اطلاعات تماس</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> آدرس: __________</p>
+                    <p><i class="fas fa-phone"></i> شماره تماس: __________</p>
+                    <p><i class="fas fa-envelope"></i> ایمیل: __________</p>
+                    <p><i class="fas fa-clock"></i> ساعت کاری: ۹ صبح تا ۱۰ شب</p>
                     
-                    <p><p><span id="lblCopyRight">کلیه حقوق مادی و معنوی این سامانه متعلق به شرکت نرم افزاری داکا می باشد</span></p></p>
-                    <p><span id="lblEmail"></span></p>
-                    <p><span id="lblPhone"></span></p>
-                    <p><span id="lblAddress"></span></p><br />
-                </div> 
-           </div>            
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>ارسال پیام</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">نام و نام خانوادگی</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">شماره تماس</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">پیام شما</label>
+                            <textarea id="message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="cta-button">ارسال پیام</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-logo">
+                    <div class="logo">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>فون</span>شاپ
+                    </div>
+                    <p>فروشگاه تخصصی گوشی موبایل و لوازم جانبی با سال‌ها تجربه و هزاران مشتری راضی</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>دسترسی سریع</h4>
+                    <ul>
+                        <li><a href="#home">خانه</a></li>
+                        <li><a href="#products">محصولات</a></li>
+                        <li><a href="#about">درباره ما</a></li>
+                        <li><a href="#contact">تماس با ما</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>خدمات ما</h4>
+                    <ul>
+                        <li><a href="#">فروش گوشی نو</a></li>
+                        <li><a href="#">فروش گوشی دست دوم</a></li>
+                        <li><a href="#">لوازم جانبی موبایل</a></li>
+                        <li><a href="#">تعمیرات تخصصی</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>تمامی حقوق مادی و معنوی این وب‌سایت محفوظ می‌باشد. © ۱۴۰۲</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Tab Switching for Products
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const productGrids = document.querySelectorAll('.products-grid');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all tabs and grids
+                tabBtns.forEach(b => b.classList.remove('active'));
+                productGrids.forEach(grid => grid.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                btn.classList.add('active');
+                
+                // Show corresponding grid
+                const category = btn.getAttribute('data-category');
+                const targetGrid = document.getElementById(category);
+                targetGrid.classList.add('active');
+                
+                // Add animation to product cards in the active grid
+                const productCards = targetGrid.querySelectorAll('.product-card');
+                productCards.forEach((card, index) => {
+                    card.classList.remove('animate__fadeIn');
+                    void card.offsetWidth; // Trigger reflow
+                    card.classList.add('animate__fadeIn');
+                    card.style.animationDelay = `${index * 0.1}s`;
+                });
+            });
+        });
+        
+        // Contact Form Submission
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('پیام شما با موفقیت ارسال شد! به زودی با شما تماس خواهیم گرفت.');
+            contactForm.reset();
+        });
+        
+        // Scroll Animations
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.animate__animated');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    const animation = element.getAttribute('data-animation');
+                    const delay = element.getAttribute('data-delay');
+                    
+                    if (animation) {
+                        element.classList.add(animation);
+                    }
+                    
+                    if (delay) {
+                        element.style.animationDelay = delay;
+                    }
+                }
+            });
+        };
+        
+        // Run on initial load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            });
+        });
+        
+        // Add floating animation to some elements
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach(element => {
+            // Randomize animation duration and delay
+            const duration = 5 + Math.random() * 3;
+            const delay = Math.random() * 2;
+            
+            element.style.animationDuration = `${duration}s`;
+            element.style.animationDelay = `${delay}s`;
+        });
+        
+        // Add subtle color change animation to circles
+        const circles = document.querySelectorAll('.circle-decoration');
+        circles.forEach(circle => {
+            setInterval(() => {
+                const randomOpacity = 0.03 + Math.random() * 0.07;
+                circle.style.opacity = randomOpacity;
+            }, 3000);
+        });
+        
+        // Add glow effect to buttons on hover
+        const buttons = document.querySelectorAll('.cta-button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.classList.add('glow-on-hover');
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.classList.remove('glow-on-hover');
+            });
+        });
+    </script>
 </body>
 </html>
